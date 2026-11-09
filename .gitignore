@@ -1,1 +1,11 @@
-android_project
+.gradle/
+build/
+android_project/.gradle/
+android_project/build/
+android_project/app/build/
+android_project/app/src/main/assets/www/
+android_project/local.properties
+3DLudoDice.apk
+*.apk
+__pycache__/
+*.pyc
