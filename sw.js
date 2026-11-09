@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ludo-dice-cache-v1';
+const CACHE_NAME = 'ludo-dice-cache-v2';
 const ASSETS = [
   './',
   './index.html',

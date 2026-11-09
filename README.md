@@ -1,54 +1,29 @@
-# Ludo 3D Dice Roller (Android / Mobile-First PWA)
+# Ludo 3D Dice Roller - Pro Mobile Edition
 
-A mobile-first 3D dice rolling application designed for physical Ludo and board games when dice are lost, broken, or unavailable.
+A realistic mobile-first 3D dice rolling application designed for physical Ludo and board games.
 
-## Key Features & Highlights
+## New Updates in This Version:
+1. **Dynamic Real-World Dice Trajectories & Collisions**:
+   - Dice now launch with variable 3D toss styles (corner throws, angled rolls, wild tumbling).
+   - Real-world inter-dice collisions: multiple dice clack off each other and bounce in opposite directions with momentum transfer!
+   - Tray wall deflections and floor friction with diminishing bounces.
+   - Organic settling: Dice land in natural, scattered board positions at organic yaw angles rather than a fixed grid.
 
-1. **Mobile-First React Native Android UI/UX**:
-   - Modern Material Design 3 tokens, floating cards, tactile buttons, and simulated Android status bar.
-   - Screen Wake Lock API enabled to keep phone screen awake throughout board game sessions.
-   - 100% immersive, distraction-free "Focus Mode" and native Fullscreen toggle.
+2. **Studio-Grade Real-World Acoustic Audio (100% Offline)**:
+   - High-fidelity pre-decoded audio buffers:
+     - Continuous rhythmic "kadh-kadh-kadh" dice cup rattle when holding the screen.
+     - Velocity-sensitive felt impact thuds and crisp wooden rim clacks.
+     - Real dice-to-dice collision clatters with pitch variation.
+     - Triumphant brass/bell celebration fanfare on rolling double sixes!
 
-2. **Realistic 3D Physics Simulation (Three.js)**:
-   - High-definition 3D dice with beveled edges, realistic pips, and glossy materials.
-   - Luxury mahogany wooden tray with deep emerald felt bottom and soft shadows.
-   - Real-time tumbling, bounce restitution, wall collisions, and settling physics.
-   - Randomized suspenseful roll durations for curiosity and genuine board game vibe.
-
-3. **Authentic Procedural Audio Engine (Web Audio API - 100% Offline)**:
-   - Zero external audio files or network dependencies needed!
-   - Rhythmic "kadh-kadh-kadh" dice cup shaking sound when tapping/holding the screen.
-   - Dynamic impact clacks on tray floor and walls scaled to bounce intensity.
-   - Triumphant celebration fanfares on rolling 6s and double-six rerolls.
-   - Full mute toggle and volume control slider.
-
-4. **Ludo Rules & Turn Rotation**:
-   - 1 Player (Solo / Pass & play), 2 Players, 3 Players, 4 Players, or up to 6 Players.
-   - Classic Ludo token colors (Red, Green, Yellow, Blue, Orange, Purple) with customizable names.
-   - **Double-Six Rule (2 Dice)**: Rolling two 6s grants an immediate bonus turn ("Reroll Again!").
-   - **Single-Six Rule (1 Die)**: Rolling a 6 grants a bonus reroll.
-   - Consecutive history log tracking every roll and reroll.
-
-5. **Multi-Phone Wireless Play (WebRTC & QR Code)**:
-   - One phone acts as the central board/tray (Host).
-   - Other players scan the QR code using their own phone cameras to join as wireless controllers.
-   - Each player can tap to roll from their own seat with live turn synchronization!
-
-6. **Hidden & Secret Cheat Feature (Discreetly Engineered)**:
-   - In the top-right corner, a tiny cosmetic status dot indicates the target angle:
+3. **Subtle & Forgiving Secret Cheat**:
+   - The top-right indicator dot shows the target direction:
      - **Red Dot**: 45° angle (Top-Right corner)
      - **Green Dot**: 135° angle (Top-Left corner)
      - **Blue Dot**: 225° angle (Bottom-Left corner)
      - **Yellow Dot**: 315° angle (Bottom-Right corner)
    - **How to activate**:
-     1. Tap/press and hold anywhere on the screen for about 1.2 to 2 seconds.
-     2. While holding, the realistic "kadh-kadh-kadh" dice cup shaking sound plays continuously.
-     3. From the initial touch point, drag your finger/cursor toward the corner matching the indicator color.
-     4. A discreet silent haptic vibration alerts you that the cheat is armed.
-     5. Release your finger to roll: you are guaranteed to roll ALL SIXES (e.g. `[6, 6]` on 2 dice, `[6]` on 1 die)!
-     6. Because the game follows official Ludo rules, rolling double-sixes triggers an immediate legitimate bonus reroll!
-
-## How to Install on Android
-1. Open `index.html` (or `ludo_dice_app.html`) in Google Chrome on your Android phone.
-2. Tap the Chrome menu (three dots in top right) -> **"Add to Home screen"** or **"Install app"**.
-3. The app will install with a native app icon and run full screen without address bar distractions!
+     1. Tap and hold on the screen for about 0.5s or more. The continuous "kadh-kadh-kadh" rattle plays.
+     2. Move/drag your finger just subtly (at least 12 pixels) in the general direction of that corner. A generous 120-degree cone and quadrant check ensures that even an approximate or subtle nudge toward that corner arms the cheat.
+     3. A silent tactile haptic buzz and a brief micro-pulse on the top-right dot confirm the cheat is locked in.
+     4. Release to roll: The dice will tumble naturally with full physics and settle on **ALL SIXES** (`[6, 6]` on 2 dice, `[6]` on 1 die), legitimately awarding you the Ludo double-six bonus reroll!
