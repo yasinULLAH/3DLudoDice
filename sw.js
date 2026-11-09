@@ -62,7 +62,7 @@ if (workbox) {
     },
     {
         "url": "index.html",
-        "revision": "71b800110e16d0857ee825a8a27b4ecd"
+        "revision": "c8578f907b74e2da652656a54fd2028b"
     },
     {
         "url": "logo.png",
@@ -94,7 +94,7 @@ if (workbox) {
     },
     {
         "url": "sw.js",
-        "revision": "f7dbce93cb4776ea03ef17fef8b0a949"
+        "revision": "3e3b5bddc4a8bb12db2081e9d98204e5"
     }
 ]);
 

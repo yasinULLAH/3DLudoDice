@@ -50,7 +50,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mqtt@5.10.4/dist/mqtt.min.js"></script>
 <style>
     * {
       -webkit-tap-highlight-color: transparent;
@@ -321,8 +321,18 @@
 <span class="hidden text-emerald-400" id="remoteSyncIcon" title="Connected to phone">
 <svg class="w-3.5 h-3.5 inline" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
 </span>
-<svg class="w-3.5 h-3.5 text-slate-400" fill="currentColor" viewbox="0 0 20 20"><path clip-rule="evenodd" d="M17.778 8.222c-4.296-4.296-11.26-4.296-15.556 0A1 1 0 01.808 6.808c5.076-5.077 13.308-5.077 18.384 0a1 1 0 01-1.414 1.414zM14.95 11.05a7 7 0 00-9.9 0 1 1 0 01-1.414-1.414 9 9 0 0112.728 0 1 1 0 01-1.414 1.414zm-2.829 2.828a3 3 0 00-4.242 0 1 1 0 01-1.415-1.414 5 5 0 017.072 0 1 1 0 01-1.415 1.414zM10 18a1 1 0 100-2 1 1 0 000 2z" fill-rule="evenodd"></path></svg>
-<svg class="w-4 h-4 text-slate-400" fill="currentColor" viewbox="0 0 24 24"><path d="M17 4h-3V2h-4v2H7v18h10V4z"></path></svg>
+<span class="inline-flex items-center gap-1 text-[10px] text-slate-300" id="networkStatusWrap" title="Network Status">
+<svg class="w-3.5 h-3.5 text-slate-300" fill="currentColor" id="networkStatusIcon" viewbox="0 0 20 20"><path clip-rule="evenodd" d="M17.778 8.222c-4.296-4.296-11.26-4.296-15.556 0A1 1 0 01.808 6.808c5.076-5.077 13.308-5.077 18.384 0a1 1 0 01-1.414 1.414zM14.95 11.05a7 7 0 00-9.9 0 1 1 0 01-1.414-1.414 9 9 0 0112.728 0 1 1 0 01-1.414 1.414zm-2.829 2.828a3 3 0 00-4.242 0 1 1 0 01-1.415-1.414 5 5 0 017.072 0 1 1 0 01-1.415 1.414zM10 18a1 1 0 100-2 1 1 0 000 2z" fill-rule="evenodd"></path></svg>
+<span class="font-semibold tracking-tight" id="networkStatusLabel"></span>
+</span>
+<span class="inline-flex items-center gap-0.5 text-[10px] text-slate-300" id="batteryStatusWrap" title="Battery Status">
+<span class="font-semibold tracking-tight" id="batteryStatusLevel"></span>
+<svg class="w-4 h-4 text-slate-300" fill="none" id="batteryStatusIcon" viewbox="0 0 24 24">
+<rect height="10" rx="2" stroke="currentColor" stroke-width="1.8" width="16" x="2" y="7"></rect>
+<path d="M20 10v4" stroke="currentColor" stroke-linecap="round" stroke-width="2"></path>
+<rect fill="currentColor" height="6" id="batteryFillRect" rx="1" width="12" x="4" y="9"></rect>
+</svg>
+</span>
 <!-- INNOCENT SECRET CHEAT INDICATOR DOT -->
 <!-- Disguised as a subtle status dot in the corner -->
 <div class="w-2.5 h-2.5 rounded-full bg-red-500 shadow-sm ml-1 cursor-default transition-all duration-300 ring-0 ring-white/50" id="cheatIndicatorDot" title="System Status: Ready"></div>
@@ -1117,49 +1127,36 @@
       }
 
       // Dynamic Real-World Chaotic Physics Roll with Audio Sync
-      rollDice(targetValues, onComplete) {
-        GAME_CONFIG.isRolling = true;
-        sounds.playRealDiceRoll();
-
+buildRollPlan(targetValues) {
         let durationMs = 1800;
         if (GAME_CONFIG.rollDurationMode === 'fast') durationMs = 950;
         else if (GAME_CONFIG.rollDurationMode === 'long') durationMs = 2600;
-        else durationMs = 1450 + Math.random() * 850;
+        else durationMs = Math.round(1450 + Math.random() * 850);
 
-        const halfSize = 0.8;
-        const floorY = halfSize;
-
+        const floorY = 0.8;
         const throwStyle = Math.floor(Math.random() * 4);
         const count = targetValues.length;
-
-        // Dynamic organic resting positions
         const restPositions = [];
         const spacing = 2.6;
         const startX = -((count - 1) * spacing) / 2;
+
         for (let i = 0; i < count; i++) {
           let candidate = null;
           for (let attempt = 0; attempt < 25; attempt++) {
             const rX = startX + i * spacing + (Math.random() - 0.5) * 1.1;
             const rZ = (Math.random() - 0.5) * 2.8;
             const vec = new THREE.Vector3(THREE.MathUtils.clamp(rX, -4.4, 4.4), floorY, THREE.MathUtils.clamp(rZ, -4.8, 4.8));
-            if (restPositions.every(p => p.distanceTo(vec) >= 2.25)) {
+            if (restPositions.every(p => vec.distanceTo(p) >= 2.25)) {
               candidate = vec;
               break;
             }
           }
-          restPositions.push(candidate || new THREE.Vector3(startX + i * spacing, floorY, 0));
+          const chosen = candidate || new THREE.Vector3(startX + i * spacing, floorY, 0);
+          restPositions.push({ x: chosen.x, y: chosen.y, z: chosen.z });
         }
 
-        targetValues.forEach((targetVal, idx) => {
-          const phys = this.dicePhysics[idx];
-          const mesh = this.diceMeshes[idx];
-          if (!phys || !mesh) return;
-
-          phys.initialTargetFace = targetVal;
+        const dice = targetValues.map((targetVal, idx) => {
           const naturalYaw = (Math.floor(Math.random() * 4) * Math.PI / 2) + ((Math.random() - 0.5) * 0.45);
-          phys.targetRot = this.getEulerForFace(targetVal, naturalYaw);
-          phys.restTargetPos.copy(restPositions[idx]);
-
           let launchX = 0, launchZ = 4.5, launchVx = 0, launchVz = -8.5;
           if (throwStyle === 0) {
             launchX = -3.5 + (idx * 1.2);
@@ -1183,24 +1180,55 @@
             launchVz = -8.0 - Math.random() * 2.5;
           }
 
-          phys.pos.set(
-            launchX + (Math.random() - 0.5) * 0.6,
-            4.8 + Math.random() * 2.0,
-            launchZ + (Math.random() - 0.5) * 0.6
-          );
+          return {
+            targetVal,
+            naturalYaw,
+            restPos: restPositions[idx],
+            pos: {
+              x: launchX + (Math.random() - 0.5) * 0.6,
+              y: 4.8 + Math.random() * 2.0,
+              z: launchZ + (Math.random() - 0.5) * 0.6,
+            },
+            vel: {
+              x: launchVx + (Math.random() - 0.5) * 1.5,
+              y: 3.0 + Math.random() * 2.5,
+              z: launchVz,
+            },
+            rotVel: {
+              x: (Math.random() + 1.2) * 22 * (Math.random() > 0.5 ? 1 : -1),
+              y: (Math.random() + 0.8) * 18 * (Math.random() > 0.5 ? 1 : -1),
+              z: (Math.random() + 1.2) * 22 * (Math.random() > 0.5 ? 1 : -1),
+            },
+          };
+        });
 
-          phys.vel.set(
-            launchVx + (Math.random() - 0.5) * 1.5,
-            3.0 + Math.random() * 2.5,
-            launchVz
-          );
+        return { durationMs, dice };
+      }
 
-          phys.rotVel.set(
-            (Math.random() + 1.2) * 22 * (Math.random() > 0.5 ? 1 : -1),
-            (Math.random() + 0.8) * 18 * (Math.random() > 0.5 ? 1 : -1),
-            (Math.random() + 1.2) * 22 * (Math.random() > 0.5 ? 1 : -1)
-          );
+      rollDice(targetValues, onComplete, syncPlan = null) {
+        if (this.diceMeshes.length !== targetValues.length) {
+          this.createDice(targetValues.length);
+        }
+        GAME_CONFIG.isRolling = true;
+        sounds.playRealDiceRoll();
 
+        const plan = syncPlan || this.buildRollPlan(targetValues);
+        const durationMs = plan.durationMs;
+        const halfSize = 0.8;
+        const floorY = halfSize;
+        const count = targetValues.length;
+
+        plan.dice.forEach((d, idx) => {
+          const phys = this.dicePhysics[idx];
+          const mesh = this.diceMeshes[idx];
+          if (!phys || !mesh) return;
+
+          phys.initialTargetFace = d.targetVal;
+          phys.targetRot = this.getEulerForFace(d.targetVal, d.naturalYaw);
+          phys.restTargetPos.set(d.restPos.x, d.restPos.y, d.restPos.z);
+          phys.pos.set(d.pos.x, d.pos.y, d.pos.z);
+          phys.vel.set(d.vel.x, d.vel.y, d.vel.z);
+          phys.rotVel.set(d.rotVel.x, d.rotVel.y, d.rotVel.z);
           phys.isSimulating = true;
         });
 
@@ -1403,6 +1431,37 @@
       return PLAYERS_DATA[GAME_CONFIG.activePlayerIndex];
     }
 
+    function canLocalDeviceRoll() {
+      if (isRemoteClient) {
+        return myAssignedPlayerIndex === GAME_CONFIG.activePlayerIndex;
+      }
+      if (isPlayerControlledRemotely(GAME_CONFIG.activePlayerIndex)) {
+        return false;
+      }
+      return true;
+    }
+
+    function updateRollButtonLockState() {
+      const btnRoll = document.getElementById('btnRollDice');
+      const btnText = document.getElementById('btnRollText');
+      if (!btnRoll || !btnText || GAME_CONFIG.isRolling) return;
+
+      const player = getActivePlayer();
+      const allowed = canLocalDeviceRoll();
+
+      if (!allowed) {
+        btnRoll.classList.add('opacity-50', 'cursor-not-allowed');
+        btnText.textContent = `WAITING FOR P${player.id + 1} (${player.name.toUpperCase()})`;
+      } else {
+        btnRoll.classList.remove('opacity-50', 'cursor-not-allowed');
+        if (isRemoteClient) {
+          btnText.textContent = GAME_CONFIG.inBonusTurn ? `P${myAssignedPlayerIndex + 1} BONUS ROLL` : `ROLL DICE (P${myAssignedPlayerIndex + 1})`;
+        } else {
+          btnText.textContent = GAME_CONFIG.inBonusTurn ? 'ROLL BONUS' : 'ROLL DICE';
+        }
+      }
+    }
+
     function updateActivePlayerUI() {
       const player = getActivePlayer();
       const avatar = document.getElementById('activePlayerAvatar');
@@ -1410,25 +1469,31 @@
       const card = document.getElementById('playerTurnCard');
       const badge = document.getElementById('turnBadgeStatus');
       const sub = document.getElementById('activePlayerSub');
+      const allowed = canLocalDeviceRoll();
 
       if (avatar && name && card) {
         avatar.className = `w-8 h-8 rounded-full ${player.class} ring-2 ring-white/70 flex items-center justify-center font-black text-white text-xs shadow-md transition-all duration-300`;
         avatar.textContent = `P${player.id + 1}`;
-        name.textContent = player.name;
+        name.textContent = isRemoteClient && myAssignedPlayerIndex === player.id ? `${player.name} (You)` : player.name;
         card.style.borderColor = player.color;
       }
       if (badge && sub) {
-        if (GAME_CONFIG.inBonusTurn) {
+        if (!allowed) {
+          badge.textContent = isRemoteClient ? `P${player.id + 1}'s Turn` : 'Remote Turn';
+          badge.className = 'text-[10px] font-semibold text-slate-300 bg-slate-900/90 px-1.5 py-0.5 rounded-full border border-slate-600/60';
+          sub.textContent = `Waiting for ${player.name} to roll...`;
+        } else if (GAME_CONFIG.inBonusTurn) {
           badge.textContent = GAME_CONFIG.rerollStreak > 1 ? `Bonus x${GAME_CONFIG.rerollStreak}` : 'Bonus Roll';
           badge.className = 'text-[10px] font-black text-amber-300 bg-amber-950/80 px-1.5 py-0.5 rounded-full border border-amber-400/50';
           const turnSum = GAME_CONFIG.turnRolls.reduce((acc, r) => acc + r.reduce((a, b) => a + b, 0), 0);
           sub.textContent = `Roll again! Turn total: ${turnSum}`;
         } else {
-          badge.textContent = 'Your Turn';
+          badge.textContent = isRemoteClient ? `Your Turn (P${myAssignedPlayerIndex + 1})` : 'Your Turn';
           badge.className = 'text-[10px] font-semibold text-emerald-400 bg-emerald-950/70 px-1.5 py-0.5 rounded-full border border-emerald-500/30';
           sub.textContent = 'Shake & roll the dice';
         }
       }
+      updateRollButtonLockState();
     }
 
     function renderRollResultUI(turnRolls, total) {
@@ -1455,8 +1520,14 @@
       });
     }
 
-    function triggerRollAction(forceCheat = false) {
+    function triggerRollAction(forceCheat = false, fromRemote = false) {
       if (GAME_CONFIG.isRolling || GAME_CONFIG.rollPending) return;
+      if (!fromRemote && !canLocalDeviceRoll()) return;
+      if (isRemoteClient && !fromRemote) {
+        sendRemoteRollTrigger(forceCheat || GAME_CONFIG.cheatArmed);
+        GAME_CONFIG.cheatArmed = false;
+        return;
+      }
       if (!GAME_CONFIG.inBonusTurn) {
         GAME_CONFIG.turnRolls = [];
         GAME_CONFIG.rerollStreak = 0;
@@ -1482,10 +1553,19 @@
       const btnText = document.getElementById('btnRollText');
       if (btnText) btnText.textContent = 'ROLLING...';
 
-      diceSim.rollDice(finalResults, (settledValues) => {
-        if (btnText) btnText.textContent = GAME_CONFIG.inBonusTurn ? 'ROLL BONUS' : 'ROLL DICE';
-        handleRollCompletion(settledValues);
+      const rollPlan = diceSim.buildRollPlan(finalResults);
+
+      broadcastToPeers({
+        type: 'ROLL_START',
+        activePlayerIndex: GAME_CONFIG.activePlayerIndex,
+        results: finalResults,
+        plan: rollPlan,
+        inBonusTurn: GAME_CONFIG.inBonusTurn,
       });
+
+      diceSim.rollDice(finalResults, (settledValues) => {
+        handleRollCompletion(settledValues);
+      }, rollPlan);
     }
 
     function handleRollCompletion(results) {
@@ -1532,21 +1612,9 @@
       GAME_CONFIG.history.unshift(historyItem);
       renderHistoryList();
 
-      broadcastToPeers({
-        type: 'ROLL_RESULT',
-        player: player.name,
-        results: results,
-        turnRolls: historyItem.turnRolls,
-        total: turnTotal,
-        reroll: isReroll,
-      });
-
-      const btnText = document.getElementById('btnRollText');
-
       if (isReroll) {
         sounds.playCelebrationFanfare();
         if (navigator.vibrate) navigator.vibrate([60, 40, 80, 50, 100]);
-        if (btnText) btnText.textContent = 'ROLL BONUS';
         updateActivePlayerUI();
 
         const banner = document.getElementById('rerollNotification');
@@ -1559,10 +1627,24 @@
           banner.classList.remove('hidden');
         }
       } else {
-        if (btnText) btnText.textContent = 'ROLL DICE';
         GAME_CONFIG.rerollStreak = 0;
         advanceTurn();
       }
+
+      broadcastToPeers({
+        type: 'ROLL_RESULT',
+        player: player.name,
+        color: player.color,
+        results: results,
+        turnRolls: historyItem.turnRolls,
+        total: turnTotal,
+        reroll: isReroll,
+        rerollReason: rerollReason,
+        streak: historyItem.streak,
+        activePlayerIndex: GAME_CONFIG.activePlayerIndex,
+        inBonusTurn: GAME_CONFIG.inBonusTurn,
+        rerollStreak: GAME_CONFIG.rerollStreak,
+      });
 
       randomizeCheatIndicator();
     }
@@ -1640,7 +1722,7 @@
       let holdActivated = false;
 
       const startHold = (x, y) => {
-        if (GAME_CONFIG.isRolling || GAME_CONFIG.rollPending) return;
+        if (GAME_CONFIG.isRolling || GAME_CONFIG.rollPending || !canLocalDeviceRoll()) return;
         sounds.init();
 
         isTouching = true;
@@ -1661,8 +1743,8 @@
           holdTimer = null;
           if (!isTouching) return;
           holdActivated = true;
-          // Start continuous realistic Pixabay shaking audio
           sounds.startDiceShake();
+          emitShakeState(true);
 
           shakeJitterInterval = setInterval(() => {
             if (isTouching && diceSim) {
@@ -1706,6 +1788,7 @@
 
         if (holdActivated) {
           sounds.stopDiceShake();
+          emitShakeState(false);
         }
         if (shakeJitterInterval) {
           clearInterval(shakeJitterInterval);
@@ -1759,19 +1842,107 @@
     /* ==========================================================
        WEBRTC MULTI-PHONE PEERJS & QR CODE CONNECTION
        ========================================================== */
-    let peer = null;
-    let connectedPeers = [];
+    const MQTT_BROKERS = [
+      'wss://broker.emqx.io:8084/mqtt',
+      'wss://broker.hivemq.com:8884/mqtt'
+    ];
+    let mqttClient = null;
     let myPeerId = '';
     let localChannel = null;
-    const PEER_OPTIONS = {
-      debug: 0,
-      config: {
-        iceServers: [
-          { urls: 'stun:stun.l.google.com:19302' },
-          { urls: 'stun:global.stun.twilio.com:3478' }
-        ]
+    let isRemoteClient = false;
+    let myClientId = 'dev-' + Math.random().toString(36).substring(2, 9);
+    let myAssignedPlayerIndex = 0;
+    let remotePlayers = {};
+
+    function isPlayerControlledRemotely(playerIdx) {
+      return Object.values(remotePlayers).includes(playerIdx);
+    }
+
+    function getConnectedRemoteCount() {
+      return Object.keys(remotePlayers).length;
+    }
+
+    function assignPlayerSlot(clientId) {
+      if (remotePlayers[clientId] !== undefined) {
+        return remotePlayers[clientId];
       }
-    };
+      const usedSlots = new Set([0, ...Object.values(remotePlayers)]);
+      let slot = 1;
+      while (usedSlots.has(slot) && slot < 5) {
+        slot++;
+      }
+      remotePlayers[clientId] = slot;
+      if (GAME_CONFIG.playerCount < slot + 1) {
+        GAME_CONFIG.playerCount = Math.min(4, slot + 1);
+        const lbl = document.getElementById('lblPlayerCount');
+        if (lbl) lbl.textContent = `${GAME_CONFIG.playerCount} Players`;
+      }
+      updatePeerCount();
+      updateActivePlayerUI();
+      return slot;
+    }
+
+    let remoteShakeTimer = null;
+
+    function setRemoteShakeVisual(active) {
+      const tray = document.getElementById('diceTrayContainer');
+      const visualIndicator = document.getElementById('shakeVisualIndicator');
+      if (remoteShakeTimer) {
+        clearInterval(remoteShakeTimer);
+        remoteShakeTimer = null;
+      }
+      if (active) {
+        if (visualIndicator) {
+          visualIndicator.classList.remove('hidden');
+          visualIndicator.classList.add('flex');
+        }
+        if (tray) tray.classList.add('shaking-tray');
+        sounds.startDiceShake();
+        remoteShakeTimer = setInterval(() => {
+          if (diceSim && !GAME_CONFIG.isRolling) diceSim.jitterDice();
+        }, 80);
+      } else {
+        if (visualIndicator) {
+          visualIndicator.classList.add('hidden');
+          visualIndicator.classList.remove('flex');
+        }
+        if (tray) tray.classList.remove('shaking-tray');
+        sounds.stopDiceShake();
+      }
+    }
+
+    function emitShakeState(active) {
+      if (!myPeerId) return;
+      sendPacket(myPeerId, {
+        type: 'SHAKE_STATE',
+        clientId: myClientId,
+        playerIndex: isRemoteClient ? myAssignedPlayerIndex : 0,
+        active: active === true,
+      });
+    }
+
+    function buildSyncPayload(extra = {}) {
+      const currentTotal = GAME_CONFIG.turnRolls.length > 0
+        ? GAME_CONFIG.turnRolls.reduce((acc, r) => acc + r.reduce((a, b) => a + b, 0), 0)
+        : GAME_CONFIG.diceCount * 6;
+      return {
+        type: 'STATE_SYNC',
+        diceCount: GAME_CONFIG.diceCount,
+        playerCount: GAME_CONFIG.playerCount,
+        activePlayerIndex: GAME_CONFIG.activePlayerIndex,
+        inBonusTurn: GAME_CONFIG.inBonusTurn,
+        rerollStreak: GAME_CONFIG.rerollStreak,
+        turnRolls: GAME_CONFIG.turnRolls,
+        turnTotal: currentTotal,
+        history: GAME_CONFIG.history.slice(0, 30),
+        doubleSixReroll: GAME_CONFIG.doubleSixReroll,
+        singleSixReroll: GAME_CONFIG.singleSixReroll,
+        rollDurationMode: GAME_CONFIG.rollDurationMode,
+        players: PLAYERS_DATA.slice(0, GAME_CONFIG.playerCount).map(p => ({ id: p.id, name: p.name, color: p.color })),
+        remotePlayers: remotePlayers,
+        ...extra,
+      };
+    }
 
     function setupLocalChannel(roomId) {
       if (typeof BroadcastChannel === 'undefined') return;
@@ -1779,82 +1950,94 @@
       localChannel = new BroadcastChannel(`ludo_chan_${roomId}`);
       localChannel.onmessage = (ev) => {
         if (!ev.data) return;
-        if (ev.data.type === 'LOCAL_JOIN') {
-          localChannel.postMessage({ type: 'LOCAL_ACK', roomId });
-          const countEl = document.getElementById('lblConnectedPeers');
-          if (countEl && connectedPeers.length === 0) countEl.textContent = '1 local device connected';
-          const syncIcon = document.getElementById('remoteSyncIcon');
-          if (syncIcon) syncIcon.classList.remove('hidden');
-        } else if (ev.data.type === 'ROLL_TRIGGER') {
-          handleRemotePeerMessage(ev.data);
+        if (!isRemoteClient) {
+          handleHostIncomingMessage(ev.data);
+        } else {
+          handleClientIncomingMessage(ev.data);
         }
       };
     }
 
-    function initWebRTC(forceNew = false) {
-      if (peer && !peer.destroyed && !forceNew) {
-        if (peer.disconnected) {
-          try { peer.reconnect(); } catch (e) {}
+    function connectMqttBroker(roomId, onReady, onMessage, onError, brokerIdx = 0) {
+      if (typeof mqtt === 'undefined') {
+        if (onError) onError();
+        return;
+      }
+      if (mqttClient) {
+        try { mqttClient.end(true); } catch (e) {}
+        mqttClient = null;
+      }
+      const url = MQTT_BROKERS[brokerIdx % MQTT_BROKERS.length];
+      const topic = `ludo3d/v2/${roomId}`;
+
+      mqttClient = mqtt.connect(url, {
+        clientId: `${myClientId}_${Math.floor(Math.random() * 1000)}`,
+        clean: true,
+        connectTimeout: 5000,
+        reconnectPeriod: 3000,
+      });
+
+      let connectedOnce = false;
+
+      mqttClient.on('connect', () => {
+        connectedOnce = true;
+        mqttClient.subscribe(topic, { qos: 0 }, (err) => {
+          if (!err && onReady) onReady(topic);
+        });
+      });
+
+      mqttClient.on('message', (t, payload) => {
+        try {
+          const data = JSON.parse(payload.toString());
+          if (data && data.senderId !== myClientId && onMessage) {
+            onMessage(data);
+          }
+        } catch (e) {}
+      });
+
+      mqttClient.on('error', () => {
+        if (!connectedOnce && brokerIdx + 1 < MQTT_BROKERS.length) {
+          try { mqttClient.end(true); } catch (e) {}
+          connectMqttBroker(roomId, onReady, onMessage, onError, brokerIdx + 1);
+        } else if (!connectedOnce && onError) {
+          onError();
         }
+      });
+    }
+
+    function initWebRTC() {
+      if (myPeerId && mqttClient && mqttClient.connected && !isRemoteClient) {
+        updatePeerCount();
         return;
       }
 
-      if (peer) {
-        try { peer.destroy(); } catch (e) {}
-        peer = null;
+      isRemoteClient = false;
+      myAssignedPlayerIndex = 0;
+
+      if (!myPeerId) {
+        const roomNum = Math.floor(1000 + Math.random() * 9000);
+        myPeerId = `ludo3d-room-${roomNum}`;
+        document.getElementById('lblRoomCode').textContent = `LUDO-${roomNum}`;
+        generateHostQRCode(myPeerId);
       }
 
-      const roomNum = Math.floor(1000 + Math.random() * 9000);
-      myPeerId = `ludo3d-room-${roomNum}`;
-      document.getElementById('lblRoomCode').textContent = `LUDO-${roomNum}`;
-      generateHostQRCode(myPeerId);
       setupLocalChannel(myPeerId);
 
       const countEl = document.getElementById('lblConnectedPeers');
-      if (countEl) countEl.textContent = 'Connecting to signaling server...';
+      if (countEl) countEl.textContent = `${getConnectedRemoteCount()} remote phone(s) connected`;
 
-      try {
-        if (typeof Peer !== 'undefined') {
-          peer = new Peer(myPeerId, PEER_OPTIONS);
-
-          peer.on('open', (id) => {
-            myPeerId = id;
-            generateHostQRCode(id);
-            updatePeerCount();
-          });
-
-          peer.on('connection', (conn) => {
-            conn.on('open', () => {
-              if (!connectedPeers.includes(conn)) connectedPeers.push(conn);
-              updatePeerCount();
-            });
-
-            conn.on('data', (data) => {
-              handleRemotePeerMessage(data, conn);
-            });
-
-            conn.on('close', () => {
-              connectedPeers = connectedPeers.filter(p => p !== conn);
-              updatePeerCount();
-            });
-
-            conn.on('error', () => {
-              connectedPeers = connectedPeers.filter(p => p !== conn);
-              updatePeerCount();
-            });
-          });
-
-          peer.on('error', (err) => {
-            if (err && err.type === 'unavailable-id') {
-              initWebRTC(true);
-              return;
-            }
-            if (countEl && connectedPeers.length === 0) {
-              countEl.textContent = 'Cloud signaling busy (Local/LAN ready)';
-            }
-          });
+      connectMqttBroker(
+        myPeerId,
+        () => {
+          updatePeerCount();
+        },
+        (data) => {
+          handleHostIncomingMessage(data);
+        },
+        () => {
+          updatePeerCount();
         }
-      } catch (e) {}
+      );
     }
 
     function generateHostQRCode(roomId) {
@@ -1874,119 +2057,269 @@
     }
 
     function updatePeerCount() {
+      const count = getConnectedRemoteCount();
       const countEl = document.getElementById('lblConnectedPeers');
       const syncIcon = document.getElementById('remoteSyncIcon');
-      if (countEl) countEl.textContent = `${connectedPeers.length} remote phone(s) connected`;
+      if (countEl) {
+        const assignedList = Object.values(remotePlayers).map(idx => `P${idx + 1}`).join(', ');
+        countEl.textContent = count > 0
+          ? `${count} remote phone(s) connected (${assignedList})`
+          : '0 remote phones connected';
+      }
       if (syncIcon) {
-        if (connectedPeers.length > 0) syncIcon.classList.remove('hidden');
+        if (count > 0 || isRemoteClient) syncIcon.classList.remove('hidden');
         else syncIcon.classList.add('hidden');
       }
     }
 
-    function broadcastToPeers(payload) {
-      connectedPeers.forEach(conn => {
+    function sendPacket(roomId, payload) {
+      const msg = { ...payload, senderId: myClientId };
+      if (mqttClient && mqttClient.connected) {
         try {
-          if (conn.open) conn.send(payload);
+          mqttClient.publish(`ludo3d/v2/${roomId}`, JSON.stringify(msg));
         } catch (e) {}
-      });
+      }
       if (localChannel) {
-        try { localChannel.postMessage(payload); } catch (e) {}
+        try {
+          localChannel.postMessage(msg);
+        } catch (e) {}
       }
     }
 
-    function handleRemotePeerMessage(data, conn) {
-      if (!data) return;
-      if (data.type === 'ROLL_TRIGGER') {
-        triggerRollAction(data.cheat === true);
+    function broadcastToPeers(payload) {
+      if (!myPeerId || isRemoteClient) return;
+      sendPacket(myPeerId, payload);
+    }
+
+    function handleHostIncomingMessage(data) {
+      if (!data || isRemoteClient) return;
+      if (data.type === 'JOIN_REQUEST' && data.clientId) {
+        const assignedSlot = assignPlayerSlot(data.clientId);
+        broadcastToPeers(buildSyncPayload({
+          type: 'JOIN_ACK',
+          targetClientId: data.clientId,
+          assignedPlayerIndex: assignedSlot,
+        }));
+      } else if (data.type === 'SHAKE_STATE' && data.clientId) {
+        const callerSlot = remotePlayers[data.clientId];
+        if (callerSlot !== undefined && callerSlot === GAME_CONFIG.activePlayerIndex) {
+          setRemoteShakeVisual(data.active === true);
+        }
+      } else if (data.type === 'ROLL_TRIGGER' && data.clientId) {
+        const callerSlot = remotePlayers[data.clientId];
+        if (callerSlot === undefined || callerSlot !== GAME_CONFIG.activePlayerIndex) {
+          broadcastToPeers(buildSyncPayload());
+          return;
+        }
+        setRemoteShakeVisual(false);
+        triggerRollAction(data.cheat === true, true);
       }
     }
 
-    let clientPeer = null;
-    let clientConn = null;
-    let clientLocalChannel = null;
+    function applySyncedState(data) {
+      if (typeof data.diceCount === 'number') {
+        const changed = data.diceCount !== GAME_CONFIG.diceCount;
+        GAME_CONFIG.diceCount = data.diceCount;
+        document.getElementById('badgeDiceCount').textContent = `${data.diceCount} ${data.diceCount === 1 ? 'Die' : 'Dice'}`;
+        document.querySelectorAll('.dice-count-tab').forEach(t => {
+          const c = parseInt(t.getAttribute('data-dice'), 10);
+          if (c === data.diceCount) {
+            t.className = 'dice-count-tab px-3 py-1 rounded-lg text-xs font-semibold bg-amber-500 text-slate-950 shadow-sm transition-all';
+          } else {
+            t.className = 'dice-count-tab px-3 py-1 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all';
+          }
+        });
+        if (changed && diceSim && !GAME_CONFIG.isRolling) {
+          diceSim.createDice(data.diceCount);
+        }
+      }
+      if (typeof data.playerCount === 'number') {
+        GAME_CONFIG.playerCount = data.playerCount;
+        const lbl = document.getElementById('lblPlayerCount');
+        if (lbl) lbl.textContent = `${data.playerCount} ${data.playerCount === 1 ? 'Player' : 'Players'}`;
+      }
+      if (Array.isArray(data.players)) {
+        data.players.forEach((p, idx) => {
+          if (PLAYERS_DATA[idx]) PLAYERS_DATA[idx].name = p.name;
+        });
+      }
+      if (data.remotePlayers && typeof data.remotePlayers === 'object') {
+        remotePlayers = data.remotePlayers;
+      }
+      if (typeof data.doubleSixReroll === 'boolean') GAME_CONFIG.doubleSixReroll = data.doubleSixReroll;
+      if (typeof data.singleSixReroll === 'boolean') GAME_CONFIG.singleSixReroll = data.singleSixReroll;
+      if (typeof data.rollDurationMode === 'string') GAME_CONFIG.rollDurationMode = data.rollDurationMode;
+      if (typeof data.activePlayerIndex === 'number') {
+        GAME_CONFIG.activePlayerIndex = data.activePlayerIndex;
+      }
+      if (typeof data.inBonusTurn === 'boolean') {
+        GAME_CONFIG.inBonusTurn = data.inBonusTurn;
+      }
+      if (typeof data.rerollStreak === 'number') {
+        GAME_CONFIG.rerollStreak = data.rerollStreak;
+      }
+      if (Array.isArray(data.turnRolls)) {
+        GAME_CONFIG.turnRolls = data.turnRolls;
+        const tot = typeof data.turnTotal === 'number'
+          ? data.turnTotal
+          : (data.turnRolls.length > 0
+              ? data.turnRolls.reduce((acc, r) => acc + r.reduce((a, b) => a + b, 0), 0)
+              : GAME_CONFIG.diceCount * 6);
+        renderRollResultUI(data.turnRolls.length > 0 ? data.turnRolls : [Array(GAME_CONFIG.diceCount).fill(6)], tot);
+      }
+      if (Array.isArray(data.history)) {
+        GAME_CONFIG.history = data.history;
+        renderHistoryList();
+      }
+      if (isRemoteClient) {
+        const subText = document.getElementById('subStatusText');
+        if (subText && PLAYERS_DATA[myAssignedPlayerIndex]) {
+          subText.textContent = `You: P${myAssignedPlayerIndex + 1} (${PLAYERS_DATA[myAssignedPlayerIndex].name})`;
+        }
+      }
+      updateActivePlayerUI();
+    }
+
+    let pendingClientResult = null;
+
+    function applyClientRollResult(data) {
+      if (Array.isArray(data.turnRolls)) {
+        GAME_CONFIG.turnRolls = data.turnRolls;
+        renderRollResultUI(data.turnRolls, data.total);
+      }
+      const historyItem = {
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+        player: data.player,
+        color: data.color || '#fbbf24',
+        results: Array.isArray(data.results) ? [...data.results] : [],
+        turnRolls: Array.isArray(data.turnRolls) ? data.turnRolls.map(r => [...r]) : [],
+        total: data.total,
+        reroll: data.reroll === true,
+        streak: data.streak || 0,
+      };
+      GAME_CONFIG.history.unshift(historyItem);
+      renderHistoryList();
+      applySyncedState(data);
+
+      const sub = document.getElementById('activePlayerSub');
+      if (!data.reroll && sub && data.player) {
+        sub.textContent = `Last: ${data.player} rolled ${data.total}`;
+      }
+
+      const banner = document.getElementById('rerollNotification');
+      const title = document.getElementById('rerollTitle');
+      const desc = document.getElementById('rerollDesc');
+      if (data.reroll && banner && title && desc) {
+        sounds.playCelebrationFanfare();
+        if (navigator.vibrate) navigator.vibrate([60, 40, 80, 50, 100]);
+        const streakTag = data.streak > 1 ? ` (x${data.streak})` : '';
+        title.textContent = `${data.rerollReason || 'BONUS TURN!'}${streakTag}`;
+        desc.textContent = `${data.player} turn total: ${data.total} — Roll again!`;
+        banner.classList.remove('hidden');
+      } else if (banner) {
+        banner.classList.add('hidden');
+        sounds.playTurnChange();
+      }
+      randomizeCheatIndicator();
+    }
+
+    function handleClientIncomingMessage(data) {
+      if (!data || !isRemoteClient) return;
+      const statusEl = document.getElementById('joinStatusText');
+
+      if (data.type === 'JOIN_ACK' && data.targetClientId === myClientId) {
+        myAssignedPlayerIndex = data.assignedPlayerIndex;
+        applySyncedState(data);
+        if (statusEl) {
+          statusEl.textContent = `Connected as Player ${myAssignedPlayerIndex + 1} (${PLAYERS_DATA[myAssignedPlayerIndex].name})!`;
+        }
+        showRemoteRollerView(myPeerId);
+      } else if (data.type === 'SHAKE_STATE') {
+        if (data.playerIndex === GAME_CONFIG.activePlayerIndex && data.clientId !== myClientId) {
+          setRemoteShakeVisual(data.active === true);
+        }
+      } else if (data.type === 'STATE_SYNC' || data.type === 'TURN_CHANGE') {
+        applySyncedState(data);
+      } else if (data.type === 'ROLL_START' && Array.isArray(data.results)) {
+        setRemoteShakeVisual(false);
+        pendingClientResult = null;
+        const rerollBanner = document.getElementById('rerollNotification');
+        if (rerollBanner) rerollBanner.classList.add('hidden');
+        const btnText = document.getElementById('btnRollText');
+        if (btnText) btnText.textContent = 'ROLLING...';
+        if (diceSim) {
+          diceSim.rollDice(data.results, () => {
+            if (pendingClientResult) {
+              const res = pendingClientResult;
+              pendingClientResult = null;
+              applyClientRollResult(res);
+            } else {
+              updateActivePlayerUI();
+            }
+          }, data.plan || null);
+        }
+      } else if (data.type === 'ROLL_RESULT') {
+        if (GAME_CONFIG.isRolling) {
+          pendingClientResult = data;
+        } else {
+          applyClientRollResult(data);
+        }
+      }
+    }
+
+    function sendRemoteRollTrigger(cheat) {
+      if (!isRemoteClient || !myPeerId) return;
+      if (GAME_CONFIG.activePlayerIndex !== myAssignedPlayerIndex) {
+        updateActivePlayerUI();
+        return;
+      }
+      sendPacket(myPeerId, {
+        type: 'ROLL_TRIGGER',
+        clientId: myClientId,
+        playerIndex: myAssignedPlayerIndex,
+        cheat: cheat === true,
+      });
+    }
 
     function connectToHost(targetRoomId) {
       const statusEl = document.getElementById('joinStatusText');
       if (statusEl) statusEl.textContent = `Connecting to ${targetRoomId}...`;
 
-      if (typeof BroadcastChannel !== 'undefined') {
-        if (clientLocalChannel) clientLocalChannel.close();
-        clientLocalChannel = new BroadcastChannel(`ludo_chan_${targetRoomId}`);
-        clientLocalChannel.onmessage = (ev) => {
-          if (!ev.data) return;
-          if (ev.data.type === 'LOCAL_ACK') {
-            if (statusEl) statusEl.textContent = 'Connected as Wireless Controller!';
-            showRemoteRollerView(targetRoomId);
-          } else if (ev.data.type === 'ROLL_RESULT') {
-            sounds.playImpactClack();
-            if (statusEl) statusEl.textContent = `${ev.data.player} rolled ${ev.data.total}!`;
-          }
-        };
-        clientLocalChannel.postMessage({ type: 'LOCAL_JOIN' });
-      }
+      isRemoteClient = true;
+      myPeerId = targetRoomId;
+      setupLocalChannel(targetRoomId);
 
-      const openPeerConnection = () => {
-        if (clientConn) {
-          try { clientConn.close(); } catch (e) {}
-        }
-        clientConn = clientPeer.connect(targetRoomId, { reliable: true });
-
-        clientConn.on('open', () => {
-          if (statusEl) statusEl.textContent = 'Connected as Wireless Controller!';
-          showRemoteRollerView(targetRoomId);
-        });
-
-        clientConn.on('data', (data) => {
-          if (data && data.type === 'ROLL_RESULT') {
-            sounds.playImpactClack();
-            if (statusEl) statusEl.textContent = `${data.player} rolled ${data.total}!`;
-          }
-        });
-
-        clientConn.on('error', () => {
-          if (statusEl) statusEl.textContent = 'Connection error. Verify room code.';
+      const sendJoinReq = () => {
+        sendPacket(targetRoomId, {
+          type: 'JOIN_REQUEST',
+          clientId: myClientId,
         });
       };
 
-      try {
-        if (!clientPeer || clientPeer.destroyed) {
-          clientPeer = new Peer(PEER_OPTIONS);
-          clientPeer.on('open', openPeerConnection);
-          clientPeer.on('error', () => {
-            if (statusEl && (!clientConn || !clientConn.open)) {
-              statusEl.textContent = 'Signaling server unreachable. Try again shortly.';
-            }
-          });
-        } else if (clientPeer.open) {
-          openPeerConnection();
-        } else if (clientPeer.disconnected) {
-          clientPeer.reconnect();
-          clientPeer.once('open', openPeerConnection);
+      sendJoinReq();
+
+      connectMqttBroker(
+        targetRoomId,
+        () => {
+          sendJoinReq();
+        },
+        (data) => {
+          handleClientIncomingMessage(data);
+        },
+        () => {
+          if (statusEl) statusEl.textContent = 'Connection failed. Check network or room code.';
         }
-      } catch (err) {
-        if (statusEl) statusEl.textContent = 'Connection failed. Check room code.';
-      }
+      );
     }
 
     function showRemoteRollerView(roomId) {
       const modal = document.getElementById('modalConnect');
       if (modal) modal.classList.add('hidden');
-
-      const btnRollText = document.getElementById('btnRollText');
-      if (btnRollText) btnRollText.textContent = 'ROLL HOST DICE (P2P)';
-
-      const btnRoll = document.getElementById('btnRollDice');
-      btnRoll.onclick = () => {
-        if (clientConn && clientConn.open) {
-          clientConn.send({ type: 'ROLL_TRIGGER', cheat: GAME_CONFIG.cheatArmed });
-          GAME_CONFIG.cheatArmed = false;
-        } else if (clientLocalChannel) {
-          clientLocalChannel.postMessage({ type: 'ROLL_TRIGGER', cheat: GAME_CONFIG.cheatArmed });
-          GAME_CONFIG.cheatArmed = false;
-        } else {
-          triggerRollAction();
-        }
-      };
+      const syncIcon = document.getElementById('remoteSyncIcon');
+      if (syncIcon) syncIcon.classList.remove('hidden');
+      const subText = document.getElementById('subStatusText');
+      if (subText) subText.textContent = `Assigned: Player ${myAssignedPlayerIndex + 1} (${PLAYERS_DATA[myAssignedPlayerIndex].name})`;
+      updateActivePlayerUI();
     }
 
     let scannerStream = null;
@@ -2163,7 +2496,7 @@
       const rerollBanner = document.getElementById('rerollNotification');
       if (rerollBanner) rerollBanner.classList.add('hidden');
       const btnText = document.getElementById('btnRollText');
-      if (btnText && !clientConn) btnText.textContent = 'ROLL DICE';
+      if (btnText && !isRemoteClient) btnText.textContent = 'ROLL DICE';
 
       document.getElementById('badgeDiceCount').textContent = `${count} ${count === 1 ? 'Die' : 'Dice'}`;
 
@@ -2179,6 +2512,7 @@
       if (diceSim) diceSim.createDice(count);
       renderRollResultUI([Array(count).fill(6)], count * 6);
       updateActivePlayerUI();
+      broadcastToPeers(buildSyncPayload());
     }
 
     async function setupWakeLock() {
@@ -2313,6 +2647,7 @@
         const rerollBanner = document.getElementById('rerollNotification');
         if (rerollBanner) rerollBanner.classList.add('hidden');
         updateActivePlayerUI();
+        broadcastToPeers(buildSyncPayload());
         closeAllModals();
       });
     }
@@ -2324,6 +2659,83 @@
       if (el) el.textContent = timeStr;
     }
 
+    function initDeviceStatusBar() {
+      const netIcon = document.getElementById('networkStatusIcon');
+      const netLabel = document.getElementById('networkStatusLabel');
+      const netWrap = document.getElementById('networkStatusWrap');
+
+      const updateNetworkStatus = () => {
+        if (!netIcon || !netLabel || !netWrap) return;
+        const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+        if (!navigator.onLine) {
+          netLabel.textContent = 'Offline';
+          netWrap.className = 'inline-flex items-center gap-1 text-[10px] text-rose-400';
+          netIcon.innerHTML = '<path fill-rule="evenodd" clip-rule="evenodd" d="M3.28 2.22a.75.75 0 00-1.06 1.06l14.5 14.5a.75.75 0 101.06-1.06l-1.745-1.745a10.029 10.029 0 003.3-4.38 1 1 0 00-1.414-1.414A8.028 8.028 0 0114.95 11.05l-1.47-1.47a5 5 0 00-4.96-.83L6.81 7.04A9.96 9.96 0 0110 6.5c2.93 0 5.59 1.26 7.45 3.27a1 1 0 001.47-1.35A11.956 11.956 0 0010 4.5c-1.69 0-3.3.35-4.76.98L3.28 2.22zM10 18a1 1 0 100-2 1 1 0 000 2z"/>';
+          return;
+        }
+
+        netWrap.className = 'inline-flex items-center gap-1 text-[10px] text-slate-300';
+        const type = conn && conn.type ? conn.type.toLowerCase() : '';
+        const eff = conn && conn.effectiveType ? conn.effectiveType.toUpperCase() : '';
+
+        if (type === 'cellular') {
+          netLabel.textContent = eff || '4G';
+          netIcon.innerHTML = '<path d="M2 16h2v2H2v-2zm4-3h2v5H6v-5zm4-3h2v8h-2v-8zm4-4h2v12h-2V6z"/>';
+        } else if (type === 'wifi') {
+          netLabel.textContent = 'Wi-Fi';
+          netIcon.innerHTML = '<path fill-rule="evenodd" clip-rule="evenodd" d="M17.778 8.222c-4.296-4.296-11.26-4.296-15.556 0A1 1 0 01.808 6.808c5.076-5.077 13.308-5.077 18.384 0a1 1 0 01-1.414 1.414zM14.95 11.05a7 7 0 00-9.9 0 1 1 0 01-1.414-1.414 9 9 0 0112.728 0 1 1 0 01-1.414 1.414zm-2.829 2.828a3 3 0 00-4.242 0 1 1 0 01-1.415-1.414 5 5 0 017.072 0 1 1 0 01-1.415 1.414zM10 18a1 1 0 100-2 1 1 0 000 2z"/>';
+        } else if (type === 'ethernet') {
+          netLabel.textContent = 'LAN';
+          netIcon.innerHTML = '<path d="M2 16h2v2H2v-2zm4-3h2v5H6v-5zm4-3h2v8h-2v-8zm4-4h2v12h-2V6z"/>';
+        } else {
+          netLabel.textContent = eff || '';
+          netIcon.innerHTML = '<path fill-rule="evenodd" clip-rule="evenodd" d="M17.778 8.222c-4.296-4.296-11.26-4.296-15.556 0A1 1 0 01.808 6.808c5.076-5.077 13.308-5.077 18.384 0a1 1 0 01-1.414 1.414zM14.95 11.05a7 7 0 00-9.9 0 1 1 0 01-1.414-1.414 9 9 0 0112.728 0 1 1 0 01-1.414 1.414zm-2.829 2.828a3 3 0 00-4.242 0 1 1 0 01-1.415-1.414 5 5 0 017.072 0 1 1 0 01-1.415 1.414zM10 18a1 1 0 100-2 1 1 0 000 2z"/>';
+        }
+      };
+
+      updateNetworkStatus();
+      window.addEventListener('online', updateNetworkStatus);
+      window.addEventListener('offline', updateNetworkStatus);
+      const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+      if (conn && conn.addEventListener) {
+        conn.addEventListener('change', updateNetworkStatus);
+      }
+
+      const batLevelEl = document.getElementById('batteryStatusLevel');
+      const batFillEl = document.getElementById('batteryFillRect');
+      const batWrapEl = document.getElementById('batteryStatusWrap');
+
+      if ('getBattery' in navigator) {
+        navigator.getBattery().then(battery => {
+          const updateBatteryUI = () => {
+            const pct = Math.round(battery.level * 100);
+            if (batLevelEl) {
+              batLevelEl.textContent = `${battery.charging ? '⚡' : ''}${pct}%`;
+            }
+            if (batFillEl) {
+              const width = Math.max(1, Math.round((pct / 100) * 12));
+              batFillEl.setAttribute('width', String(width));
+            }
+            if (batWrapEl) {
+              if (battery.charging) {
+                batWrapEl.className = 'inline-flex items-center gap-0.5 text-[10px] text-emerald-400';
+              } else if (pct <= 15) {
+                batWrapEl.className = 'inline-flex items-center gap-0.5 text-[10px] text-rose-400';
+              } else if (pct <= 30) {
+                batWrapEl.className = 'inline-flex items-center gap-0.5 text-[10px] text-amber-400';
+              } else {
+                batWrapEl.className = 'inline-flex items-center gap-0.5 text-[10px] text-slate-300';
+              }
+            }
+          };
+
+          updateBatteryUI();
+          battery.addEventListener('levelchange', updateBatteryUI);
+          battery.addEventListener('chargingchange', updateBatteryUI);
+        }).catch(() => {});
+      }
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
       const canvasWrapper = document.getElementById('threeCanvasWrapper');
       diceSim = new ThreeDiceSimulation(canvasWrapper);
@@ -2333,6 +2745,7 @@
       setupUIListeners();
       updateActivePlayerUI();
       randomizeCheatIndicator();
+      initDeviceStatusBar();
 
       updateClock();
       setInterval(updateClock, 10000);
