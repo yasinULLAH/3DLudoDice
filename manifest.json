@@ -1,7 +1,7 @@
 {
   "name": "Ludo 3D Dice Roller",
   "short_name": "Ludo Dice",
-  "description": "Professional 3D Dice Roller for Ludo with Realistic Physics, Studio Audio, Multi-Phone Connect, and Secret Cheat",
+  "description": "Professional 3D Dice Roller for Ludo with Pixabay Studio Sounds, Real 3D Physics, and Multi-Phone Connect",
   "start_url": "index.html",
   "display": "standalone",
   "orientation": "portrait",
