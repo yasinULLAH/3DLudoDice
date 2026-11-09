@@ -14,39 +14,39 @@ if (workbox) {
     workbox.precaching.precacheAndRoute([
     {
         "url": "icon-72.png",
-        "revision": "00a655ffc6ceb0552ac282c40df8e990"
+        "revision": "42351ede5af070daafa1273a20063575"
     },
     {
         "url": "icon-96.png",
-        "revision": "12d9606482e34a769fdaa9c60a5405f7"
+        "revision": "fc49c9a6c7913f7aec350f8db0b9fc7c"
     },
     {
         "url": "icon-128.png",
-        "revision": "14e2268ee091adaaef44273886e9703a"
+        "revision": "64548c5914dd9c4c8d1dd762c3233561"
     },
     {
         "url": "icon-144.png",
-        "revision": "3ce5966a9ca80fd4206f53df51288c88"
+        "revision": "216ad0f98502a5db25f7d494d8f059f6"
     },
     {
         "url": "icon-152.png",
-        "revision": "af7831abb8a03ec86301db9c4cc76e93"
+        "revision": "fc28e26d044854ac6d1d58bebbeb4c70"
     },
     {
         "url": "icon-192.png",
-        "revision": "28f5bae683abfd05996cde4002cbc3e3"
+        "revision": "577eadd6fc44d78e6eb701d2ed4837c6"
     },
     {
         "url": "icon-384.png",
-        "revision": "c3f3cb2a7c133ff10797898405f0771c"
+        "revision": "260ec858b36871bdba5a82282c1ade73"
     },
     {
         "url": "icon-512.png",
-        "revision": "f131c4ccb484cc7a49a713b60af03fd8"
+        "revision": "6bac466a184db33a43cd11b410a0dd3b"
     },
     {
         "url": "favicon.ico",
-        "revision": "8777383e6e4c96bfced7c60f490dd13d"
+        "revision": "15b7a0a466243198817794d78e439963"
     },
     {
         "url": ".gitattributes",
@@ -54,7 +54,7 @@ if (workbox) {
     },
     {
         "url": ".gitignore",
-        "revision": "b419faa8da78db806f3be9fbcaf71318"
+        "revision": "26a661f208490da1061ea247f771be3e"
     },
     {
         "url": "3DLudoDice.apk",
@@ -63,6 +63,10 @@ if (workbox) {
     {
         "url": "build pwa make html app offline and installable yasin best working re-run this for updates best for html only.pyw",
         "revision": "bd94a6fd2014172f73a9316945ab2e16"
+    },
+    {
+        "url": "build_apk.bat",
+        "revision": "63f43499ffc69ea13679cee1b1b9f442"
     },
     {
         "url": "build_apk.py",
@@ -74,7 +78,7 @@ if (workbox) {
     },
     {
         "url": "index.html",
-        "revision": "7d7ce60e4fdd6b5042e82a30f68603bc"
+        "revision": "60f44244333b4e1dcbda367d608b8619"
     },
     {
         "url": "logo.png",
@@ -106,7 +110,7 @@ if (workbox) {
     },
     {
         "url": "sw.js",
-        "revision": "e22fb80ab34e8c2d609c343f1d4eecee"
+        "revision": "f55881b9ff1eb5e0d1e9853d752aed1b"
     },
     {
         "url": "android_project/build.gradle",
@@ -118,11 +122,11 @@ if (workbox) {
     },
     {
         "url": "android_project/gradlew",
-        "revision": "65578da0358a01f31a6a78dfcf47e2bf"
+        "revision": "a43be8432bac3ffd05b3769aa42fe996"
     },
     {
         "url": "android_project/gradlew.bat",
-        "revision": "e828135c17650a1ef9e5214fb75a23fe"
+        "revision": "6772a61a0c6bf6d7621560074829a789"
     },
     {
         "url": "android_project/local.properties",
@@ -2329,12 +2333,16 @@ if (workbox) {
         "revision": "4522241bcb3b2b997023f68da347838e"
     },
     {
+        "url": "android_project/build/reports/problems/problems-report.html",
+        "revision": "e7a38cdea1900d95b97ea8581bc62cbf"
+    },
+    {
         "url": "android_project/gradle/wrapper/gradle-wrapper.jar",
-        "revision": "41a92bc05484c1c6b4455b95e5527327"
+        "revision": "005661537a7f0df8d1bd8b075612daf4"
     },
     {
         "url": "android_project/gradle/wrapper/gradle-wrapper.properties",
-        "revision": "200702484d62acc9e4be9b266fdefac6"
+        "revision": "f19c2e2b60ca322eb6ebfd469aabb6bf"
     },
     {
         "url": "libs/jsQR.min.js",
