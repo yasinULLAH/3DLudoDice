@@ -1,0 +1,2078 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-950 text-slate-100 select-none">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#090d16">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Ludo 3D Dice Roller - Pro Mobile Edition</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            android: {
+              surface: '#0f172a',
+              card: '#1e293b',
+              accent: '#38bdf8',
+              gold: '#fbbf24',
+              ludoRed: '#ef4444',
+              ludoGreen: '#10b981',
+              ludoYellow: '#f59e0b',
+              ludoBlue: '#3b82f6',
+              ludoPurple: '#8b5cf6',
+              ludoOrange: '#f97316',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'Roboto', 'system-ui', 'sans-serif'],
+          },
+          boxShadow: {
+            'elevation-1': '0 2px 8px rgba(0,0,0,0.3)',
+            'elevation-2': '0 6px 16px rgba(0,0,0,0.4)',
+            'elevation-3': '0 12px 28px rgba(0,0,0,0.5)',
+            'glow-gold': '0 0 25px rgba(251, 191, 36, 0.45)',
+            'glow-red': '0 0 25px rgba(239, 68, 68, 0.45)',
+            'glow-green': '0 0 25px rgba(16, 185, 129, 0.45)',
+            'glow-blue': '0 0 25px rgba(59, 130, 246, 0.45)',
+            'glow-yellow': '0 0 25px rgba(245, 158, 11, 0.45)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- External Libraries: Three.js, QRCode, jsQR, PeerJS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
+
+  <style>
+    /* Mobile-first touch enhancements & animations */
+    * {
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+    body {
+      touch-action: none;
+      overflow: hidden;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .safe-top {
+      padding-top: env(safe-area-inset-top, 0px);
+    }
+    .safe-bottom {
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 0.85; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.05); }
+    }
+    .animate-pulse-glow {
+      animation: pulseGlow 1.8s infinite ease-in-out;
+    }
+    @keyframes bannerDrop {
+      0% { transform: translateY(-50px) scale(0.9); opacity: 0; }
+      70% { transform: translateY(4px) scale(1.02); opacity: 1; }
+      100% { transform: translateY(0) scale(1); opacity: 1; }
+    }
+    .animate-banner {
+      animation: bannerDrop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+    /* Subtle 3D dice shaker rattle animation */
+    @keyframes shakeMicro {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      20% { transform: translate(-2px, 1px) rotate(-1deg); }
+      40% { transform: translate(2px, -1px) rotate(1.5deg); }
+      60% { transform: translate(-1px, -2px) rotate(-0.5deg); }
+      80% { transform: translate(1px, 2px) rotate(1deg); }
+      100% { transform: translate(0, 0) rotate(0deg); }
+    }
+    .shaking-tray {
+      animation: shakeMicro 0.09s infinite linear;
+    }
+    /* Custom scrollbar for drawer/modals */
+    ::-webkit-scrollbar {
+      width: 4px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="h-full w-full bg-slate-950 flex flex-col justify-between overflow-hidden font-sans">
+
+  <!-- ================= APP WRAPPER ================= -->
+  <div id="appContainer" class="relative w-full h-full max-w-md mx-auto flex flex-col justify-between overflow-hidden shadow-2xl bg-gradient-to-b from-slate-900 via-slate-950 to-slate-950 border-x border-slate-800/40">
+
+    <!-- TOP APP BAR / SYSTEM BAR -->
+    <header id="topAppBar" class="z-20 safe-top px-4 pt-2 pb-2 bg-slate-900/90 backdrop-blur-md border-b border-slate-800/60 transition-all duration-300">
+      
+      <!-- Simulated Android Status Bar -->
+      <div class="flex items-center justify-between text-xs text-slate-400 font-medium px-1 mb-1">
+        <span id="statusBarTime">09:15</span>
+        <div class="flex items-center gap-1.5">
+          <!-- Multi-Phone Sync Icon -->
+          <span id="remoteSyncIcon" class="hidden text-emerald-400" title="Connected to phone">
+            <svg class="w-3.5 h-3.5 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+          </span>
+          <svg class="w-3.5 h-3.5 text-slate-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M17.778 8.222c-4.296-4.296-11.26-4.296-15.556 0A1 1 0 01.808 6.808c5.076-5.077 13.308-5.077 18.384 0a1 1 0 01-1.414 1.414zM14.95 11.05a7 7 0 00-9.9 0 1 1 0 01-1.414-1.414 9 9 0 0112.728 0 1 1 0 01-1.414 1.414zm-2.829 2.828a3 3 0 00-4.242 0 1 1 0 01-1.415-1.414 5 5 0 017.072 0 1 1 0 01-1.415 1.414zM10 18a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/></svg>
+          <svg class="w-4 h-4 text-slate-400" fill="currentColor" viewBox="0 0 24 24"><path d="M17 4h-3V2h-4v2H7v18h10V4z"/></svg>
+
+          <!-- INNOCENT SECRET CHEAT INDICATOR DOT -->
+          <!-- Disguised as a tiny status/sync dot in the corner -->
+          <div id="cheatIndicatorDot" class="w-2.5 h-2.5 rounded-full bg-red-500 shadow-sm ml-1 cursor-default transition-colors duration-500" title="System Status: Ready"></div>
+        </div>
+      </div>
+
+      <!-- Main Action Header -->
+      <div class="flex items-center justify-between mt-1">
+        
+        <!-- App Title & Dice Count Pill -->
+        <div class="flex items-center gap-2">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-600 to-amber-400 flex items-center justify-center shadow-lg shadow-amber-500/20 text-slate-950 font-black text-lg">
+            🎲
+          </div>
+          <div>
+            <h1 class="text-sm font-bold tracking-tight text-white flex items-center gap-1.5">
+              <span>Ludo Dice 3D</span>
+              <span id="badgeDiceCount" class="text-[10px] px-1.5 py-0.5 rounded-md bg-amber-400/20 text-amber-300 font-semibold border border-amber-400/30">2 Dice</span>
+            </h1>
+            <p id="subStatusText" class="text-[11px] text-slate-400">Tap & hold to shake, release to roll</p>
+          </div>
+        </div>
+
+        <!-- Quick Action Icon Buttons -->
+        <div class="flex items-center gap-1">
+          <!-- Sound Toggle Button -->
+          <button id="btnSoundToggle" class="p-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 active:scale-95 text-slate-300 transition-all border border-slate-700/60" aria-label="Toggle sound">
+            <svg id="iconSoundOn" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/></svg>
+            <svg id="iconSoundOff" class="w-4 h-4 hidden text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"/></svg>
+          </button>
+
+          <!-- Multi-Phone P2P Button -->
+          <button id="btnOpenConnect" class="p-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 active:scale-95 text-slate-300 transition-all border border-slate-700/60" aria-label="Connect Phones via QR">
+            <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg>
+          </button>
+
+          <!-- Fullscreen & Focus Toggle -->
+          <button id="btnToggleFullscreen" class="p-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 active:scale-95 text-slate-300 transition-all border border-slate-700/60" aria-label="Toggle Fullscreen">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
+          </button>
+
+          <!-- Settings Button -->
+          <button id="btnOpenSettings" class="p-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 active:scale-95 text-slate-300 transition-all border border-slate-700/60" aria-label="Settings">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ACTIVE PLAYER TURN BANNER -->
+      <div id="playerTurnCard" class="mt-2.5 p-2 rounded-2xl bg-slate-800/90 border border-slate-700/80 flex items-center justify-between shadow-elevation-1 transition-all duration-300">
+        <div class="flex items-center gap-2.5">
+          <!-- Player Token Avatar -->
+          <div id="activePlayerAvatar" class="w-8 h-8 rounded-full bg-red-500 ring-2 ring-white/60 flex items-center justify-center font-bold text-white text-xs shadow-md transition-colors duration-300">
+            P1
+          </div>
+          <div>
+            <div class="flex items-center gap-1.5">
+              <span id="activePlayerName" class="text-xs font-bold text-white">Red Warrior</span>
+              <span id="turnBadgeStatus" class="text-[10px] font-semibold text-emerald-400 bg-emerald-950/70 px-1.5 py-0.5 rounded-full border border-emerald-500/30">Your Turn</span>
+            </div>
+            <div id="activePlayerSub" class="text-[11px] text-slate-400">Roll the dice</div>
+          </div>
+        </div>
+
+        <!-- Quick Players Selector Pill -->
+        <button id="btnQuickPlayers" class="px-2.5 py-1 rounded-xl bg-slate-700/80 hover:bg-slate-600 text-slate-200 text-xs font-semibold flex items-center gap-1 border border-slate-600/50 active:scale-95 transition-all">
+          <span id="lblPlayerCount">4 Players</span>
+          <svg class="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+      </div>
+
+    </header>
+
+    <!-- ================= 3D DICE TRAY CANVAS AREA ================= -->
+    <main id="diceTrayContainer" class="relative flex-1 w-full h-full cursor-pointer overflow-hidden touch-none">
+      
+      <!-- Three.js Canvas mounts here -->
+      <div id="threeCanvasWrapper" class="w-full h-full"></div>
+
+      <!-- IN-BOARD NOTIFICATION / REROLL BANNER -->
+      <div id="rerollNotification" class="absolute top-4 left-4 right-4 pointer-events-none hidden z-30">
+        <div class="animate-banner bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-slate-950 px-4 py-2.5 rounded-2xl shadow-glow-gold flex items-center justify-between border-2 border-yellow-200">
+          <div class="flex items-center gap-2">
+            <span class="text-xl">🎉</span>
+            <div>
+              <div id="rerollTitle" class="text-xs font-black uppercase tracking-wider">DOUBLE SIX! BONUS TURN!</div>
+              <div id="rerollDesc" class="text-[11px] font-medium text-slate-900">Roll again! You got two sixes!</div>
+            </div>
+          </div>
+          <span class="text-xs font-black bg-slate-950 text-amber-300 px-2 py-1 rounded-lg">REROLL</span>
+        </div>
+      </div>
+
+      <!-- LIVE ROLL RESULT DISPLAY OVERLAY -->
+      <div id="rollResultOverlay" class="absolute bottom-4 left-4 right-4 pointer-events-none flex items-center justify-between z-20 transition-opacity duration-300 opacity-90">
+        <div class="bg-slate-900/80 backdrop-blur-md px-3.5 py-1.5 rounded-2xl border border-slate-700/70 shadow-lg flex items-center gap-3">
+          <div class="flex items-center gap-1.5" id="diceResultIcons">
+            <span class="text-xs text-slate-400">Result:</span>
+            <span class="w-6 h-6 rounded-md bg-white text-slate-900 font-black text-xs flex items-center justify-center shadow">6</span>
+            <span class="w-6 h-6 rounded-md bg-white text-slate-900 font-black text-xs flex items-center justify-center shadow">6</span>
+          </div>
+          <div class="h-4 w-px bg-slate-700"></div>
+          <div class="text-xs font-bold text-amber-400">Total: <span id="diceResultTotal" class="text-sm font-black text-white">12</span></div>
+        </div>
+
+        <!-- History Pill -->
+        <button id="btnOpenHistory" class="pointer-events-auto bg-slate-900/80 backdrop-blur-md hover:bg-slate-800 p-2 rounded-2xl border border-slate-700/70 shadow-lg text-slate-300 active:scale-95 transition-all flex items-center gap-1.5 text-xs px-3">
+          <svg class="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <span>History</span>
+        </button>
+      </div>
+
+      <!-- SHAKE / HOLD FEEDBACK RING OVERLAY -->
+      <div id="shakeVisualIndicator" class="absolute inset-0 pointer-events-none hidden items-center justify-center z-10">
+        <div class="w-36 h-36 rounded-full border-4 border-amber-400/40 animate-ping absolute"></div>
+        <div class="w-28 h-28 rounded-full bg-amber-500/10 border-2 border-amber-400/60 backdrop-blur-sm flex flex-col items-center justify-center text-amber-300 text-center p-2">
+          <span class="text-2xl animate-bounce">🎲</span>
+          <span class="text-[11px] font-black tracking-wide uppercase mt-1">Shaking...</span>
+          <span class="text-[9px] text-amber-200/80">Release to roll</span>
+        </div>
+      </div>
+
+      <!-- FOCUS MODE EXIT BUTTON (Visible only in focus/immersive mode) -->
+      <button id="btnExitFocus" class="absolute top-4 right-4 z-40 hidden bg-slate-900/90 text-slate-200 border border-slate-700 px-3 py-1.5 rounded-full text-xs font-semibold shadow-lg backdrop-blur-md flex items-center gap-1.5">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        <span>Exit Focus</span>
+      </button>
+
+    </main>
+
+    <!-- ================= BOTTOM ACTION BAR ================= -->
+    <footer id="bottomBar" class="z-20 safe-bottom px-4 pt-2 pb-4 bg-slate-900/95 backdrop-blur-md border-t border-slate-800/80">
+      
+      <!-- Dice Selector Segmented Control -->
+      <div class="flex items-center justify-between mb-2.5">
+        <span class="text-xs font-medium text-slate-400">Dice Count:</span>
+        <div class="flex bg-slate-950 p-0.5 rounded-xl border border-slate-800">
+          <button data-dice="1" class="dice-count-tab px-3 py-1 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all">1 Die</button>
+          <button data-dice="2" class="dice-count-tab px-3 py-1 rounded-lg text-xs font-semibold bg-amber-500 text-slate-950 shadow-sm transition-all">2 Dice</button>
+          <button data-dice="3" class="dice-count-tab px-3 py-1 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all">3 Dice</button>
+        </div>
+      </div>
+
+      <!-- Big Tactile ROLL Button -->
+      <div class="relative w-full">
+        <button id="btnRollDice" class="w-full py-4 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 hover:brightness-105 active:scale-[0.98] text-slate-950 font-black text-base tracking-wider uppercase shadow-elevation-2 flex items-center justify-center gap-2.5 transition-all">
+          <svg class="w-6 h-6 animate-pulse" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM7 7.5A1.5 1.5 0 118.5 6 1.5 1.5 0 017 7.5zM12 13.5a1.5 1.5 0 111.5-1.5 1.5 1.5 0 01-1.5 1.5zm5 5a1.5 1.5 0 111.5-1.5 1.5 1.5 0 01-1.5 1.5z"/></svg>
+          <span id="btnRollText">ROLL DICE</span>
+        </button>
+        <div class="text-center text-[10px] text-slate-500 mt-1.5">
+          Tip: Tap or press & hold anywhere on board to shake!
+        </div>
+      </div>
+
+    </footer>
+
+    <!-- ================= MODALS & BOTTOM SHEETS ================= -->
+
+    <!-- 1. PLAYERS & SETUP BOTTOM SHEET -->
+    <div id="modalPlayers" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex-col justify-end transition-opacity">
+      <div class="bg-slate-900 border-t border-slate-700/80 rounded-t-3xl p-5 max-w-md w-full mx-auto max-h-[85vh] overflow-y-auto shadow-2xl">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+          <div class="flex items-center gap-2">
+            <span class="text-lg">👥</span>
+            <h2 class="text-base font-bold text-white">Ludo Players Setup</h2>
+          </div>
+          <button id="btnClosePlayers" class="p-1.5 rounded-full bg-slate-800 text-slate-400 hover:text-white">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+
+        <!-- Number of Players selector -->
+        <div class="mt-4">
+          <label class="text-xs font-semibold text-slate-300 block mb-2">How many players?</label>
+          <div class="grid grid-cols-4 gap-2">
+            <button data-players="1" class="player-opt-btn py-2.5 rounded-xl border border-slate-700 bg-slate-800 text-xs font-bold text-slate-200">1 Player (Solo)</button>
+            <button data-players="2" class="player-opt-btn py-2.5 rounded-xl border border-slate-700 bg-slate-800 text-xs font-bold text-slate-200">2 Players</button>
+            <button data-players="3" class="player-opt-btn py-2.5 rounded-xl border border-slate-700 bg-slate-800 text-xs font-bold text-slate-200">3 Players</button>
+            <button data-players="4" class="player-opt-btn py-2.5 rounded-xl border-2 border-amber-500 bg-amber-500/20 text-xs font-bold text-amber-300">4 Players</button>
+          </div>
+        </div>
+
+        <!-- Custom Player Names & Colors -->
+        <div class="mt-5 space-y-3" id="playerInputsContainer">
+          <!-- Dynamically populated -->
+        </div>
+
+        <!-- Confirm Button -->
+        <button id="btnSavePlayers" class="mt-6 w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-sm tracking-wide shadow-lg">
+          Start Game
+        </button>
+      </div>
+    </div>
+
+    <!-- 2. SETTINGS MODAL -->
+    <div id="modalSettings" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex-col justify-end transition-opacity">
+      <div class="bg-slate-900 border-t border-slate-700/80 rounded-t-3xl p-5 max-w-md w-full mx-auto max-h-[85vh] overflow-y-auto shadow-2xl">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+          <div class="flex items-center gap-2">
+            <span class="text-lg">⚙️</span>
+            <h2 class="text-base font-bold text-white">Game Preferences</h2>
+          </div>
+          <button id="btnCloseSettings" class="p-1.5 rounded-full bg-slate-800 text-slate-400 hover:text-white">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+
+        <div class="mt-4 space-y-4">
+          <!-- Audio Volume Slider -->
+          <div class="p-3 bg-slate-800/60 rounded-xl border border-slate-700/50">
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="text-xs font-semibold text-slate-200">Sound Effects Volume</span>
+              <span id="lblVolumeVal" class="text-xs font-bold text-amber-400">80%</span>
+            </div>
+            <input id="sliderVolume" type="range" min="0" max="100" value="80" class="w-full accent-amber-500 cursor-pointer">
+          </div>
+
+          <!-- Ludo Rules Toggles -->
+          <div class="p-3 bg-slate-800/60 rounded-xl border border-slate-700/50 space-y-3">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-amber-400">Ludo Rules & Rerolls</h3>
+            
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="text-xs font-semibold text-slate-200">Double Sixes Reroll (2 Dice)</div>
+                <div class="text-[11px] text-slate-400">Two 6s awards another immediate turn</div>
+              </div>
+              <input id="chkDoubleSixReroll" type="checkbox" checked class="w-4 h-4 accent-amber-500">
+            </div>
+
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="text-xs font-semibold text-slate-200">Single Six Reroll (1 Die)</div>
+                <div class="text-[11px] text-slate-400">Rolling a 6 grants a bonus reroll</div>
+              </div>
+              <input id="chkSingleSixReroll" type="checkbox" checked class="w-4 h-4 accent-amber-500">
+            </div>
+
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="text-xs font-semibold text-slate-200">Screen Wake Lock</div>
+                <div class="text-[11px] text-slate-400">Keep phone screen on without dimming</div>
+              </div>
+              <input id="chkWakeLock" type="checkbox" checked class="w-4 h-4 accent-amber-500">
+            </div>
+          </div>
+
+          <!-- Roll Animation Duration -->
+          <div class="p-3 bg-slate-800/60 rounded-xl border border-slate-700/50">
+            <label class="text-xs font-semibold text-slate-200 block mb-1.5">Roll Suspense Duration</label>
+            <select id="selRollDuration" class="w-full bg-slate-900 border border-slate-700 text-slate-200 rounded-lg p-2 text-xs">
+              <option value="random">Dynamic Curiosity (1.4s - 2.2s random)</option>
+              <option value="fast">Fast (0.9s quick roll)</option>
+              <option value="long">Dramatic & Suspenseful (2.5s)</option>
+            </select>
+          </div>
+
+          <!-- Focus / Distraction Free Mode -->
+          <button id="btnActivateFocus" class="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 font-semibold text-xs border border-amber-500/30 flex items-center justify-center gap-2">
+            <span>✨</span>
+            <span>Enter Distraction-Free Immersive Mode</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. MULTI-PHONE / WEBRTC CONNECT MODAL -->
+    <div id="modalConnect" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex-col justify-end transition-opacity">
+      <div class="bg-slate-900 border-t border-slate-700/80 rounded-t-3xl p-5 max-w-md w-full mx-auto max-h-[90vh] overflow-y-auto shadow-2xl">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+          <div class="flex items-center gap-2">
+            <span class="text-lg">📱</span>
+            <h2 class="text-base font-bold text-white">Connect Other Phones</h2>
+          </div>
+          <button id="btnCloseConnect" class="p-1.5 rounded-full bg-slate-800 text-slate-400 hover:text-white">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+
+        <div class="mt-4">
+          <!-- Segment: Host vs Join -->
+          <div class="flex bg-slate-950 p-1 rounded-xl border border-slate-800 mb-4">
+            <button id="tabHostMode" class="flex-1 py-1.5 text-xs font-bold rounded-lg bg-amber-500 text-slate-950">This Phone is Board (Host)</button>
+            <button id="tabJoinMode" class="flex-1 py-1.5 text-xs font-bold rounded-lg text-slate-400">Join as Roller</button>
+          </div>
+
+          <!-- HOST VIEW: QR CODE & ROOM ID -->
+          <div id="viewHostContent" class="space-y-4 text-center">
+            <p class="text-xs text-slate-300">Scan this QR code with your friends' phone cameras to let them roll the dice from their own phones!</p>
+            
+            <!-- QR Code Canvas Container -->
+            <div class="flex justify-center p-3 bg-white rounded-2xl w-52 h-52 mx-auto shadow-xl">
+              <div id="hostQrCode" class="w-full h-full flex items-center justify-center"></div>
+            </div>
+
+            <div class="bg-slate-800/80 p-3 rounded-xl border border-slate-700">
+              <div class="text-[11px] text-slate-400">Room Code:</div>
+              <div id="lblRoomCode" class="text-lg font-black text-amber-400 tracking-wider">LUDO-742</div>
+              <div id="lblConnectedPeers" class="text-xs text-emerald-400 font-semibold mt-1">0 remote phones connected</div>
+            </div>
+          </div>
+
+          <!-- JOIN VIEW: CAMERA SCANNER OR CODE ENTRY -->
+          <div id="viewJoinContent" class="space-y-4 hidden">
+            <p class="text-xs text-slate-300">Scan the host screen's QR code or enter room code to control the dice from your phone:</p>
+            
+            <div class="relative bg-slate-950 rounded-2xl overflow-hidden aspect-video border border-slate-800 flex items-center justify-center">
+              <video id="qrScannerVideo" class="w-full h-full object-cover hidden" playsinline></video>
+              <canvas id="qrScannerCanvas" class="hidden"></canvas>
+              <div id="qrScannerPlaceholder" class="text-center p-4">
+                <span class="text-3xl block mb-2">📷</span>
+                <button id="btnStartCamera" class="px-4 py-2 rounded-xl bg-amber-500 text-slate-950 text-xs font-bold">Start Camera Scanner</button>
+              </div>
+            </div>
+
+            <div class="flex gap-2">
+              <input id="inputRoomCode" type="text" placeholder="Or enter 6-digit code..." class="flex-1 bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white uppercase tracking-wider text-center">
+              <button id="btnConnectManual" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-xl text-xs font-bold">Join</button>
+            </div>
+
+            <div id="joinStatusText" class="text-xs text-center text-slate-400">Ready to connect</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. HISTORY MODAL -->
+    <div id="modalHistory" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex-col justify-end transition-opacity">
+      <div class="bg-slate-900 border-t border-slate-700/80 rounded-t-3xl p-5 max-w-md w-full mx-auto max-h-[80vh] flex flex-col shadow-2xl">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+          <div class="flex items-center gap-2">
+            <span class="text-lg">📜</span>
+            <h2 class="text-base font-bold text-white">Roll Log & History</h2>
+          </div>
+          <button id="btnCloseHistory" class="p-1.5 rounded-full bg-slate-800 text-slate-400 hover:text-white">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+
+        <div id="historyList" class="mt-4 flex-1 overflow-y-auto space-y-2 pr-1">
+          <!-- Populated dynamically -->
+        </div>
+
+        <button id="btnClearHistory" class="mt-4 py-2 text-xs text-slate-400 hover:text-rose-400 font-semibold border-t border-slate-800">
+          Clear History
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ================= LOGIC & GAME SCRIPTS ================= -->
+  <script>
+    /* ==========================================================
+       1. GLOBAL STATE & CONFIGURATION
+       ========================================================== */
+    const GAME_CONFIG = {
+      diceCount: 2,           // default 2 dice
+      playerCount: 4,         // default 4 players
+      activePlayerIndex: 0,   // index of current player
+      soundEnabled: true,
+      volume: 0.8,
+      doubleSixReroll: true,  // in 2 dice, two 6s = reroll
+      singleSixReroll: true,  // in 1 die, one 6 = reroll
+      rollDurationMode: 'random',
+      isRolling: false,
+      isHolding: false,
+      holdStartTime: 0,
+      holdStartPos: { x: 0, y: 0 },
+      shakeAudioInterval: null,
+      wakeLock: null,
+      history: [],
+      
+      /* SECRET CHEAT CONFIGURATION */
+      cheatArmed: false,
+      cheatHoldThreshold: 1100, // hold 1.1s - 1.5s
+      cheatAngles: [
+        { color: 'red', code: '#ef4444', angle: 45, name: 'Top-Right' },
+        { color: 'green', code: '#10b981', angle: 135, name: 'Top-Left' },
+        { color: 'blue', code: '#3b82f6', angle: 225, name: 'Bottom-Left' },
+        { color: 'yellow', code: '#f59e0b', angle: 315, name: 'Bottom-Right' },
+      ],
+      currentCheatTarget: null,
+    };
+
+    const PLAYERS_DATA = [
+      { id: 0, name: 'Red Player', color: '#ef4444', class: 'bg-red-500', glow: 'shadow-glow-red' },
+      { id: 1, name: 'Green Player', color: '#10b981', class: 'bg-emerald-500', glow: 'shadow-glow-green' },
+      { id: 2, name: 'Yellow Player', color: '#f59e0b', class: 'bg-amber-500', glow: 'shadow-glow-yellow' },
+      { id: 3, name: 'Blue Player', color: '#3b82f6', class: 'bg-blue-500', glow: 'shadow-glow-blue' },
+      { id: 4, name: 'Orange Player', color: '#f97316', class: 'bg-orange-500', glow: 'shadow-glow-yellow' },
+      { id: 5, name: 'Purple Player', color: '#8b5cf6', class: 'bg-purple-500', glow: 'shadow-glow-blue' },
+    ];
+
+    /* ==========================================================
+       2. PROCEDURAL WEB AUDIO SYNTHESIS ENGINE (100% OFFLINE)
+       ========================================================== */
+    class SoundEngine {
+      constructor() {
+        this.ctx = null;
+        this.masterGain = null;
+      }
+
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) {
+            this.ctx = new AudioContext();
+            this.masterGain = this.ctx.createGain();
+            this.masterGain.gain.setValueAtTime(GAME_CONFIG.volume, this.ctx.currentTime);
+            this.masterGain.connect(this.ctx.destination);
+          }
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+
+      setVolume(val) {
+        if (this.masterGain && this.ctx) {
+          this.masterGain.gain.setValueAtTime(val, this.ctx.currentTime);
+        }
+      }
+
+      // 1. Realistic Rhythmic Dice Cup Shake: "kadh-kadh-kadh"
+      playDiceShake() {
+        if (!GAME_CONFIG.soundEnabled) return;
+        this.init();
+        if (!this.ctx) return;
+
+        const now = this.ctx.currentTime;
+        
+        // Two quick micro-clatters per shake beat
+        for (let i = 0; i < 2; i++) {
+          const delay = i * 0.04;
+          
+          // Noise burst (hollow cup rattle)
+          const bufferSize = this.ctx.sampleRate * 0.035;
+          const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+          const data = buffer.getChannelData(0);
+          for (let j = 0; j < bufferSize; j++) {
+            data[j] = (Math.random() * 2 - 1) * Math.exp(-j / (bufferSize * 0.3));
+          }
+
+          const noise = this.ctx.createBufferSource();
+          noise.buffer = buffer;
+
+          const filter = this.ctx.createBiquadFilter();
+          filter.type = 'bandpass';
+          filter.frequency.setValueAtTime(900 + Math.random() * 500, now + delay);
+          filter.Q.setValueAtTime(4.0, now + delay);
+
+          const gain = this.ctx.createGain();
+          gain.gain.setValueAtTime(0.55 * GAME_CONFIG.volume, now + delay);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + delay + 0.035);
+
+          noise.connect(filter);
+          filter.connect(gain);
+          gain.connect(this.masterGain);
+
+          noise.start(now + delay);
+
+          // Wood resonance oscillator
+          const osc = this.ctx.createOscillator();
+          const oscGain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(320 + Math.random() * 80, now + delay);
+          oscGain.gain.setValueAtTime(0.35 * GAME_CONFIG.volume, now + delay);
+          oscGain.gain.exponentialRampToValueAtTime(0.001, now + delay + 0.04);
+
+          osc.connect(oscGain);
+          oscGain.connect(this.masterGain);
+          osc.start(now + delay);
+          osc.stop(now + delay + 0.045);
+        }
+      }
+
+      // 2. Dice Toss / Whoosh
+      playDiceToss() {
+        if (!GAME_CONFIG.soundEnabled) return;
+        this.init();
+        if (!this.ctx) return;
+
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(140, now);
+        osc.frequency.exponentialRampToValueAtTime(280, now + 0.08);
+        osc.frequency.exponentialRampToValueAtTime(80, now + 0.2);
+
+        gain.gain.setValueAtTime(0.4 * GAME_CONFIG.volume, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+
+        osc.connect(gain);
+        gain.connect(this.masterGain);
+        osc.start(now);
+        osc.stop(now + 0.22);
+      }
+
+      // 3. Dice Bounce & Clack on Tray Floor/Rim
+      playDiceBounce(intensity = 1.0) {
+        if (!GAME_CONFIG.soundEnabled) return;
+        this.init();
+        if (!this.ctx) return;
+
+        const now = this.ctx.currentTime;
+        const vol = Math.min(1.0, Math.max(0.15, intensity)) * GAME_CONFIG.volume;
+
+        // High sharp wooden click
+        const clickOsc = this.ctx.createOscillator();
+        const clickGain = this.ctx.createGain();
+        clickOsc.type = 'triangle';
+        clickOsc.frequency.setValueAtTime(1600 + (Math.random() - 0.5) * 400, now);
+        clickGain.gain.setValueAtTime(vol * 0.7, now);
+        clickGain.gain.exponentialRampToValueAtTime(0.001, now + 0.025);
+
+        clickOsc.connect(clickGain);
+        clickGain.connect(this.masterGain);
+        clickOsc.start(now);
+        clickOsc.stop(now + 0.03);
+
+        // Low felt thud
+        const thudOsc = this.ctx.createOscillator();
+        const thudGain = this.ctx.createGain();
+        thudOsc.type = 'sine';
+        thudOsc.frequency.setValueAtTime(160, now);
+        thudGain.gain.setValueAtTime(vol * 0.5, now);
+        thudGain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+
+        thudOsc.connect(thudGain);
+        thudGain.connect(this.masterGain);
+        thudOsc.start(now);
+        thudOsc.stop(now + 0.055);
+      }
+
+      // 4. Dice Settle Click
+      playDiceSettle() {
+        if (!GAME_CONFIG.soundEnabled) return;
+        this.init();
+        if (!this.ctx) return;
+
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(1100, now);
+        gain.gain.setValueAtTime(0.3 * GAME_CONFIG.volume, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.03);
+
+        osc.connect(gain);
+        gain.connect(this.masterGain);
+        osc.start(now);
+        osc.stop(now + 0.035);
+      }
+
+      // 5. Celebration Chime for Double Six / Six
+      playCelebrationChime() {
+        if (!GAME_CONFIG.soundEnabled) return;
+        this.init();
+        if (!this.ctx) return;
+
+        const now = this.ctx.currentTime;
+        const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+        notes.forEach((freq, idx) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+
+          gain.gain.setValueAtTime(0.4 * GAME_CONFIG.volume, now + idx * 0.08);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.35);
+
+          osc.connect(gain);
+          gain.connect(this.masterGain);
+          osc.start(now + idx * 0.08);
+          osc.stop(now + idx * 0.08 + 0.4);
+        });
+      }
+
+      // 6. Turn Change Soft Tone
+      playTurnChange() {
+        if (!GAME_CONFIG.soundEnabled) return;
+        this.init();
+        if (!this.ctx) return;
+
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(587.33, now); // D5
+        gain.gain.setValueAtTime(0.25 * GAME_CONFIG.volume, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+
+        osc.connect(gain);
+        gain.connect(this.masterGain);
+        osc.start(now);
+        osc.stop(now + 0.19);
+      }
+    }
+
+    const sounds = new SoundEngine();
+
+    /* ==========================================================
+       3. THREE.JS 3D DICE & TRAY SIMULATION ENGINE
+       ========================================================== */
+    class ThreeDiceSimulation {
+      constructor(container) {
+        this.container = container;
+        this.scene = null;
+        this.camera = null;
+        this.renderer = null;
+        this.diceMeshes = [];
+        this.trayMesh = null;
+        this.animationId = null;
+        
+        // Face mappings for a standard cube:
+        // Three.js BoxGeometry material indices:
+        // [0: +X, 1: -X, 2: +Y, 3: -Y, 4: +Z, 5: -Z]
+        // Standard D6 arrangement:
+        // +X: 3, -X: 4
+        // +Y: 1, -Y: 6 (sum = 7)
+        // +Z: 2, -Z: 5
+        this.faceMaterials = [];
+        this.dicePhysics = [];
+      }
+
+      init() {
+        const width = this.container.clientWidth;
+        const height = this.container.clientHeight;
+
+        // Scene
+        this.scene = new THREE.Scene();
+        this.scene.background = new THREE.Color(0x0a101d);
+
+        // Camera
+        this.camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 100);
+        this.camera.position.set(0, 14, 11);
+        this.camera.lookAt(0, 0, 0);
+
+        // Renderer
+        this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+        this.renderer.setSize(width, height);
+        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        this.renderer.shadowMap.enabled = true;
+        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        this.container.appendChild(this.renderer.domElement);
+
+        // Lighting
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.65);
+        this.scene.add(ambientLight);
+
+        const dirLight = new THREE.DirectionalLight(0xfff8e7, 0.85);
+        dirLight.position.set(6, 16, 8);
+        dirLight.castShadow = true;
+        dirLight.shadow.mapSize.width = 1024;
+        dirLight.shadow.mapSize.height = 1024;
+        dirLight.shadow.camera.near = 0.5;
+        dirLight.shadow.camera.far = 30;
+        dirLight.shadow.camera.left = -8;
+        dirLight.shadow.camera.right = 8;
+        dirLight.shadow.camera.top = 8;
+        dirLight.shadow.camera.bottom = -8;
+        dirLight.shadow.bias = -0.0005;
+        this.scene.add(dirLight);
+
+        const spotLight = new THREE.SpotLight(0xffeedd, 0.5);
+        spotLight.position.set(0, 15, 0);
+        spotLight.angle = Math.PI / 4;
+        spotLight.penumbra = 0.5;
+        this.scene.add(spotLight);
+
+        // Build Tray & Materials
+        this.buildDiceMaterials();
+        this.buildTray();
+        this.createDice(GAME_CONFIG.diceCount);
+
+        // Start render loop
+        this.animate = this.animate.bind(this);
+        this.animate();
+
+        // Handle window resize
+        window.addEventListener('resize', () => this.onResize());
+      }
+
+      onResize() {
+        if (!this.container || !this.renderer || !this.camera) return;
+        const w = this.container.clientWidth;
+        const h = this.container.clientHeight;
+        this.camera.aspect = w / h;
+        this.camera.updateProjectionMatrix();
+        this.renderer.setSize(w, h);
+      }
+
+      // Procedural High-Definition Canvas Textures for 6 Dice Faces
+      buildDiceMaterials() {
+        const createFaceTexture = (number) => {
+          const canvas = document.createElement('canvas');
+          canvas.width = 512;
+          canvas.height = 512;
+          const ctx = canvas.getContext('2d');
+
+          // Ivory background with rounded bevel gradient
+          const bgGrad = ctx.createRadialGradient(256, 256, 50, 256, 256, 280);
+          bgGrad.addColorStop(0, '#ffffff');
+          bgGrad.addColorStop(0.85, '#f5f5f7');
+          bgGrad.addColorStop(1, '#e2e2e8');
+          ctx.fillStyle = bgGrad;
+          ctx.fillRect(0, 0, 512, 512);
+
+          // Subtle inset rim border
+          ctx.lineWidth = 14;
+          ctx.strokeStyle = '#d4d4dc';
+          ctx.strokeRect(10, 10, 492, 492);
+
+          // Draw Pips (Dots)
+          const pipRadius = 40;
+          const isOne = (number === 1);
+          // Traditional Ludo dice: 1 is bold ruby red, others are deep obsidian black
+          const pipColor = isOne ? '#dc2626' : '#18181b';
+          const pipHighlight = isOne ? '#f87171' : '#3f3f46';
+
+          const drawPip = (x, y, r = pipRadius) => {
+            // Drop shadow
+            ctx.beginPath();
+            ctx.arc(x, y + 4, r, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(0,0,0,0.25)';
+            ctx.fill();
+
+            // Main pip body with 3D spherical gradient
+            const grad = ctx.createRadialGradient(x - r * 0.3, y - r * 0.3, r * 0.1, x, y, r);
+            grad.addColorStop(0, pipHighlight);
+            grad.addColorStop(0.7, pipColor);
+            grad.addColorStop(1, '#09090b');
+            ctx.beginPath();
+            ctx.arc(x, y, r, 0, Math.PI * 2);
+            ctx.fillStyle = grad;
+            ctx.fill();
+          };
+
+          const c = 256;
+          const l = 130;
+          const r = 382;
+
+          if (number === 1) {
+            drawPip(c, c, 58); // Bold red center pip
+          } else if (number === 2) {
+            drawPip(l, l);
+            drawPip(r, r);
+          } else if (number === 3) {
+            drawPip(l, l);
+            drawPip(c, c);
+            drawPip(r, r);
+          } else if (number === 4) {
+            drawPip(l, l);
+            drawPip(r, l);
+            drawPip(l, r);
+            drawPip(r, r);
+          } else if (number === 5) {
+            drawPip(l, l);
+            drawPip(r, l);
+            drawPip(c, c);
+            drawPip(l, r);
+            drawPip(r, r);
+          } else if (number === 6) {
+            drawPip(l, 120);
+            drawPip(l, c);
+            drawPip(l, 392);
+            drawPip(r, 120);
+            drawPip(r, c);
+            drawPip(r, 392);
+          }
+
+          const texture = new THREE.CanvasTexture(canvas);
+          return new THREE.MeshStandardMaterial({
+            map: texture,
+            roughness: 0.18,
+            metalness: 0.05,
+          });
+        };
+
+        // Material Array: [0: +X(3), 1: -X(4), 2: +Y(1), 3: -Y(6), 4: +Z(2), 5: -Z(5)]
+        this.faceMaterials = [
+          createFaceTexture(3), // +X
+          createFaceTexture(4), // -X
+          createFaceTexture(1), // +Y
+          createFaceTexture(6), // -Y
+          createFaceTexture(2), // +Z
+          createFaceTexture(5), // -Z
+        ];
+      }
+
+      // Build Luxury Ludo Felt Board Tray
+      buildTray() {
+        const trayGroup = new THREE.Group();
+
+        // 1. Felt Floor (Ludo Green Velvet)
+        const feltGeo = new THREE.PlaneGeometry(13, 15);
+        
+        // Procedural Felt Texture with subtle Ludo pattern
+        const feltCanvas = document.createElement('canvas');
+        feltCanvas.width = 512;
+        feltCanvas.height = 512;
+        const fctx = feltCanvas.getContext('2d');
+        
+        // Emerald velvet base
+        fctx.fillStyle = '#0b3d2b';
+        fctx.fillRect(0, 0, 512, 512);
+
+        // Subtle cross gold line pattern
+        fctx.strokeStyle = 'rgba(245, 158, 11, 0.18)';
+        fctx.lineWidth = 4;
+        fctx.strokeRect(40, 40, 432, 432);
+        fctx.beginPath();
+        fctx.moveTo(256, 40); fctx.lineTo(256, 472);
+        fctx.moveTo(40, 256); fctx.lineTo(472, 256);
+        fctx.stroke();
+
+        // Subtle center Ludo star
+        fctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
+        fctx.beginPath();
+        fctx.arc(256, 256, 80, 0, Math.PI * 2);
+        fctx.fill();
+
+        const feltTex = new THREE.CanvasTexture(feltCanvas);
+        const feltMat = new THREE.MeshStandardMaterial({
+          map: feltTex,
+          roughness: 0.85,
+          metalness: 0.05,
+        });
+
+        const feltFloor = new THREE.Mesh(feltGeo, feltMat);
+        feltFloor.rotation.x = -Math.PI / 2;
+        feltFloor.receiveShadow = true;
+        trayGroup.add(feltFloor);
+
+        // 2. Mahogany Wooden Border Frame
+        const woodMat = new THREE.MeshStandardMaterial({
+          color: 0x3d2112,
+          roughness: 0.35,
+          metalness: 0.1,
+        });
+
+        const wallHeight = 1.4;
+        const wallThickness = 0.6;
+        
+        // North wall
+        const wallN = new THREE.Mesh(new THREE.BoxGeometry(13.6, wallHeight, wallThickness), woodMat);
+        wallN.position.set(0, wallHeight / 2, -7.5);
+        wallN.castShadow = true;
+        wallN.receiveShadow = true;
+        trayGroup.add(wallN);
+
+        // South wall
+        const wallS = new THREE.Mesh(new THREE.BoxGeometry(13.6, wallHeight, wallThickness), woodMat);
+        wallS.position.set(0, wallHeight / 2, 7.5);
+        wallS.castShadow = true;
+        wallS.receiveShadow = true;
+        trayGroup.add(wallS);
+
+        // West wall
+        const wallW = new THREE.Mesh(new THREE.BoxGeometry(wallThickness, wallHeight, 15), woodMat);
+        wallW.position.set(-6.5, wallHeight / 2, 0);
+        wallW.castShadow = true;
+        wallW.receiveShadow = true;
+        trayGroup.add(wallW);
+
+        // East wall
+        const wallE = new THREE.Mesh(new THREE.BoxGeometry(wallThickness, wallHeight, 15), woodMat);
+        wallE.position.set(6.5, wallHeight / 2, 0);
+        wallE.castShadow = true;
+        wallE.receiveShadow = true;
+        trayGroup.add(wallE);
+
+        this.trayMesh = trayGroup;
+        this.scene.add(trayGroup);
+      }
+
+      // Create / Rebuild Dice
+      createDice(count = 2) {
+        // Remove existing dice
+        this.diceMeshes.forEach(mesh => this.scene.remove(mesh));
+        this.diceMeshes = [];
+        this.dicePhysics = [];
+
+        const size = 1.6;
+        const diceGeo = new THREE.BoxGeometry(size, size, size);
+
+        const spacing = 2.4;
+        const startX = -((count - 1) * spacing) / 2;
+
+        for (let i = 0; i < count; i++) {
+          const diceMesh = new THREE.Mesh(diceGeo, this.faceMaterials);
+          diceMesh.castShadow = true;
+          diceMesh.receiveShadow = true;
+
+          const posX = startX + i * spacing;
+          diceMesh.position.set(posX, size / 2, 0);
+          
+          // Initial rotation showing a random face or 6
+          this.setDiceRestFace(diceMesh, 6);
+
+          this.scene.add(diceMesh);
+          this.diceMeshes.push(diceMesh);
+
+          this.dicePhysics.push({
+            pos: diceMesh.position,
+            vel: new THREE.Vector3(0, 0, 0),
+            rotVel: new THREE.Vector3(0, 0, 0),
+            targetRot: new THREE.Euler(),
+            isSimulating: false,
+            initialTargetFace: 6,
+            diceIndex: i,
+          });
+        }
+      }
+
+      // Orientation helper: Orient die so a specific face (1 to 6) is pointing up (+Y)
+      getEulerForFace(targetNumber) {
+        // Base rotations to bring target face to +Y:
+        // +Y is index 2 = face 1 -> Euler(0, 0, 0)
+        // -Y is index 3 = face 6 -> Euler(Math.PI, 0, 0)
+        // +Z is index 4 = face 2 -> Euler(Math.PI / 2, 0, 0)
+        // -Z is index 5 = face 5 -> Euler(-Math.PI / 2, 0, 0)
+        // +X is index 0 = face 3 -> Euler(0, 0, -Math.PI / 2)
+        // -X is index 1 = face 4 -> Euler(0, 0, Math.PI / 2)
+        let rx = 0, ry = 0, rz = 0;
+        switch (targetNumber) {
+          case 1: rx = 0; rz = 0; break;
+          case 6: rx = Math.PI; rz = 0; break;
+          case 2: rx = Math.PI / 2; rz = 0; break;
+          case 5: rx = -Math.PI / 2; rz = 0; break;
+          case 3: rx = 0; rz = -Math.PI / 2; break;
+          case 4: rx = 0; rz = Math.PI / 2; break;
+        }
+
+        // Random subtle yaw (0, 90, 180, 270 deg plus slight jitter +/- 8 deg)
+        ry = (Math.floor(Math.random() * 4) * Math.PI / 2) + ((Math.random() - 0.5) * 0.2);
+        return new THREE.Euler(rx, ry, rz, 'YXZ');
+      }
+
+      setDiceRestFace(diceMesh, faceNumber) {
+        const euler = this.getEulerForFace(faceNumber);
+        diceMesh.rotation.copy(euler);
+      }
+
+      // Physics-based Roll Simulation
+      rollDice(targetValues, onComplete) {
+        GAME_CONFIG.isRolling = true;
+        sounds.playDiceToss();
+
+        // Calculate duration based on mode
+        let durationMs = 1700;
+        if (GAME_CONFIG.rollDurationMode === 'fast') durationMs = 900;
+        else if (GAME_CONFIG.rollDurationMode === 'long') durationMs = 2500;
+        else {
+          // Dynamic curiosity: randomized between 1400ms and 2200ms
+          durationMs = 1400 + Math.random() * 800;
+        }
+
+        const halfSize = 0.8;
+        const floorY = halfSize;
+
+        targetValues.forEach((targetVal, idx) => {
+          const phys = this.dicePhysics[idx];
+          const mesh = this.diceMeshes[idx];
+          if (!phys || !mesh) return;
+
+          phys.initialTargetFace = targetVal;
+          phys.targetRot = this.getEulerForFace(targetVal);
+
+          // Initial toss launch velocity
+          const angle = (idx - (targetValues.length - 1) / 2) * 0.45;
+          phys.pos.set(
+            (idx - (targetValues.length - 1) / 2) * 2.0 + (Math.random() - 0.5) * 0.5,
+            4.5 + Math.random() * 1.5,
+            3.0 + (Math.random() - 0.5) * 1.0
+          );
+
+          phys.vel.set(
+            Math.sin(angle) * 3.5 + (Math.random() - 0.5) * 2.0,
+            2.5 + Math.random() * 2.0,
+            -7.5 - Math.random() * 2.0
+          );
+
+          // Tumbling angular spin
+          phys.rotVel.set(
+            (Math.random() + 1.2) * 16 * (Math.random() > 0.5 ? 1 : -1),
+            (Math.random() + 0.8) * 14 * (Math.random() > 0.5 ? 1 : -1),
+            (Math.random() + 1.2) * 16 * (Math.random() > 0.5 ? 1 : -1)
+          );
+
+          phys.isSimulating = true;
+        });
+
+        const startTime = performance.now();
+        const endTime = startTime + durationMs;
+
+        const updatePhysicsStep = (time) => {
+          const elapsed = time - startTime;
+          const progress = Math.min(1.0, elapsed / durationMs);
+
+          this.dicePhysics.forEach((phys, idx) => {
+            if (!phys.isSimulating) return;
+            const mesh = this.diceMeshes[idx];
+
+            if (progress < 0.72) {
+              // Active tumbling & bouncing physics
+              const dt = 0.016;
+              phys.vel.y -= 28 * dt; // Gravity
+
+              phys.pos.x += phys.vel.x * dt;
+              phys.pos.y += phys.vel.y * dt;
+              phys.pos.z += phys.vel.z * dt;
+
+              // Floor collision & bounce
+              if (phys.pos.y <= floorY) {
+                phys.pos.y = floorY;
+                if (Math.abs(phys.vel.y) > 0.8) {
+                  sounds.playDiceBounce(Math.abs(phys.vel.y) / 6.0);
+                  if (navigator.vibrate) navigator.vibrate(12);
+                }
+                phys.vel.y = -phys.vel.y * 0.45; // Restitution
+                phys.vel.x *= 0.75;              // Friction
+                phys.vel.z *= 0.75;
+                phys.rotVel.multiplyScalar(0.75);
+              }
+
+              // Tray walls collision
+              if (phys.pos.x > 5.5) { phys.pos.x = 5.5; phys.vel.x = -phys.vel.x * 0.5; sounds.playDiceBounce(0.4); }
+              if (phys.pos.x < -5.5) { phys.pos.x = -5.5; phys.vel.x = -phys.vel.x * 0.5; sounds.playDiceBounce(0.4); }
+              if (phys.pos.z > 6.2) { phys.pos.z = 6.2; phys.vel.z = -phys.vel.z * 0.5; sounds.playDiceBounce(0.4); }
+              if (phys.pos.z < -6.2) { phys.pos.z = -6.2; phys.vel.z = -phys.vel.z * 0.5; sounds.playDiceBounce(0.4); }
+
+              // Apply rotation
+              mesh.rotation.x += phys.rotVel.x * dt;
+              mesh.rotation.y += phys.rotVel.y * dt;
+              mesh.rotation.z += phys.rotVel.z * dt;
+
+            } else {
+              // Smooth settlement phase towards target face
+              const settleProgress = (progress - 0.72) / 0.28;
+              const ease = 1 - Math.pow(1 - settleProgress, 3);
+
+              phys.pos.y = THREE.MathUtils.lerp(phys.pos.y, floorY, ease * 0.3);
+              phys.vel.set(0, 0, 0);
+
+              // Smoothly spherical-interpolate rotation to target euler
+              const targetQuat = new THREE.Quaternion().setFromEuler(phys.targetRot);
+              mesh.quaternion.slerp(targetQuat, 0.25);
+            }
+
+            mesh.position.copy(phys.pos);
+          });
+
+          if (progress < 1.0) {
+            requestAnimationFrame(updatePhysicsStep);
+          } else {
+            // Settle complete!
+            this.dicePhysics.forEach((phys, idx) => {
+              phys.isSimulating = false;
+              const mesh = this.diceMeshes[idx];
+              mesh.position.y = floorY;
+              mesh.rotation.copy(phys.targetRot);
+            });
+            sounds.playDiceSettle();
+            GAME_CONFIG.isRolling = false;
+            if (onComplete) onComplete(targetValues);
+          }
+        };
+
+        requestAnimationFrame(updatePhysicsStep);
+      }
+
+      // Micro vibration jitter during tap-and-hold shake
+      jitterDice() {
+        this.diceMeshes.forEach(mesh => {
+          mesh.position.x += (Math.random() - 0.5) * 0.08;
+          mesh.position.z += (Math.random() - 0.5) * 0.08;
+          mesh.rotation.x += (Math.random() - 0.5) * 0.06;
+          mesh.rotation.z += (Math.random() - 0.5) * 0.06;
+        });
+      }
+
+      animate() {
+        this.animationId = requestAnimationFrame(this.animate);
+        this.renderer.render(this.scene, this.camera);
+      }
+    }
+
+    let diceSim = null;
+
+    /* ==========================================================
+       4. SECRET CHEAT ENGINE IMPLEMENTATION
+       ========================================================== */
+    /*
+       Requirement Details:
+       1. Indicator on top right corner stating color:
+          - Red: 45 degree angle (Top-Right corner)
+          - Green: 135 degree angle (Top-Left corner)
+          - Blue: 225 degree angle (Bottom-Left corner)
+          - Yellow: 315 degree angle (Bottom-Right corner)
+       2. Click/tap and hold on screen for about 1.2 to 2 seconds
+       3. While holding: sound is realistic dice cup shake ("kadh-kadh-kadh")
+       4. From hold point, drag a bit toward the indicated corner (within 45°, 135°, 225°, 315°)
+       5. Release: Cheat activates -> Guaranteed all sixes!
+       6. Double six on 2 dice = Reroll! Single six on 1 die = Reroll!
+    */
+
+    function randomizeCheatIndicator() {
+      const idx = Math.floor(Math.random() * GAME_CONFIG.cheatAngles.length);
+      GAME_CONFIG.currentCheatTarget = GAME_CONFIG.cheatAngles[idx];
+      
+      const dot = document.getElementById('cheatIndicatorDot');
+      if (dot) {
+        dot.style.backgroundColor = GAME_CONFIG.currentCheatTarget.code;
+        dot.className = `w-2.5 h-2.5 rounded-full shadow-sm ml-1 cursor-default transition-all duration-500`;
+        // Innocent tooltip that doesn't reveal the cheat to spectators
+        dot.setAttribute('title', `Status: Active`);
+      }
+    }
+
+    function checkCheatGesture(startX, startY, endX, endY, holdDuration) {
+      if (holdDuration < GAME_CONFIG.cheatHoldThreshold) {
+        return false; // Did not hold long enough
+      }
+
+      const dx = endX - startX;
+      const dy = endY - startY; // Screen Y is inverted (down is positive)
+      const distance = Math.hypot(dx, dy);
+
+      // Must have dragged at least 25 pixels
+      if (distance < 25) {
+        return false;
+      }
+
+      // Calculate angle in degrees standard mathematical coordinates:
+      // (atan2(-dy, dx) returns angle where 0 is Right, 90 is Up, 180 is Left, 270 is Down)
+      let dragAngle = (Math.atan2(-dy, dx) * 180 / Math.PI + 360) % 360;
+
+      const targetAngle = GAME_CONFIG.currentCheatTarget.angle;
+
+      // Calculate circular difference
+      let diff = Math.abs((dragAngle - targetAngle + 180) % 360 - 180);
+
+      // Allow 38 degrees tolerance
+      if (diff <= 38) {
+        return true;
+      }
+
+      return false;
+    }
+
+    /* ==========================================================
+       5. GAME FLOW & TURN ROTATION
+       ========================================================== */
+
+    function getActivePlayer() {
+      return PLAYERS_DATA[GAME_CONFIG.activePlayerIndex];
+    }
+
+    function updateActivePlayerUI() {
+      const player = getActivePlayer();
+      const avatar = document.getElementById('activePlayerAvatar');
+      const name = document.getElementById('activePlayerName');
+      const card = document.getElementById('playerTurnCard');
+
+      if (avatar && name && card) {
+        avatar.className = `w-8 h-8 rounded-full ${player.class} ring-2 ring-white/70 flex items-center justify-center font-black text-white text-xs shadow-md transition-all duration-300`;
+        avatar.textContent = `P${player.id + 1}`;
+        name.textContent = player.name;
+        card.style.borderColor = player.color;
+      }
+    }
+
+    function triggerRollAction(forcedCheat = false) {
+      if (GAME_CONFIG.isRolling) return;
+
+      const diceCount = GAME_CONFIG.diceCount;
+      let finalResults = [];
+
+      // Determine outcome: cheat or random fair roll
+      if (forcedCheat || GAME_CONFIG.cheatArmed) {
+        // CHEAT ACTIVATED: ALL SIXES!
+        finalResults = Array(diceCount).fill(6);
+        GAME_CONFIG.cheatArmed = false;
+        
+        // Discreet silent haptic buzz
+        if (navigator.vibrate) navigator.vibrate([40, 30, 40]);
+      } else {
+        // Fair random dice roll
+        for (let i = 0; i < diceCount; i++) {
+          finalResults.push(Math.floor(Math.random() * 6) + 1);
+        }
+      }
+
+      // Hide previous reroll notifications
+      const rerollBanner = document.getElementById('rerollNotification');
+      if (rerollBanner) rerollBanner.classList.add('hidden');
+
+      // Update button text to rolling
+      const btnText = document.getElementById('btnRollText');
+      if (btnText) btnText.textContent = 'ROLLING...';
+
+      // Execute 3D simulation
+      diceSim.rollDice(finalResults, (settledValues) => {
+        if (btnText) btnText.textContent = 'ROLL DICE';
+        handleRollCompletion(settledValues);
+      });
+    }
+
+    function handleRollCompletion(results) {
+      const sum = results.reduce((a, b) => a + b, 0);
+      const player = getActivePlayer();
+
+      // Update overlay UI
+      const totalEl = document.getElementById('diceResultTotal');
+      if (totalEl) totalEl.textContent = sum;
+
+      const diceIconsContainer = document.getElementById('diceResultIcons');
+      if (diceIconsContainer) {
+        diceIconsContainer.innerHTML = '<span class="text-xs text-slate-400">Result:</span>';
+        results.forEach(v => {
+          const badge = document.createElement('span');
+          badge.className = `w-6 h-6 rounded-md ${v === 6 ? 'bg-amber-400 text-slate-950 font-black' : 'bg-white text-slate-900 font-bold'} text-xs flex items-center justify-center shadow`;
+          badge.textContent = v;
+          diceIconsContainer.appendChild(badge);
+        });
+      }
+
+      // Check Reroll Rules
+      // 1. In two dice: two sixes [6, 6] = reroll again!
+      // 2. In one die: one six [6] = reroll again!
+      // 3. In three dice: three sixes [6, 6, 6] = reroll again!
+      let isReroll = false;
+      let rerollReason = '';
+
+      if (results.length === 2 && GAME_CONFIG.doubleSixReroll && results[0] === 6 && results[1] === 6) {
+        isReroll = true;
+        rerollReason = 'DOUBLE SIX! BONUS TURN!';
+      } else if (results.length === 1 && GAME_CONFIG.singleSixReroll && results[0] === 6) {
+        isReroll = true;
+        rerollReason = 'SIX! ROLL AGAIN!';
+      } else if (results.length === 3 && results.every(v => v === 6)) {
+        isReroll = true;
+        rerollReason = 'TRIPLE SIX! ROLL AGAIN!';
+      }
+
+      // Record to history
+      const historyItem = {
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+        player: player.name,
+        color: player.color,
+        results: [...results],
+        total: sum,
+        reroll: isReroll,
+      };
+      GAME_CONFIG.history.unshift(historyItem);
+      renderHistoryList();
+
+      // Broadcast to connected remote phones
+      broadcastToPeers({
+        type: 'ROLL_RESULT',
+        player: player.name,
+        results: results,
+        total: sum,
+        reroll: isReroll,
+      });
+
+      if (isReroll) {
+        // Trigger celebration!
+        sounds.playCelebrationChime();
+        if (navigator.vibrate) navigator.vibrate([60, 40, 80, 50, 100]);
+
+        const banner = document.getElementById('rerollNotification');
+        const title = document.getElementById('rerollTitle');
+        const desc = document.getElementById('rerollDesc');
+        if (banner && title && desc) {
+          title.textContent = rerollReason;
+          desc.textContent = `${player.name} gets a free bonus reroll!`;
+          banner.classList.remove('hidden');
+        }
+        // Player keeps turn!
+      } else {
+        // Advance turn to next player
+        advanceTurn();
+      }
+
+      // Randomize the next cheat indicator angle
+      randomizeCheatIndicator();
+    }
+
+    function advanceTurn() {
+      GAME_CONFIG.activePlayerIndex = (GAME_CONFIG.activePlayerIndex + 1) % GAME_CONFIG.playerCount;
+      updateActivePlayerUI();
+      sounds.playTurnChange();
+
+      broadcastToPeers({
+        type: 'TURN_CHANGE',
+        activePlayerIndex: GAME_CONFIG.activePlayerIndex,
+        player: getActivePlayer().name,
+      });
+    }
+
+    function renderHistoryList() {
+      const container = document.getElementById('historyList');
+      if (!container) return;
+
+      if (GAME_CONFIG.history.length === 0) {
+        container.innerHTML = '<div class="text-center text-xs text-slate-500 py-6">No rolls recorded yet. Roll the dice to see history!</div>';
+        return;
+      }
+
+      container.innerHTML = '';
+      GAME_CONFIG.history.slice(0, 30).forEach(item => {
+        const row = document.createElement('div');
+        row.className = 'p-2.5 rounded-xl bg-slate-800/60 border border-slate-700/60 flex items-center justify-between text-xs';
+        
+        row.innerHTML = `
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full" style="background-color: ${item.color}"></span>
+            <div>
+              <div class="font-bold text-white flex items-center gap-1.5">
+                <span>${item.player}</span>
+                ${item.reroll ? '<span class="text-[9px] bg-amber-400 text-slate-950 px-1 rounded font-black">BONUS</span>' : ''}
+              </div>
+              <div class="text-[10px] text-slate-400">${item.timestamp}</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="flex gap-1">
+              ${item.results.map(r => `<span class="px-1.5 py-0.5 rounded ${r === 6 ? 'bg-amber-500/30 text-amber-300 font-black border border-amber-500/40' : 'bg-slate-700 text-slate-200'}">${r}</span>`).join('')}
+            </div>
+            <span class="font-black text-slate-300 text-sm">= ${item.total}</span>
+          </div>
+        `;
+        container.appendChild(row);
+      });
+    }
+
+    /* ==========================================================
+       6. TOUCH & HOLD SHAKE / CHEAT DRAG HANDLERS
+       ========================================================== */
+
+    function setupTouchInteraction() {
+      const tray = document.getElementById('diceTrayContainer');
+      const visualIndicator = document.getElementById('shakeVisualIndicator');
+
+      let touchOrigin = { x: 0, y: 0 };
+      let currentPos = { x: 0, y: 0 };
+      let holdTimer = null;
+      let isTouching = false;
+      let touchStartTime = 0;
+
+      const startHold = (x, y) => {
+        if (GAME_CONFIG.isRolling) return;
+        sounds.init();
+
+        isTouching = true;
+        touchStartTime = performance.now();
+        touchOrigin = { x, y };
+        currentPos = { x, y };
+
+        // Start realistic kadh-kadh-kadh dice cup shake sound
+        sounds.playDiceShake();
+        if (GAME_CONFIG.shakeAudioInterval) clearInterval(GAME_CONFIG.shakeAudioInterval);
+        GAME_CONFIG.shakeAudioInterval = setInterval(() => {
+          if (isTouching) {
+            sounds.playDiceShake();
+            if (diceSim) diceSim.jitterDice();
+            if (navigator.vibrate) navigator.vibrate(14);
+          }
+        }, 130);
+
+        // Visual shake pulse
+        if (visualIndicator) visualIndicator.classList.remove('hidden');
+        if (visualIndicator) visualIndicator.classList.add('flex');
+        tray.classList.add('shaking-tray');
+      };
+
+      const updateHold = (x, y) => {
+        if (!isTouching) return;
+        currentPos = { x, y };
+
+        const elapsed = performance.now() - touchStartTime;
+        // Check if user is swiping toward cheat corner
+        if (elapsed >= GAME_CONFIG.cheatHoldThreshold) {
+          if (checkCheatGesture(touchOrigin.x, touchOrigin.y, currentPos.x, currentPos.y, elapsed)) {
+            if (!GAME_CONFIG.cheatArmed) {
+              GAME_CONFIG.cheatArmed = true;
+              // Silent tactile haptic confirmation
+              if (navigator.vibrate) navigator.vibrate([35, 30, 35]);
+            }
+          }
+        }
+      };
+
+      const endHold = (x, y) => {
+        if (!isTouching) return;
+        isTouching = false;
+
+        const elapsed = performance.now() - touchStartTime;
+
+        // Stop shake sound and visual feedback
+        if (GAME_CONFIG.shakeAudioInterval) {
+          clearInterval(GAME_CONFIG.shakeAudioInterval);
+          GAME_CONFIG.shakeAudioInterval = null;
+        }
+        if (visualIndicator) {
+          visualIndicator.classList.add('hidden');
+          visualIndicator.classList.remove('flex');
+        }
+        tray.classList.remove('shaking-tray');
+
+        // Check if cheat was completed on final drag point
+        if (elapsed >= GAME_CONFIG.cheatHoldThreshold) {
+          if (checkCheatGesture(touchOrigin.x, touchOrigin.y, currentPos.x, currentPos.y, elapsed)) {
+            GAME_CONFIG.cheatArmed = true;
+          }
+        }
+
+        // Trigger roll!
+        triggerRollAction(GAME_CONFIG.cheatArmed);
+      };
+
+      // Pointer / Mouse Events
+      tray.addEventListener('pointerdown', (e) => {
+        // Ignore if clicking on overlays or buttons
+        if (e.target.closest('button')) return;
+        startHold(e.clientX, e.clientY);
+      });
+
+      window.addEventListener('pointermove', (e) => {
+        if (isTouching) {
+          updateHold(e.clientX, e.clientY);
+        }
+      });
+
+      window.addEventListener('pointerup', (e) => {
+        if (isTouching) {
+          endHold(e.clientX, e.clientY);
+        }
+      });
+
+      window.addEventListener('pointercancel', (e) => {
+        if (isTouching) {
+          endHold(e.clientX, e.clientY);
+        }
+      });
+    }
+
+    /* ==========================================================
+       7. WEBRTC MULTI-PHONE PEERJS & QR CODE CONNECTION
+       ========================================================== */
+    let peer = null;
+    let connectedPeers = [];
+    let myPeerId = '';
+
+    function initWebRTC() {
+      // Generate clean 6-character room code
+      const roomNum = Math.floor(100 + Math.random() * 900);
+      myPeerId = `ludo-room-${roomNum}`;
+      document.getElementById('lblRoomCode').textContent = `LUDO-${roomNum}`;
+
+      try {
+        if (typeof Peer !== 'undefined') {
+          peer = new Peer(myPeerId);
+
+          peer.on('open', (id) => {
+            myPeerId = id;
+            generateHostQRCode(id);
+          });
+
+          peer.on('connection', (conn) => {
+            connectedPeers.push(conn);
+            updatePeerCount();
+
+            conn.on('data', (data) => {
+              handleRemotePeerMessage(data, conn);
+            });
+
+            conn.on('close', () => {
+              connectedPeers = connectedPeers.filter(p => p !== conn);
+              updatePeerCount();
+            });
+          });
+
+          peer.on('error', (err) => {
+            console.log('PeerJS notice:', err);
+          });
+        }
+      } catch (e) {
+        console.log('WebRTC init exception:', e);
+      }
+    }
+
+    function generateHostQRCode(roomId) {
+      const qrContainer = document.getElementById('hostQrCode');
+      if (!qrContainer || typeof QRCode === 'undefined') return;
+
+      qrContainer.innerHTML = '';
+      const connectData = JSON.stringify({ type: 'LUDO_CONNECT', roomId: roomId });
+      new QRCode(qrContainer, {
+        text: connectData,
+        width: 170,
+        height: 170,
+        colorDark: '#0f172a',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.M,
+      });
+    }
+
+    function updatePeerCount() {
+      const countEl = document.getElementById('lblConnectedPeers');
+      const syncIcon = document.getElementById('remoteSyncIcon');
+      if (countEl) {
+        countEl.textContent = `${connectedPeers.length} remote phone(s) connected`;
+      }
+      if (syncIcon) {
+        if (connectedPeers.length > 0) syncIcon.classList.remove('hidden');
+        else syncIcon.classList.add('hidden');
+      }
+    }
+
+    function broadcastToPeers(payload) {
+      connectedPeers.forEach(conn => {
+        try {
+          if (conn.open) conn.send(payload);
+        } catch (e) {}
+      });
+    }
+
+    function handleRemotePeerMessage(data, conn) {
+      if (!data) return;
+      if (data.type === 'ROLL_TRIGGER') {
+        // Remote phone triggered roll
+        triggerRollAction(data.cheat === true);
+      }
+    }
+
+    // Joiner / Client Remote Mode
+    let clientPeer = null;
+    let clientConn = null;
+
+    function connectToHost(targetRoomId) {
+      const statusEl = document.getElementById('joinStatusText');
+      if (statusEl) statusEl.textContent = `Connecting to ${targetRoomId}...`;
+
+      try {
+        if (!clientPeer) {
+          clientPeer = new Peer();
+        }
+
+        clientPeer.on('open', () => {
+          clientConn = clientPeer.connect(targetRoomId);
+
+          clientConn.on('open', () => {
+            if (statusEl) statusEl.textContent = 'Connected as Wireless Controller!';
+            // Transform view into remote roller
+            showRemoteRollerView(targetRoomId);
+          });
+
+          clientConn.on('data', (data) => {
+            if (data.type === 'ROLL_RESULT') {
+              sounds.playDiceBounce();
+              if (statusEl) statusEl.textContent = `${data.player} rolled ${data.total}!`;
+            }
+          });
+        });
+      } catch (err) {
+        if (statusEl) statusEl.textContent = 'Connection failed. Check room code.';
+      }
+    }
+
+    function showRemoteRollerView(roomId) {
+      const modal = document.getElementById('modalConnect');
+      if (modal) modal.classList.add('hidden');
+
+      const btnRollText = document.getElementById('btnRollText');
+      if (btnRollText) btnRollText.textContent = 'ROLL HOST DICE (P2P)';
+
+      // Intercept local roll button to send remote command
+      const btnRoll = document.getElementById('btnRollDice');
+      btnRoll.onclick = () => {
+        if (clientConn && clientConn.open) {
+          clientConn.send({ type: 'ROLL_TRIGGER', cheat: GAME_CONFIG.cheatArmed });
+          GAME_CONFIG.cheatArmed = false;
+        } else {
+          triggerRollAction();
+        }
+      };
+    }
+
+    // Camera QR Code Scanner
+    let scannerStream = null;
+
+    function startCameraScanner() {
+      const video = document.getElementById('qrScannerVideo');
+      const canvas = document.getElementById('qrScannerCanvas');
+      const placeholder = document.getElementById('qrScannerPlaceholder');
+      const statusEl = document.getElementById('joinStatusText');
+
+      if (!video || !canvas) return;
+
+      navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+        .then(stream => {
+          scannerStream = stream;
+          video.srcObject = stream;
+          video.setAttribute('playsinline', true);
+          video.play();
+          video.classList.remove('hidden');
+          placeholder.classList.add('hidden');
+          if (statusEl) statusEl.textContent = 'Point camera at Host QR code...';
+
+          const ctx = canvas.getContext('2d');
+
+          const scanLoop = () => {
+            if (video.readyState === video.HAVE_ENOUGH_DATA) {
+              canvas.height = video.videoHeight;
+              canvas.width = video.videoWidth;
+              ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+              const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+              
+              if (typeof jsQR !== 'undefined') {
+                const code = jsQR(imgData.data, imgData.width, imgData.height, {
+                  inversionAttempts: 'dontInvert',
+                });
+                if (code) {
+                  // Found QR code!
+                  try {
+                    const parsed = JSON.parse(code.data);
+                    if (parsed.roomId) {
+                      stopCameraScanner();
+                      connectToHost(parsed.roomId);
+                      return;
+                    }
+                  } catch (e) {
+                    if (code.data.startsWith('ludo-room-')) {
+                      stopCameraScanner();
+                      connectToHost(code.data);
+                      return;
+                    }
+                  }
+                }
+              }
+            }
+            if (scannerStream) requestAnimationFrame(scanLoop);
+          };
+          requestAnimationFrame(scanLoop);
+        })
+        .catch(err => {
+          if (statusEl) statusEl.textContent = 'Camera access denied. Enter code manually below.';
+        });
+    }
+
+    function stopCameraScanner() {
+      if (scannerStream) {
+        scannerStream.getTracks().forEach(t => t.stop());
+        scannerStream = null;
+      }
+    }
+
+    /* ==========================================================
+       8. UI MODALS, TABS, SETTINGS, & FULLSCREEN
+       ========================================================== */
+
+    function setupUIListeners() {
+      // 1. Roll Button
+      const btnRoll = document.getElementById('btnRollDice');
+      btnRoll.addEventListener('click', () => {
+        triggerRollAction(false);
+      });
+
+      // 2. Dice Count Tabs
+      const diceTabs = document.querySelectorAll('.dice-count-tab');
+      diceTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          const count = parseInt(tab.getAttribute('data-dice'), 10);
+          setDiceCount(count);
+        });
+      });
+
+      // 3. Sound Toggle Button
+      const btnSound = document.getElementById('btnSoundToggle');
+      const iconSoundOn = document.getElementById('iconSoundOn');
+      const iconSoundOff = document.getElementById('iconSoundOff');
+
+      btnSound.addEventListener('click', () => {
+        GAME_CONFIG.soundEnabled = !GAME_CONFIG.soundEnabled;
+        if (GAME_CONFIG.soundEnabled) {
+          iconSoundOn.classList.remove('hidden');
+          iconSoundOff.classList.add('hidden');
+          sounds.init();
+        } else {
+          iconSoundOn.classList.add('hidden');
+          iconSoundOff.classList.remove('hidden');
+        }
+      });
+
+      // 4. Volume Slider
+      const sliderVol = document.getElementById('sliderVolume');
+      const lblVol = document.getElementById('lblVolumeVal');
+      sliderVol.addEventListener('input', (e) => {
+        const val = parseInt(e.target.value, 10);
+        GAME_CONFIG.volume = val / 100;
+        lblVol.textContent = `${val}%`;
+        sounds.setVolume(GAME_CONFIG.volume);
+      });
+
+      // 5. Fullscreen Toggle
+      const btnFullscreen = document.getElementById('btnToggleFullscreen');
+      btnFullscreen.addEventListener('click', () => {
+        toggleFullscreen();
+      });
+
+      // 6. Focus / Distraction-Free Mode
+      const btnActivateFocus = document.getElementById('btnActivateFocus');
+      const btnExitFocus = document.getElementById('btnExitFocus');
+      const topBar = document.getElementById('topAppBar');
+      const bottomBar = document.getElementById('bottomBar');
+
+      btnActivateFocus.addEventListener('click', () => {
+        closeAllModals();
+        topBar.classList.add('hidden');
+        bottomBar.classList.add('hidden');
+        btnExitFocus.classList.remove('hidden');
+      });
+
+      btnExitFocus.addEventListener('click', () => {
+        topBar.classList.remove('hidden');
+        bottomBar.classList.remove('hidden');
+        btnExitFocus.classList.add('hidden');
+      });
+
+      // 7. Modals Open / Close Handlers
+      setupModalOpeners();
+
+      // 8. Player Setup UI
+      setupPlayerConfig();
+
+      // 9. Ludo Rules Checkboxes
+      const chkDouble = document.getElementById('chkDoubleSixReroll');
+      const chkSingle = document.getElementById('chkSingleSixReroll');
+      const selDur = document.getElementById('selRollDuration');
+
+      chkDouble.addEventListener('change', (e) => { GAME_CONFIG.doubleSixReroll = e.target.checked; });
+      chkSingle.addEventListener('change', (e) => { GAME_CONFIG.singleSixReroll = e.target.checked; });
+      selDur.addEventListener('change', (e) => { GAME_CONFIG.rollDurationMode = e.target.value; });
+
+      // 10. Wake Lock
+      setupWakeLock();
+    }
+
+    function setDiceCount(count) {
+      GAME_CONFIG.diceCount = count;
+      document.getElementById('badgeDiceCount').textContent = `${count} ${count === 1 ? 'Die' : 'Dice'}`;
+
+      // Update segmented buttons
+      document.querySelectorAll('.dice-count-tab').forEach(t => {
+        const c = parseInt(t.getAttribute('data-dice'), 10);
+        if (c === count) {
+          t.className = 'dice-count-tab px-3 py-1 rounded-lg text-xs font-semibold bg-amber-500 text-slate-950 shadow-sm transition-all';
+        } else {
+          t.className = 'dice-count-tab px-3 py-1 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all';
+        }
+      });
+
+      if (diceSim) {
+        diceSim.createDice(count);
+      }
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
+      }
+    }
+
+    async function setupWakeLock() {
+      try {
+        if ('wakeLock' in navigator) {
+          GAME_CONFIG.wakeLock = await navigator.wakeLock.request('screen');
+        }
+      } catch (err) {}
+    }
+
+    function closeAllModals() {
+      ['modalPlayers', 'modalSettings', 'modalConnect', 'modalHistory'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.add('hidden');
+      });
+      stopCameraScanner();
+    }
+
+    function setupModalOpeners() {
+      const openModal = (id) => {
+        closeAllModals();
+        const m = document.getElementById(id);
+        if (m) m.classList.remove('hidden');
+      };
+
+      document.getElementById('btnQuickPlayers').addEventListener('click', () => openModal('modalPlayers'));
+      document.getElementById('btnOpenSettings').addEventListener('click', () => openModal('modalSettings'));
+      document.getElementById('btnOpenConnect').addEventListener('click', () => {
+        openModal('modalConnect');
+        initWebRTC();
+      });
+      document.getElementById('btnOpenHistory').addEventListener('click', () => {
+        renderHistoryList();
+        openModal('modalHistory');
+      });
+
+      document.getElementById('btnClosePlayers').addEventListener('click', closeAllModals);
+      document.getElementById('btnCloseSettings').addEventListener('click', closeAllModals);
+      document.getElementById('btnCloseConnect').addEventListener('click', closeAllModals);
+      document.getElementById('btnCloseHistory').addEventListener('click', closeAllModals);
+
+      document.getElementById('btnClearHistory').addEventListener('click', () => {
+        GAME_CONFIG.history = [];
+        renderHistoryList();
+      });
+
+      // Multi-Phone tabs: Host vs Join
+      const tabHost = document.getElementById('tabHostMode');
+      const tabJoin = document.getElementById('tabJoinMode');
+      const viewHost = document.getElementById('viewHostContent');
+      const viewJoin = document.getElementById('viewJoinContent');
+
+      tabHost.addEventListener('click', () => {
+        tabHost.className = 'flex-1 py-1.5 text-xs font-bold rounded-lg bg-amber-500 text-slate-950';
+        tabJoin.className = 'flex-1 py-1.5 text-xs font-bold rounded-lg text-slate-400';
+        viewHost.classList.remove('hidden');
+        viewJoin.classList.add('hidden');
+        stopCameraScanner();
+      });
+
+      tabJoin.addEventListener('click', () => {
+        tabJoin.className = 'flex-1 py-1.5 text-xs font-bold rounded-lg bg-amber-500 text-slate-950';
+        tabHost.className = 'flex-1 py-1.5 text-xs font-bold rounded-lg text-slate-400';
+        viewJoin.classList.remove('hidden');
+        viewHost.classList.add('hidden');
+      });
+
+      document.getElementById('btnStartCamera').addEventListener('click', startCameraScanner);
+
+      document.getElementById('btnConnectManual').addEventListener('click', () => {
+        const input = document.getElementById('inputRoomCode');
+        const code = input.value.trim().toLowerCase();
+        if (code) {
+          const target = code.startsWith('ludo-room-') ? code : `ludo-room-${code.replace('ludo-', '')}`;
+          connectToHost(target);
+        }
+      });
+    }
+
+    function setupPlayerConfig() {
+      const renderPlayerInputs = (count) => {
+        const container = document.getElementById('playerInputsContainer');
+        container.innerHTML = '';
+
+        for (let i = 0; i < count; i++) {
+          const p = PLAYERS_DATA[i];
+          const div = document.createElement('div');
+          div.className = 'p-3 bg-slate-800/80 rounded-xl border border-slate-700/60 flex items-center gap-3';
+          
+          div.innerHTML = `
+            <div class="w-7 h-7 rounded-full flex items-center justify-center font-bold text-white text-xs shadow" style="background-color: ${p.color}">
+              P${i + 1}
+            </div>
+            <input type="text" value="${p.name}" data-player-idx="${i}" class="player-name-input flex-1 bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-amber-400">
+          `;
+          container.appendChild(div);
+        }
+      };
+
+      // Player count option buttons
+      document.querySelectorAll('.player-opt-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.player-opt-btn').forEach(b => {
+            b.className = 'player-opt-btn py-2.5 rounded-xl border border-slate-700 bg-slate-800 text-xs font-bold text-slate-200';
+          });
+          btn.className = 'player-opt-btn py-2.5 rounded-xl border-2 border-amber-500 bg-amber-500/20 text-xs font-bold text-amber-300';
+          
+          const count = parseInt(btn.getAttribute('data-players'), 10);
+          renderPlayerInputs(count);
+        });
+      });
+
+      renderPlayerInputs(GAME_CONFIG.playerCount);
+
+      // Save players setup button
+      document.getElementById('btnSavePlayers').addEventListener('click', () => {
+        const activeBtn = document.querySelector('.player-opt-btn.border-amber-500');
+        const count = activeBtn ? parseInt(activeBtn.getAttribute('data-players'), 10) : 4;
+        GAME_CONFIG.playerCount = count;
+        document.getElementById('lblPlayerCount').textContent = `${count} ${count === 1 ? 'Player' : 'Players'}`;
+
+        // Save names
+        document.querySelectorAll('.player-name-input').forEach(input => {
+          const idx = parseInt(input.getAttribute('data-player-idx'), 10);
+          if (PLAYERS_DATA[idx]) {
+            PLAYERS_DATA[idx].name = input.value.trim() || `Player ${idx + 1}`;
+          }
+        });
+
+        GAME_CONFIG.activePlayerIndex = 0;
+        updateActivePlayerUI();
+        closeAllModals();
+      });
+    }
+
+    // Time ticker for simulated Android status bar
+    function updateClock() {
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+      const el = document.getElementById('statusBarTime');
+      if (el) el.textContent = timeStr;
+    }
+
+    /* ==========================================================
+       9. APPLICATION BOOTSTRAP
+       ========================================================== */
+    window.addEventListener('DOMContentLoaded', () => {
+      // 1. Initialize 3D Simulation
+      const canvasWrapper = document.getElementById('threeCanvasWrapper');
+      diceSim = new ThreeDiceSimulation(canvasWrapper);
+      diceSim.init();
+
+      // 2. Setup Touch & Cheat Interaction
+      setupTouchInteraction();
+
+      // 3. Setup UI Listeners & Modals
+      setupUIListeners();
+
+      // 4. Initialize Active Player UI
+      updateActivePlayerUI();
+
+      // 5. Randomize Cheat Corner Indicator
+      randomizeCheatIndicator();
+
+      // 6. Clock interval
+      updateClock();
+      setInterval(updateClock, 10000);
+    });
+
+  </script>
+</body>
+</html>

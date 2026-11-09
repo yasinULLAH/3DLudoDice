@@ -1,0 +1,17 @@
+{
+  "name": "Ludo 3D Dice Roller",
+  "short_name": "Ludo Dice",
+  "description": "Professional 3D Dice Roller for Ludo with Physics, Audio, Multi-Phone Connect, and Board Rules",
+  "start_url": "index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#090d16",
+  "theme_color": "#090d16",
+  "icons": [
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
