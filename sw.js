@@ -14,39 +14,39 @@ if (workbox) {
     workbox.precaching.precacheAndRoute([
     {
         "url": "icon-72.png",
-        "revision": "42351ede5af070daafa1273a20063575"
+        "revision": "00a655ffc6ceb0552ac282c40df8e990"
     },
     {
         "url": "icon-96.png",
-        "revision": "fc49c9a6c7913f7aec350f8db0b9fc7c"
+        "revision": "12d9606482e34a769fdaa9c60a5405f7"
     },
     {
         "url": "icon-128.png",
-        "revision": "64548c5914dd9c4c8d1dd762c3233561"
+        "revision": "14e2268ee091adaaef44273886e9703a"
     },
     {
         "url": "icon-144.png",
-        "revision": "216ad0f98502a5db25f7d494d8f059f6"
+        "revision": "3ce5966a9ca80fd4206f53df51288c88"
     },
     {
         "url": "icon-152.png",
-        "revision": "fc28e26d044854ac6d1d58bebbeb4c70"
+        "revision": "af7831abb8a03ec86301db9c4cc76e93"
     },
     {
         "url": "icon-192.png",
-        "revision": "577eadd6fc44d78e6eb701d2ed4837c6"
+        "revision": "28f5bae683abfd05996cde4002cbc3e3"
     },
     {
         "url": "icon-384.png",
-        "revision": "260ec858b36871bdba5a82282c1ade73"
+        "revision": "c3f3cb2a7c133ff10797898405f0771c"
     },
     {
         "url": "icon-512.png",
-        "revision": "6bac466a184db33a43cd11b410a0dd3b"
+        "revision": "f131c4ccb484cc7a49a713b60af03fd8"
     },
     {
         "url": "favicon.ico",
-        "revision": "15b7a0a466243198817794d78e439963"
+        "revision": "8777383e6e4c96bfced7c60f490dd13d"
     },
     {
         "url": ".gitattributes",
@@ -78,7 +78,7 @@ if (workbox) {
     },
     {
         "url": "index.html",
-        "revision": "60f44244333b4e1dcbda367d608b8619"
+        "revision": "e267cc9b51edb971d3c027550f90aee0"
     },
     {
         "url": "logo.png",
@@ -86,7 +86,7 @@ if (workbox) {
     },
     {
         "url": "manifest.json",
-        "revision": "49fe311af352aa18bb224094c7a4b44b"
+        "revision": "c3f0d626f17855da3baee55f17b8f4e3"
     },
     {
         "url": "offline.html",
@@ -110,7 +110,7 @@ if (workbox) {
     },
     {
         "url": "sw.js",
-        "revision": "f55881b9ff1eb5e0d1e9853d752aed1b"
+        "revision": "cc45ae2b49c19a1e6e4bff55644631c3"
     },
     {
         "url": "android_project/build.gradle",
@@ -2334,7 +2334,7 @@ if (workbox) {
     },
     {
         "url": "android_project/build/reports/problems/problems-report.html",
-        "revision": "e7a38cdea1900d95b97ea8581bc62cbf"
+        "revision": "e0b1b5d343d8de6d36502cb39c6d9c10"
     },
     {
         "url": "android_project/gradle/wrapper/gradle-wrapper.jar",

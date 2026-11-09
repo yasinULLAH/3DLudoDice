@@ -247,17 +247,6 @@
         font-size: 10px;
       }
 
-      /* Hide the long tap/hold hint to keep the panel compact */
-      #bottomBar > div:last-child > .text-center {
-        display: none;
-      }
-
-      #btnRollDice {
-        padding-top: 0.9rem;
-        padding-bottom: 0.9rem;
-        font-size: 0.9rem;
-      }
-
       #diceTrayContainer {
         height: 100%;
         min-width: 0;
@@ -342,11 +331,11 @@
 <div class="flex items-center justify-between mt-1">
 <!-- App Title & Dice Count Pill -->
 <div class="flex items-center gap-2">
-<div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-600 to-amber-400 flex items-center justify-center shadow-lg shadow-amber-500/20 text-slate-950 font-black text-lg select-none cursor-pointer" id="appLogoBtn">
+<div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-600 to-amber-400 flex items-center justify-center shadow-lg shadow-amber-500/20 text-slate-950 font-black text-lg select-none">
             🎲
           </div>
 <div>
-<h1 class="text-sm font-bold tracking-tight text-white flex items-center gap-1.5 select-none cursor-pointer" id="appHeaderTitle">
+<h1 class="text-sm font-bold tracking-tight text-white flex items-center gap-1.5 select-none">
 <span>Ludo Dice 3D</span>
 <span class="text-[10px] px-1.5 py-0.5 rounded-md bg-amber-400/20 text-amber-300 font-semibold border border-amber-400/30" id="badgeDiceCount">2 Dice</span>
 </h1>
@@ -446,25 +435,15 @@
 </button>
 </main>
 <!-- ================= BOTTOM ACTION BAR ================= -->
-<footer class="z-20 safe-bottom px-4 pt-2 pb-4 bg-slate-900/95 backdrop-blur-md border-t border-slate-800/80" id="bottomBar">
+<footer class="z-20 safe-bottom px-4 py-2.5 bg-slate-900/95 backdrop-blur-md border-t border-slate-800/80" id="bottomBar">
 <!-- Dice Selector Segmented Control -->
-<div class="flex items-center justify-between mb-2.5">
+<div class="flex items-center justify-between">
 <span class="text-xs font-medium text-slate-400">Dice Count:</span>
 <div class="flex bg-slate-950 p-0.5 rounded-xl border border-slate-800">
 <button class="dice-count-tab px-3 py-1 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all" data-dice="1">1 Die</button>
 <button class="dice-count-tab px-3 py-1 rounded-lg text-xs font-semibold bg-amber-500 text-slate-950 shadow-sm transition-all" data-dice="2">2 Dice</button>
 <button class="dice-count-tab px-3 py-1 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all" data-dice="3">3 Dice</button>
 </div>
-</div>
-<!-- Big Tactile ROLL Button -->
-<div class="relative w-full hidden" id="rollButtonContainer">
-<button class="w-full py-4 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 hover:brightness-105 active:scale-[0.98] text-slate-950 font-black text-base tracking-wider uppercase shadow-elevation-2 flex items-center justify-center gap-2.5 transition-all" id="btnRollDice">
-<svg class="w-6 h-6 animate-pulse" fill="currentColor" viewbox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM7 7.5A1.5 1.5 0 118.5 6 1.5 1.5 0 017 7.5zM12 13.5a1.5 1.5 0 111.5-1.5 1.5 1.5 0 01-1.5 1.5zm5 5a1.5 1.5 0 111.5-1.5 1.5 1.5 0 01-1.5 1.5z"></path></svg>
-<span id="btnRollText">ROLL DICE</span>
-</button>
-<div class="text-center text-[10px] text-slate-500 mt-1.5">
-          Tip: Tap or hold anywhere on board to shake &amp; roll!
-        </div>
 </div>
 </footer>
 <!-- ================= MODALS & BOTTOM SHEETS ================= -->
@@ -537,13 +516,6 @@
 <div class="text-[11px] text-slate-400">Keep phone screen on without dimming</div>
 </div>
 <input checked="" class="w-4 h-4 accent-amber-500" id="chkWakeLock" type="checkbox"/>
-</div>
-<div class="flex items-center justify-between">
-<div>
-<div class="text-xs font-semibold text-slate-200">Show Tactile Roll Button</div>
-<div class="text-[11px] text-slate-400">Display the large roll button at the bottom</div>
-</div>
-<input class="w-4 h-4 accent-amber-500" id="chkShowRollButton" type="checkbox"/>
 </div>
 </div>
 <div class="p-3 bg-slate-800/60 rounded-xl border border-slate-700/50">
@@ -851,7 +823,6 @@
       turnRolls: [],
       inBonusTurn: false,
       rerollStreak: 0,
-      showRollButton: false,
       
       /* SECRET CHEAT ENGINE */
       cheatArmed: false,
@@ -1449,26 +1420,7 @@ buildRollPlan(targetValues) {
       return true;
     }
 
-    function updateRollButtonLockState() {
-      const btnRoll = document.getElementById('btnRollDice');
-      const btnText = document.getElementById('btnRollText');
-      if (!btnRoll || !btnText || GAME_CONFIG.isRolling) return;
-
-      const player = getActivePlayer();
-      const allowed = canLocalDeviceRoll();
-
-      if (!allowed) {
-        btnRoll.classList.add('opacity-50', 'cursor-not-allowed');
-        btnText.textContent = `WAITING FOR P${player.id + 1} (${player.name.toUpperCase()})`;
-      } else {
-        btnRoll.classList.remove('opacity-50', 'cursor-not-allowed');
-        if (isRemoteClient) {
-          btnText.textContent = GAME_CONFIG.inBonusTurn ? `P${myAssignedPlayerIndex + 1} BONUS ROLL` : `ROLL DICE (P${myAssignedPlayerIndex + 1})`;
-        } else {
-          btnText.textContent = GAME_CONFIG.inBonusTurn ? 'ROLL BONUS' : 'ROLL DICE';
-        }
-      }
-    }
+    function updateRollButtonLockState() {}
 
     function updateActivePlayerUI() {
       const player = getActivePlayer();
@@ -1557,9 +1509,6 @@ buildRollPlan(targetValues) {
 
       const rerollBanner = document.getElementById('rerollNotification');
       if (rerollBanner) rerollBanner.classList.add('hidden');
-
-      const btnText = document.getElementById('btnRollText');
-      if (btnText) btnText.textContent = 'ROLLING...';
 
       const rollPlan = diceSim.buildRollPlan(finalResults);
 
@@ -1833,23 +1782,6 @@ buildRollPlan(targetValues) {
         if (e.target.closest('button')) return;
         startHold(e.clientX, e.clientY);
       });
-
-      const btnRoll = document.getElementById('btnRollDice');
-      if (btnRoll) {
-        btnRoll.addEventListener('pointerdown', (e) => {
-          const rect = btnRoll.getBoundingClientRect();
-          const relX = (e.clientX - rect.left) / rect.width;
-          const relY = (e.clientY - rect.top) / rect.height;
-          const target = GAME_CONFIG.currentCheatTarget ? GAME_CONFIG.currentCheatTarget.angle : -1;
-          if ((target === 45 && relX > 0.55 && relY < 0.5) ||
-              (target === 135 && relX < 0.45 && relY < 0.5) ||
-              (target === 225 && relX < 0.45 && relY > 0.5) ||
-              (target === 315 && relX > 0.55 && relY > 0.5)) {
-            GAME_CONFIG.cheatArmed = true;
-          }
-          startHold(e.clientX, e.clientY);
-        });
-      }
 
       window.addEventListener('pointermove', (e) => {
         if (isTouching) updateHold(e.clientX, e.clientY);
@@ -2270,8 +2202,6 @@ buildRollPlan(targetValues) {
         pendingClientResult = null;
         const rerollBanner = document.getElementById('rerollNotification');
         if (rerollBanner) rerollBanner.classList.add('hidden');
-        const btnText = document.getElementById('btnRollText');
-        if (btnText) btnText.textContent = 'ROLLING...';
         if (diceSim) {
           diceSim.rollDice(data.results, () => {
             if (pendingClientResult) {
@@ -2414,45 +2344,10 @@ buildRollPlan(targetValues) {
       }
     }
 
-    function setRollButtonVisibility(visible) {
-      GAME_CONFIG.showRollButton = visible;
-      localStorage.setItem('3dludo_showRollButton', visible ? 'true' : 'false');
-      const container = document.getElementById('rollButtonContainer');
-      const chk = document.getElementById('chkShowRollButton');
-      const bottomBar = document.getElementById('bottomBar');
-      if (container) {
-        if (visible) {
-          container.classList.remove('hidden');
-        } else {
-          container.classList.add('hidden');
-        }
-      }
-      if (bottomBar) {
-        if (visible) {
-          bottomBar.classList.add('pb-4');
-          bottomBar.classList.remove('pb-2');
-        } else {
-          bottomBar.classList.remove('pb-4');
-          bottomBar.classList.add('pb-2');
-        }
-      }
-      if (chk) {
-        chk.checked = visible;
-      }
-      if (diceSim) diceSim.onResize();
-    }
-
     /* ==========================================================
        UI SETUP & LISTENERS
        ========================================================== */
     function setupUIListeners() {
-      const btnRoll = document.getElementById('btnRollDice');
-      if (btnRoll) {
-        btnRoll.addEventListener('click', (e) => {
-          e.preventDefault();
-        });
-      }
-
       const diceTabs = document.querySelectorAll('.dice-count-tab');
       diceTabs.forEach(tab => {
         tab.addEventListener('click', () => {
@@ -2522,7 +2417,6 @@ buildRollPlan(targetValues) {
       const chkSingle = document.getElementById('chkSingleSixReroll');
       const chkWake = document.getElementById('chkWakeLock');
       const selDur = document.getElementById('selRollDuration');
-      const chkShowBtn = document.getElementById('chkShowRollButton');
 
       chkDouble.addEventListener('change', (e) => { GAME_CONFIG.doubleSixReroll = e.target.checked; });
       chkSingle.addEventListener('change', (e) => { GAME_CONFIG.singleSixReroll = e.target.checked; });
@@ -2535,35 +2429,6 @@ buildRollPlan(targetValues) {
         }
       });
       selDur.addEventListener('change', (e) => { GAME_CONFIG.rollDurationMode = e.target.value; });
-
-      if (chkShowBtn) {
-        chkShowBtn.addEventListener('change', (e) => {
-          setRollButtonVisibility(e.target.checked);
-        });
-      }
-
-      let lastTitleTap = 0;
-      const handleTitleDoubleTap = () => {
-        const now = performance.now();
-        if (now - lastTitleTap < 350) {
-          setRollButtonVisibility(!GAME_CONFIG.showRollButton);
-          lastTitleTap = 0;
-        } else {
-          lastTitleTap = now;
-        }
-      };
-
-      const logoBtn = document.getElementById('appLogoBtn');
-      if (logoBtn) {
-        logoBtn.addEventListener('click', handleTitleDoubleTap);
-      }
-      const headerTitle = document.getElementById('appHeaderTitle');
-      if (headerTitle) {
-        headerTitle.addEventListener('click', handleTitleDoubleTap);
-      }
-
-      const savedShowBtn = localStorage.getItem('3dludo_showRollButton') === 'true';
-      setRollButtonVisibility(savedShowBtn);
 
       setupWakeLock();
       document.addEventListener('visibilitychange', () => {
@@ -2580,8 +2445,6 @@ buildRollPlan(targetValues) {
 
       const rerollBanner = document.getElementById('rerollNotification');
       if (rerollBanner) rerollBanner.classList.add('hidden');
-      const btnText = document.getElementById('btnRollText');
-      if (btnText && !isRemoteClient) btnText.textContent = 'ROLL DICE';
 
       document.getElementById('badgeDiceCount').textContent = `${count} ${count === 1 ? 'Die' : 'Dice'}`;
 
