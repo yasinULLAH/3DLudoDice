@@ -50,3 +50,4 @@ jobs:
           prerelease: false
           files: 3DLudoDice.apk
           token: ${{ secrets.GITHUB_TOKEN }}
+
