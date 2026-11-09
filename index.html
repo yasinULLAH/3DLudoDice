@@ -128,9 +128,9 @@
         overflow-x: hidden;
       }
 
-      /* The real phone already shows a status bar in landscape */
       #topAppBar > div:first-child {
-        display: none;
+        display: flex;
+        margin-bottom: 0;
       }
 
       /* Focus mode still hides the side panels */
@@ -405,14 +405,14 @@
 </div>
 <!-- LIVE ROLL RESULT DISPLAY OVERLAY -->
 <div class="absolute bottom-4 left-4 right-4 pointer-events-none flex items-center justify-between z-20 transition-opacity duration-300 opacity-90" id="rollResultOverlay">
-<div class="bg-slate-900/80 backdrop-blur-md px-3.5 py-1.5 rounded-2xl border border-slate-700/70 shadow-lg flex items-center gap-3">
-<div class="flex items-center gap-1.5" id="diceResultIcons">
+<div class="bg-slate-900/80 backdrop-blur-md px-3.5 py-1.5 rounded-2xl border border-slate-700/70 shadow-lg flex items-center gap-2.5 max-w-[75%] overflow-hidden">
+<div class="flex items-center gap-1 flex-wrap" id="diceResultIcons">
 <span class="text-xs text-slate-400">Result:</span>
-<span class="w-6 h-6 rounded-md bg-white text-slate-900 font-black text-xs flex items-center justify-center shadow">6</span>
-<span class="w-6 h-6 rounded-md bg-white text-slate-900 font-black text-xs flex items-center justify-center shadow">6</span>
+<span class="w-6 h-6 rounded-md bg-amber-400 text-slate-950 font-black text-xs flex items-center justify-center shadow">6</span>
+<span class="w-6 h-6 rounded-md bg-amber-400 text-slate-950 font-black text-xs flex items-center justify-center shadow">6</span>
 </div>
-<div class="h-4 w-px bg-slate-700"></div>
-<div class="text-xs font-bold text-amber-400">Total: <span class="text-sm font-black text-white" id="diceResultTotal">12</span></div>
+<div class="h-4 w-px bg-slate-700 shrink-0"></div>
+<div class="text-xs font-bold text-amber-400 shrink-0">Total: <span class="text-sm font-black text-white" id="diceResultTotal">12</span></div>
 </div>
 <!-- History Pill -->
 <button class="pointer-events-auto bg-slate-900/80 backdrop-blur-md hover:bg-slate-800 p-2 rounded-2xl border border-slate-700/70 shadow-lg text-slate-300 active:scale-95 transition-all flex items-center gap-1.5 text-xs px-3" id="btnOpenHistory">
@@ -829,7 +829,11 @@
       holdStartTime: 0,
       holdStartPos: { x: 0, y: 0 },
       wakeLock: null,
+      wakeLockEnabled: true,
       history: [],
+      turnRolls: [],
+      inBonusTurn: false,
+      rerollStreak: 0,
       
       /* SECRET CHEAT ENGINE */
       cheatArmed: false,
@@ -1098,10 +1102,10 @@
         switch (targetNumber) {
           case 1: rx = 0; rz = 0; break;
           case 6: rx = Math.PI; rz = 0; break;
-          case 2: rx = Math.PI / 2; rz = 0; break;
-          case 5: rx = -Math.PI / 2; rz = 0; break;
-          case 3: rx = 0; rz = -Math.PI / 2; break;
-          case 4: rx = 0; rz = Math.PI / 2; break;
+          case 2: rx = -Math.PI / 2; rz = 0; break;
+          case 5: rx = Math.PI / 2; rz = 0; break;
+          case 3: rx = 0; rz = Math.PI / 2; break;
+          case 4: rx = 0; rz = -Math.PI / 2; break;
         }
         ry = randomYaw;
         return new THREE.Euler(rx, ry, rz, 'YXZ');
@@ -1130,11 +1134,20 @@
 
         // Dynamic organic resting positions
         const restPositions = [];
+        const spacing = 2.6;
+        const startX = -((count - 1) * spacing) / 2;
         for (let i = 0; i < count; i++) {
-          const spreadAngle = (i / Math.max(1, count - 1)) * Math.PI - Math.PI / 2;
-          const rX = Math.sin(spreadAngle) * (1.6 + Math.random() * 1.5) + (Math.random() - 0.5) * 0.8;
-          const rZ = (Math.random() - 0.5) * 3.0;
-          restPositions.push(new THREE.Vector3(rX, floorY, rZ));
+          let candidate = null;
+          for (let attempt = 0; attempt < 25; attempt++) {
+            const rX = startX + i * spacing + (Math.random() - 0.5) * 1.1;
+            const rZ = (Math.random() - 0.5) * 2.8;
+            const vec = new THREE.Vector3(THREE.MathUtils.clamp(rX, -4.4, 4.4), floorY, THREE.MathUtils.clamp(rZ, -4.8, 4.8));
+            if (restPositions.every(p => p.distanceTo(vec) >= 2.25)) {
+              candidate = vec;
+              break;
+            }
+          }
+          restPositions.push(candidate || new THREE.Vector3(startX + i * spacing, floorY, 0));
         }
 
         targetValues.forEach((targetVal, idx) => {
@@ -1395,6 +1408,8 @@
       const avatar = document.getElementById('activePlayerAvatar');
       const name = document.getElementById('activePlayerName');
       const card = document.getElementById('playerTurnCard');
+      const badge = document.getElementById('turnBadgeStatus');
+      const sub = document.getElementById('activePlayerSub');
 
       if (avatar && name && card) {
         avatar.className = `w-8 h-8 rounded-full ${player.class} ring-2 ring-white/70 flex items-center justify-center font-black text-white text-xs shadow-md transition-all duration-300`;
@@ -1402,10 +1417,50 @@
         name.textContent = player.name;
         card.style.borderColor = player.color;
       }
+      if (badge && sub) {
+        if (GAME_CONFIG.inBonusTurn) {
+          badge.textContent = GAME_CONFIG.rerollStreak > 1 ? `Bonus x${GAME_CONFIG.rerollStreak}` : 'Bonus Roll';
+          badge.className = 'text-[10px] font-black text-amber-300 bg-amber-950/80 px-1.5 py-0.5 rounded-full border border-amber-400/50';
+          const turnSum = GAME_CONFIG.turnRolls.reduce((acc, r) => acc + r.reduce((a, b) => a + b, 0), 0);
+          sub.textContent = `Roll again! Turn total: ${turnSum}`;
+        } else {
+          badge.textContent = 'Your Turn';
+          badge.className = 'text-[10px] font-semibold text-emerald-400 bg-emerald-950/70 px-1.5 py-0.5 rounded-full border border-emerald-500/30';
+          sub.textContent = 'Shake & roll the dice';
+        }
+      }
+    }
+
+    function renderRollResultUI(turnRolls, total) {
+      const totalEl = document.getElementById('diceResultTotal');
+      if (totalEl) totalEl.textContent = total;
+
+      const diceIconsContainer = document.getElementById('diceResultIcons');
+      if (!diceIconsContainer) return;
+
+      diceIconsContainer.innerHTML = '<span class="text-xs text-slate-400">Result:</span>';
+      turnRolls.forEach((rollGroup, groupIdx) => {
+        if (groupIdx > 0) {
+          const plus = document.createElement('span');
+          plus.className = 'text-xs font-black text-amber-400 px-0.5';
+          plus.textContent = '+';
+          diceIconsContainer.appendChild(plus);
+        }
+        rollGroup.forEach(v => {
+          const badge = document.createElement('span');
+          badge.className = `w-6 h-6 rounded-md ${v === 6 ? 'bg-amber-400 text-slate-950 font-black' : 'bg-white text-slate-900 font-bold'} text-xs flex items-center justify-center shadow`;
+          badge.textContent = v;
+          diceIconsContainer.appendChild(badge);
+        });
+      });
     }
 
     function triggerRollAction(forceCheat = false) {
       if (GAME_CONFIG.isRolling || GAME_CONFIG.rollPending) return;
+      if (!GAME_CONFIG.inBonusTurn) {
+        GAME_CONFIG.turnRolls = [];
+        GAME_CONFIG.rerollStreak = 0;
+      }
 
       const diceCount = GAME_CONFIG.diceCount;
       let finalResults = [];
@@ -1428,28 +1483,19 @@
       if (btnText) btnText.textContent = 'ROLLING...';
 
       diceSim.rollDice(finalResults, (settledValues) => {
-        if (btnText) btnText.textContent = 'ROLL DICE';
+        if (btnText) btnText.textContent = GAME_CONFIG.inBonusTurn ? 'ROLL BONUS' : 'ROLL DICE';
         handleRollCompletion(settledValues);
       });
     }
 
     function handleRollCompletion(results) {
-      const sum = results.reduce((a, b) => a + b, 0);
+      const rollSum = results.reduce((a, b) => a + b, 0);
       const player = getActivePlayer();
 
-      const totalEl = document.getElementById('diceResultTotal');
-      if (totalEl) totalEl.textContent = sum;
+      GAME_CONFIG.turnRolls.push([...results]);
+      const turnTotal = GAME_CONFIG.turnRolls.reduce((acc, r) => acc + r.reduce((a, b) => a + b, 0), 0);
 
-      const diceIconsContainer = document.getElementById('diceResultIcons');
-      if (diceIconsContainer) {
-        diceIconsContainer.innerHTML = '<span class="text-xs text-slate-400">Result:</span>';
-        results.forEach(v => {
-          const badge = document.createElement('span');
-          badge.className = `w-6 h-6 rounded-md ${v === 6 ? 'bg-amber-400 text-slate-950 font-black' : 'bg-white text-slate-900 font-bold'} text-xs flex items-center justify-center shadow`;
-          badge.textContent = v;
-          diceIconsContainer.appendChild(badge);
-        });
-      }
+      renderRollResultUI(GAME_CONFIG.turnRolls, turnTotal);
 
       let isReroll = false;
       let rerollReason = '';
@@ -1460,9 +1506,16 @@
       } else if (results.length === 1 && GAME_CONFIG.singleSixReroll && results[0] === 6) {
         isReroll = true;
         rerollReason = 'SIX! ROLL AGAIN!';
-      } else if (results.length === 3 && results.every(v => v === 6)) {
+      } else if (results.length === 3 && GAME_CONFIG.doubleSixReroll && results.every(v => v === 6)) {
         isReroll = true;
         rerollReason = 'TRIPLE SIX! ROLL AGAIN!';
+      }
+
+      if (isReroll) {
+        GAME_CONFIG.inBonusTurn = true;
+        GAME_CONFIG.rerollStreak = (GAME_CONFIG.rerollStreak || 0) + 1;
+      } else {
+        GAME_CONFIG.inBonusTurn = false;
       }
 
       const historyItem = {
@@ -1470,8 +1523,11 @@
         player: player.name,
         color: player.color,
         results: [...results],
-        total: sum,
+        turnRolls: GAME_CONFIG.turnRolls.map(r => [...r]),
+        rollTotal: rollSum,
+        total: turnTotal,
         reroll: isReroll,
+        streak: GAME_CONFIG.rerollStreak,
       };
       GAME_CONFIG.history.unshift(historyItem);
       renderHistoryList();
@@ -1480,23 +1536,31 @@
         type: 'ROLL_RESULT',
         player: player.name,
         results: results,
-        total: sum,
+        turnRolls: historyItem.turnRolls,
+        total: turnTotal,
         reroll: isReroll,
       });
+
+      const btnText = document.getElementById('btnRollText');
 
       if (isReroll) {
         sounds.playCelebrationFanfare();
         if (navigator.vibrate) navigator.vibrate([60, 40, 80, 50, 100]);
+        if (btnText) btnText.textContent = 'ROLL BONUS';
+        updateActivePlayerUI();
 
         const banner = document.getElementById('rerollNotification');
         const title = document.getElementById('rerollTitle');
         const desc = document.getElementById('rerollDesc');
         if (banner && title && desc) {
-          title.textContent = rerollReason;
-          desc.textContent = `${player.name} gets a free bonus reroll!`;
+          const streakTag = GAME_CONFIG.rerollStreak > 1 ? ` (x${GAME_CONFIG.rerollStreak})` : '';
+          title.textContent = `${rerollReason}${streakTag}`;
+          desc.textContent = `${player.name} turn total: ${turnTotal} — Roll again!`;
           banner.classList.remove('hidden');
         }
       } else {
+        if (btnText) btnText.textContent = 'ROLL DICE';
+        GAME_CONFIG.rerollStreak = 0;
         advanceTurn();
       }
 
@@ -1504,8 +1568,14 @@
     }
 
     function advanceTurn() {
+      const completedPlayer = getActivePlayer();
+      const completedTotal = GAME_CONFIG.turnRolls.reduce((acc, r) => acc + r.reduce((a, b) => a + b, 0), 0);
       GAME_CONFIG.activePlayerIndex = (GAME_CONFIG.activePlayerIndex + 1) % GAME_CONFIG.playerCount;
       updateActivePlayerUI();
+      const sub = document.getElementById('activePlayerSub');
+      if (sub && GAME_CONFIG.turnRolls.length > 0) {
+        sub.textContent = `Last: ${completedPlayer.name} rolled ${completedTotal}`;
+      }
       sounds.playTurnChange();
 
       broadcastToPeers({
@@ -1528,23 +1598,25 @@
       GAME_CONFIG.history.slice(0, 30).forEach(item => {
         const row = document.createElement('div');
         row.className = 'p-2.5 rounded-xl bg-slate-800/60 border border-slate-700/60 flex items-center justify-between text-xs';
-        
+        const groups = item.turnRolls && item.turnRolls.length > 0 ? item.turnRolls : [item.results];
+        const rollsMarkup = groups.map(g => g.map(r => `<span class="px-1.5 py-0.5 rounded ${r === 6 ? 'bg-amber-500/30 text-amber-300 font-black border border-amber-500/40' : 'bg-slate-700 text-slate-200'}">${r}</span>`).join('')).join('<span class="text-amber-400 font-bold px-0.5">+</span>');
+
         row.innerHTML = `
           <div class="flex items-center gap-2">
             <span class="w-2.5 h-2.5 rounded-full" style="background-color: ${item.color}"></span>
             <div>
               <div class="font-bold text-white flex items-center gap-1.5">
                 <span>${item.player}</span>
-                ${item.reroll ? '<span class="text-[9px] bg-amber-400 text-slate-950 px-1 rounded font-black">BONUS</span>' : ''}
+                ${item.reroll ? `<span class="text-[9px] bg-amber-400 text-slate-950 px-1 rounded font-black">BONUS${item.streak > 1 ? ' x' + item.streak : ''}</span>` : ''}
               </div>
               <div class="text-[10px] text-slate-400">${item.timestamp}</div>
             </div>
           </div>
           <div class="flex items-center gap-2">
-            <div class="flex gap-1">
-              ${item.results.map(r => `<span class="px-1.5 py-0.5 rounded ${r === 6 ? 'bg-amber-500/30 text-amber-300 font-black border border-amber-500/40' : 'bg-slate-700 text-slate-200'}">${r}</span>`).join('')}
+            <div class="flex items-center gap-1 flex-wrap justify-end">
+              ${rollsMarkup}
             </div>
-            <span class="font-black text-slate-300 text-sm">= ${item.total}</span>
+            <span class="font-black text-slate-300 text-sm shrink-0">= ${item.total}</span>
           </div>
         `;
         container.appendChild(row);
@@ -1939,12 +2011,14 @@
         topBar.classList.add('hidden');
         bottomBar.classList.add('hidden');
         btnExitFocus.classList.remove('hidden');
+        if (diceSim) diceSim.onResize();
       });
 
       btnExitFocus.addEventListener('click', () => {
         topBar.classList.remove('hidden');
         bottomBar.classList.remove('hidden');
         btnExitFocus.classList.add('hidden');
+        if (diceSim) diceSim.onResize();
       });
 
       setupModalOpeners();
@@ -1952,17 +2026,39 @@
 
       const chkDouble = document.getElementById('chkDoubleSixReroll');
       const chkSingle = document.getElementById('chkSingleSixReroll');
+      const chkWake = document.getElementById('chkWakeLock');
       const selDur = document.getElementById('selRollDuration');
 
       chkDouble.addEventListener('change', (e) => { GAME_CONFIG.doubleSixReroll = e.target.checked; });
       chkSingle.addEventListener('change', (e) => { GAME_CONFIG.singleSixReroll = e.target.checked; });
+      chkWake.addEventListener('change', (e) => {
+        GAME_CONFIG.wakeLockEnabled = e.target.checked;
+        if (e.target.checked) setupWakeLock();
+        else if (GAME_CONFIG.wakeLock) {
+          GAME_CONFIG.wakeLock.release().catch(() => {});
+          GAME_CONFIG.wakeLock = null;
+        }
+      });
       selDur.addEventListener('change', (e) => { GAME_CONFIG.rollDurationMode = e.target.value; });
 
       setupWakeLock();
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible' && GAME_CONFIG.wakeLockEnabled) setupWakeLock();
+      });
     }
 
     function setDiceCount(count) {
+      if (GAME_CONFIG.isRolling || GAME_CONFIG.rollPending) return;
       GAME_CONFIG.diceCount = count;
+      GAME_CONFIG.turnRolls = [];
+      GAME_CONFIG.inBonusTurn = false;
+      GAME_CONFIG.rerollStreak = 0;
+
+      const rerollBanner = document.getElementById('rerollNotification');
+      if (rerollBanner) rerollBanner.classList.add('hidden');
+      const btnText = document.getElementById('btnRollText');
+      if (btnText && !clientConn) btnText.textContent = 'ROLL DICE';
+
       document.getElementById('badgeDiceCount').textContent = `${count} ${count === 1 ? 'Die' : 'Dice'}`;
 
       document.querySelectorAll('.dice-count-tab').forEach(t => {
@@ -1975,9 +2071,12 @@
       });
 
       if (diceSim) diceSim.createDice(count);
+      renderRollResultUI([Array(count).fill(6)], count * 6);
+      updateActivePlayerUI();
     }
 
     async function setupWakeLock() {
+      if (!GAME_CONFIG.wakeLockEnabled) return;
       try {
         if ('wakeLock' in navigator) {
           GAME_CONFIG.wakeLock = await navigator.wakeLock.request('screen');
@@ -2101,6 +2200,11 @@
         });
 
         GAME_CONFIG.activePlayerIndex = 0;
+        GAME_CONFIG.turnRolls = [];
+        GAME_CONFIG.inBonusTurn = false;
+        GAME_CONFIG.rerollStreak = 0;
+        const rerollBanner = document.getElementById('rerollNotification');
+        if (rerollBanner) rerollBanner.classList.add('hidden');
         updateActivePlayerUI();
         closeAllModals();
       });
