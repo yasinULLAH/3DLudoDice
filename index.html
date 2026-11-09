@@ -1762,24 +1762,72 @@
     let peer = null;
     let connectedPeers = [];
     let myPeerId = '';
+    let localChannel = null;
+    const PEER_OPTIONS = {
+      debug: 0,
+      config: {
+        iceServers: [
+          { urls: 'stun:stun.l.google.com:19302' },
+          { urls: 'stun:global.stun.twilio.com:3478' }
+        ]
+      }
+    };
 
-    function initWebRTC() {
-      const roomNum = Math.floor(100 + Math.random() * 900);
-      myPeerId = `ludo-room-${roomNum}`;
+    function setupLocalChannel(roomId) {
+      if (typeof BroadcastChannel === 'undefined') return;
+      if (localChannel) localChannel.close();
+      localChannel = new BroadcastChannel(`ludo_chan_${roomId}`);
+      localChannel.onmessage = (ev) => {
+        if (!ev.data) return;
+        if (ev.data.type === 'LOCAL_JOIN') {
+          localChannel.postMessage({ type: 'LOCAL_ACK', roomId });
+          const countEl = document.getElementById('lblConnectedPeers');
+          if (countEl && connectedPeers.length === 0) countEl.textContent = '1 local device connected';
+          const syncIcon = document.getElementById('remoteSyncIcon');
+          if (syncIcon) syncIcon.classList.remove('hidden');
+        } else if (ev.data.type === 'ROLL_TRIGGER') {
+          handleRemotePeerMessage(ev.data);
+        }
+      };
+    }
+
+    function initWebRTC(forceNew = false) {
+      if (peer && !peer.destroyed && !forceNew) {
+        if (peer.disconnected) {
+          try { peer.reconnect(); } catch (e) {}
+        }
+        return;
+      }
+
+      if (peer) {
+        try { peer.destroy(); } catch (e) {}
+        peer = null;
+      }
+
+      const roomNum = Math.floor(1000 + Math.random() * 9000);
+      myPeerId = `ludo3d-room-${roomNum}`;
       document.getElementById('lblRoomCode').textContent = `LUDO-${roomNum}`;
+      generateHostQRCode(myPeerId);
+      setupLocalChannel(myPeerId);
+
+      const countEl = document.getElementById('lblConnectedPeers');
+      if (countEl) countEl.textContent = 'Connecting to signaling server...';
 
       try {
         if (typeof Peer !== 'undefined') {
-          peer = new Peer(myPeerId);
+          peer = new Peer(myPeerId, PEER_OPTIONS);
 
           peer.on('open', (id) => {
             myPeerId = id;
             generateHostQRCode(id);
+            updatePeerCount();
           });
 
           peer.on('connection', (conn) => {
-            connectedPeers.push(conn);
-            updatePeerCount();
+            conn.on('open', () => {
+              if (!connectedPeers.includes(conn)) connectedPeers.push(conn);
+              updatePeerCount();
+            });
 
             conn.on('data', (data) => {
               handleRemotePeerMessage(data, conn);
@@ -1789,6 +1837,21 @@
               connectedPeers = connectedPeers.filter(p => p !== conn);
               updatePeerCount();
             });
+
+            conn.on('error', () => {
+              connectedPeers = connectedPeers.filter(p => p !== conn);
+              updatePeerCount();
+            });
+          });
+
+          peer.on('error', (err) => {
+            if (err && err.type === 'unavailable-id') {
+              initWebRTC(true);
+              return;
+            }
+            if (countEl && connectedPeers.length === 0) {
+              countEl.textContent = 'Cloud signaling busy (Local/LAN ready)';
+            }
           });
         }
       } catch (e) {}
@@ -1826,6 +1889,9 @@
           if (conn.open) conn.send(payload);
         } catch (e) {}
       });
+      if (localChannel) {
+        try { localChannel.postMessage(payload); } catch (e) {}
+      }
     }
 
     function handleRemotePeerMessage(data, conn) {
@@ -1837,29 +1903,66 @@
 
     let clientPeer = null;
     let clientConn = null;
+    let clientLocalChannel = null;
 
     function connectToHost(targetRoomId) {
       const statusEl = document.getElementById('joinStatusText');
       if (statusEl) statusEl.textContent = `Connecting to ${targetRoomId}...`;
 
-      try {
-        if (!clientPeer) clientPeer = new Peer();
-
-        clientPeer.on('open', () => {
-          clientConn = clientPeer.connect(targetRoomId);
-
-          clientConn.on('open', () => {
+      if (typeof BroadcastChannel !== 'undefined') {
+        if (clientLocalChannel) clientLocalChannel.close();
+        clientLocalChannel = new BroadcastChannel(`ludo_chan_${targetRoomId}`);
+        clientLocalChannel.onmessage = (ev) => {
+          if (!ev.data) return;
+          if (ev.data.type === 'LOCAL_ACK') {
             if (statusEl) statusEl.textContent = 'Connected as Wireless Controller!';
             showRemoteRollerView(targetRoomId);
-          });
+          } else if (ev.data.type === 'ROLL_RESULT') {
+            sounds.playImpactClack();
+            if (statusEl) statusEl.textContent = `${ev.data.player} rolled ${ev.data.total}!`;
+          }
+        };
+        clientLocalChannel.postMessage({ type: 'LOCAL_JOIN' });
+      }
 
-          clientConn.on('data', (data) => {
-            if (data.type === 'ROLL_RESULT') {
-              sounds.playImpactClack();
-              if (statusEl) statusEl.textContent = `${data.player} rolled ${data.total}!`;
+      const openPeerConnection = () => {
+        if (clientConn) {
+          try { clientConn.close(); } catch (e) {}
+        }
+        clientConn = clientPeer.connect(targetRoomId, { reliable: true });
+
+        clientConn.on('open', () => {
+          if (statusEl) statusEl.textContent = 'Connected as Wireless Controller!';
+          showRemoteRollerView(targetRoomId);
+        });
+
+        clientConn.on('data', (data) => {
+          if (data && data.type === 'ROLL_RESULT') {
+            sounds.playImpactClack();
+            if (statusEl) statusEl.textContent = `${data.player} rolled ${data.total}!`;
+          }
+        });
+
+        clientConn.on('error', () => {
+          if (statusEl) statusEl.textContent = 'Connection error. Verify room code.';
+        });
+      };
+
+      try {
+        if (!clientPeer || clientPeer.destroyed) {
+          clientPeer = new Peer(PEER_OPTIONS);
+          clientPeer.on('open', openPeerConnection);
+          clientPeer.on('error', () => {
+            if (statusEl && (!clientConn || !clientConn.open)) {
+              statusEl.textContent = 'Signaling server unreachable. Try again shortly.';
             }
           });
-        });
+        } else if (clientPeer.open) {
+          openPeerConnection();
+        } else if (clientPeer.disconnected) {
+          clientPeer.reconnect();
+          clientPeer.once('open', openPeerConnection);
+        }
       } catch (err) {
         if (statusEl) statusEl.textContent = 'Connection failed. Check room code.';
       }
@@ -1876,6 +1979,9 @@
       btnRoll.onclick = () => {
         if (clientConn && clientConn.open) {
           clientConn.send({ type: 'ROLL_TRIGGER', cheat: GAME_CONFIG.cheatArmed });
+          GAME_CONFIG.cheatArmed = false;
+        } else if (clientLocalChannel) {
+          clientLocalChannel.postMessage({ type: 'ROLL_TRIGGER', cheat: GAME_CONFIG.cheatArmed });
           GAME_CONFIG.cheatArmed = false;
         } else {
           triggerRollAction();
@@ -2146,7 +2252,8 @@
         const input = document.getElementById('inputRoomCode');
         const code = input.value.trim().toLowerCase();
         if (code) {
-          const target = code.startsWith('ludo-room-') ? code : `ludo-room-${code.replace('ludo-', '')}`;
+          const clean = code.replace(/^ludo3d-room-|^ludo-room-|^ludo-/, '');
+          const target = `ludo3d-room-${clean}`;
           connectToHost(target);
         }
       });
