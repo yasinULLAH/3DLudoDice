@@ -78,7 +78,7 @@ if (workbox) {
     },
     {
         "url": "index.html",
-        "revision": "e267cc9b51edb971d3c027550f90aee0"
+        "revision": "6fb71e91e56f3ed10d54a934b6dff942"
     },
     {
         "url": "logo.png",
@@ -86,7 +86,7 @@ if (workbox) {
     },
     {
         "url": "manifest.json",
-        "revision": "c3f0d626f17855da3baee55f17b8f4e3"
+        "revision": "49fe311af352aa18bb224094c7a4b44b"
     },
     {
         "url": "offline.html",
@@ -110,7 +110,7 @@ if (workbox) {
     },
     {
         "url": "sw.js",
-        "revision": "cc45ae2b49c19a1e6e4bff55644631c3"
+        "revision": "c522aa21d6d3e64ff19c1a211161275f"
     },
     {
         "url": "android_project/build.gradle",
@@ -2205,6 +2205,14 @@ if (workbox) {
         "revision": "05bdb783ee6514c8c072e47680af8ff7"
     },
     {
+        "url": "android_project/app/src/main/assets/www/.gitignore",
+        "revision": "26a661f208490da1061ea247f771be3e"
+    },
+    {
+        "url": "android_project/app/src/main/assets/www/build_apk.bat",
+        "revision": "63f43499ffc69ea13679cee1b1b9f442"
+    },
+    {
         "url": "android_project/app/src/main/assets/www/dice-roll.mp3",
         "revision": "5ba221c8dc7fe94890a51621aa8ca7d4"
     },
@@ -2246,7 +2254,7 @@ if (workbox) {
     },
     {
         "url": "android_project/app/src/main/assets/www/index.html",
-        "revision": "7d7ce60e4fdd6b5042e82a30f68603bc"
+        "revision": "e267cc9b51edb971d3c027550f90aee0"
     },
     {
         "url": "android_project/app/src/main/assets/www/logo.png",
@@ -2278,7 +2286,7 @@ if (workbox) {
     },
     {
         "url": "android_project/app/src/main/assets/www/sw.js",
-        "revision": "e22fb80ab34e8c2d609c343f1d4eecee"
+        "revision": "c522aa21d6d3e64ff19c1a211161275f"
     },
     {
         "url": "android_project/app/src/main/assets/www/libs/jsQR.min.js",
@@ -2363,6 +2371,10 @@ if (workbox) {
     {
         "url": "libs/three.min.js",
         "revision": "eb8549863a97355411c3259a3f93b8e1"
+    },
+    {
+        "url": "__pycache__/build_apk.cpython-313.pyc",
+        "revision": "2c311831fa671666ea7c641bfeccb8bb"
     }
 ]);
 
