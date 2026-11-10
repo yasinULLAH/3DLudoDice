@@ -266,6 +266,18 @@
 <main class="relative flex-1 w-full h-full cursor-pointer overflow-hidden touch-none" id="diceTrayContainer">
 <!-- Three.js Canvas mounts here -->
 <div class="w-full h-full" id="threeCanvasWrapper"></div>
+<!-- FLOATING ZOOM CONTROLS (Pinch, Wheel or Quick Buttons) -->
+<div class="absolute top-3 right-3 z-20 flex items-center bg-slate-900/85 backdrop-blur-md rounded-2xl border border-slate-700/80 p-1 shadow-lg pointer-events-auto transition-all duration-300" id="floatingZoomControls" title="Dice &amp; Board Zoom">
+<button aria-label="Zoom out" class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-200 font-black text-sm flex items-center justify-center active:scale-95 transition-all" id="btnZoomOut">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M20 12H4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path></svg>
+</button>
+<button aria-label="Cycle zoom presets" class="px-2 py-1 text-[11px] font-bold text-amber-300 hover:text-white transition-all whitespace-nowrap min-w-[48px] text-center" id="btnZoomLabel" title="Tap to cycle presets">
+        135%
+      </button>
+<button aria-label="Zoom in" class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-200 font-black text-sm flex items-center justify-center active:scale-95 transition-all" id="btnZoomIn">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path></svg>
+</button>
+</div>
 <!-- IN-BOARD NOTIFICATION / REROLL BANNER -->
 <div class="absolute top-3 sm:top-5 left-3 right-3 sm:left-6 sm:right-6 max-w-md mx-auto pointer-events-none hidden z-30" id="rerollNotification">
 <div class="animate-banner bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-slate-950 px-4 py-2.5 rounded-2xl shadow-glow-gold flex items-center justify-between border-2 border-yellow-200">
@@ -380,6 +392,22 @@
 <span class="text-xs font-bold text-amber-400" id="lblVolumeVal">80%</span>
 </div>
 <input class="w-full accent-amber-500 cursor-pointer" id="sliderVolume" max="100" min="0" type="range" value="80"/>
+</div>
+<!-- BOARD & DICE ZOOM SETTING -->
+<div class="p-3 bg-slate-800/60 rounded-xl border border-slate-700/50 space-y-2.5">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<span class="text-xs font-semibold text-slate-200">Board &amp; Dice Zoom</span>
+<span class="text-[10px] text-slate-400">(Pinch or slider)</span>
+</div>
+<span class="text-xs font-bold text-amber-400" id="lblSettingZoomVal">135%</span>
+</div>
+<input class="w-full accent-amber-500 cursor-pointer" id="sliderZoom" max="240" min="70" step="5" type="range" value="135"/>
+<div class="grid grid-cols-3 gap-1.5 pt-1">
+<button class="zoom-preset-btn py-1.5 px-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-[10px] font-bold text-amber-300 border border-amber-500/40" data-zoom="1.50">Close-up (150%)</button>
+<button class="zoom-preset-btn py-1.5 px-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-[10px] font-bold text-slate-200 border border-slate-700" data-zoom="1.25">Balanced (125%)</button>
+<button class="zoom-preset-btn py-1.5 px-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-[10px] font-bold text-slate-200 border border-slate-700" data-zoom="0.95">Overview (95%)</button>
+</div>
 </div>
 <div class="p-3 bg-slate-800/60 rounded-xl border border-slate-700/50 space-y-3">
 <h3 class="text-xs font-bold uppercase tracking-wider text-amber-400">Ludo Rules &amp; Rerolls</h3>
@@ -743,6 +771,36 @@
         this.diceMeshes = [];
         this.dicePhysics = [];
         this.faceMaterials = [];
+
+        // User Preferred Zoom: Load from localStorage or set generous default for mobile/Android portrait
+        let savedZoom = null;
+        try { savedZoom = localStorage.getItem('ludo_preferred_zoom'); } catch (e) {}
+        if (savedZoom && !isNaN(parseFloat(savedZoom))) {
+          this.userZoom = parseFloat(savedZoom);
+        } else {
+          // Default to 1.35x zoom on phones/Android portrait so dice are large, tactile and prominent
+          this.userZoom = (window.innerWidth < 640 && window.innerHeight > window.innerWidth) ? 1.35 : 1.05;
+        }
+      }
+
+      setZoom(val) {
+        this.userZoom = Math.max(0.65, Math.min(2.4, Math.round(val * 100) / 100));
+        if (this.camera) {
+          this.camera.zoom = this.userZoom;
+          this.camera.updateProjectionMatrix();
+        }
+        try { localStorage.setItem('ludo_preferred_zoom', this.userZoom.toFixed(2)); } catch (e) {}
+        this.updateZoomUI();
+      }
+
+      updateZoomUI() {
+        const pct = Math.round(this.userZoom * 100);
+        const lbl = document.getElementById('btnZoomLabel');
+        if (lbl) lbl.textContent = `${pct}%`;
+        const settingVal = document.getElementById('lblSettingZoomVal');
+        if (settingVal) settingVal.textContent = `${pct}%`;
+        const slider = document.getElementById('sliderZoom');
+        if (slider) slider.value = pct;
       }
 
       init() {
@@ -805,9 +863,10 @@
 
         // Adaptive camera distance and FOV to ensure the complete 13.6W x 15.6D tray
         // is framed with generous margins on all portrait phones, tablets and wide monitors
-        const distFactor = Math.max(1.0, 0.95 / Math.max(0.40, Math.min(1.0, aspect)));
-        const camY = 15 * distFactor;
-        const camZ = 12 * distFactor;
+        // Closer, punchier camera framing for Android & mobile portrait screens
+        const distFactor = Math.max(1.0, Math.min(1.35, 0.70 / Math.max(0.42, aspect)));
+        const camY = 14.2 * distFactor;
+        const camZ = 10.8 * distFactor;
         this.camera.position.set(0, camY, camZ);
         this.camera.lookAt(0, 0, 0);
 
@@ -834,13 +893,15 @@
           maxTanV = Math.max(maxTanV, Math.abs(yc) / zc);
           maxTanH = Math.max(maxTanH, Math.abs(xc) / zc);
         }
-        const reqTanV = maxTanV / 0.85;
-        const reqTanH = (maxTanH / aspect) / 0.85;
-        const bestFov = Math.max(42.0, Math.min(75.0, 2 * Math.atan(Math.max(reqTanV, reqTanH)) * 180 / Math.PI));
+        const reqTanV = maxTanV / 0.88;
+        const reqTanH = (maxTanH / aspect) / 0.88;
+        const bestFov = Math.max(42.0, Math.min(74.0, 2 * Math.atan(Math.max(reqTanV, reqTanH)) * 180 / Math.PI));
 
         this.camera.fov = bestFov;
+        this.camera.zoom = this.userZoom || 1.0;
         this.camera.updateProjectionMatrix();
         this.renderer.setSize(w, h);
+        this.updateZoomUI();
       }
 
       buildDiceMaterials() {
@@ -987,7 +1048,8 @@
         this.diceMeshes = [];
         this.dicePhysics = [];
 
-        const size = 1.6;
+        // Bold, chunky, prominent dice size (2.15 units vs 1.6 units: over 70% larger physical volume)
+        const size = 2.15;
         const diceGeo = new THREE.BoxGeometry(size, size, size);
         const spacing = 2.4;
         const startX = -((count - 1) * spacing) / 2;
@@ -1043,20 +1105,20 @@ buildRollPlan(targetValues) {
         else if (GAME_CONFIG.rollDurationMode === 'long') durationMs = 2600;
         else durationMs = Math.round(1450 + Math.random() * 850);
 
-        const floorY = 0.8;
+        const floorY = 1.075;
         const throwStyle = Math.floor(Math.random() * 4);
         const count = targetValues.length;
         const restPositions = [];
-        const spacing = 2.6;
+        const spacing = 2.9;
         const startX = -((count - 1) * spacing) / 2;
 
         for (let i = 0; i < count; i++) {
           let candidate = null;
-          for (let attempt = 0; attempt < 25; attempt++) {
-            const rX = startX + i * spacing + (Math.random() - 0.5) * 1.1;
-            const rZ = (Math.random() - 0.5) * 2.8;
-            const vec = new THREE.Vector3(THREE.MathUtils.clamp(rX, -4.4, 4.4), floorY, THREE.MathUtils.clamp(rZ, -4.8, 4.8));
-            if (restPositions.every(p => vec.distanceTo(p) >= 2.25)) {
+          for (let attempt = 0; attempt < 30; attempt++) {
+            const rX = startX + i * spacing + (Math.random() - 0.5) * 1.0;
+            const rZ = (Math.random() - 0.5) * 2.6;
+            const vec = new THREE.Vector3(THREE.MathUtils.clamp(rX, -4.2, 4.2), floorY, THREE.MathUtils.clamp(rZ, -4.5, 4.5));
+            if (restPositions.every(p => vec.distanceTo(p) >= 2.5)) {
               candidate = vec;
               break;
             }
@@ -1124,7 +1186,7 @@ buildRollPlan(targetValues) {
 
         const plan = syncPlan || this.buildRollPlan(targetValues);
         const durationMs = plan.durationMs;
-        const halfSize = 0.8;
+        const halfSize = 1.075;
         const floorY = halfSize;
         const count = targetValues.length;
 
@@ -1157,7 +1219,7 @@ buildRollPlan(targetValues) {
                 const p1 = this.dicePhysics[i];
                 const p2 = this.dicePhysics[j];
                 const dist = p1.pos.distanceTo(p2.pos);
-                if (dist < 1.7) {
+                if (dist < 2.3) {
                   const normal = new THREE.Vector3().subVectors(p1.pos, p2.pos).normalize();
                   const relVel = new THREE.Vector3().subVectors(p1.vel, p2.vel);
                   const sepSpeed = relVel.dot(normal);
@@ -1200,7 +1262,7 @@ buildRollPlan(targetValues) {
                 phys.rotVel.multiplyScalar(0.85);
               }
 
-              const maxX = 5.2, minX = -5.2, maxZ = 6.0, minZ = -6.0;
+              const maxX = 4.85, minX = -4.85, maxZ = 5.7, minZ = -5.7;
               if (phys.pos.x > maxX) {
                 phys.pos.x = maxX; phys.vel.x = -phys.vel.x * 0.58;
                 sounds.playImpactClack(Math.abs(phys.vel.x) / 4);
@@ -1757,21 +1819,80 @@ buildRollPlan(targetValues) {
         }
       };
 
+      let isPinching = false;
+      let pinchStartDist = 0;
+      let pinchStartZoom = 1.0;
+
+      // Multi-Touch Pinch-to-Zoom on Mobile / Android
+      tray.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 2) {
+          isPinching = true;
+          // Cancel single finger hold/shake
+          if (isTouching) {
+            isTouching = false;
+            if (holdTimer) { clearTimeout(holdTimer); holdTimer = null; }
+            if (shakeJitterInterval) { clearInterval(shakeJitterInterval); shakeJitterInterval = null; }
+            sounds.stopDiceShake();
+            emitShakeState(false);
+            if (visualIndicator) visualIndicator.classList.add('hidden');
+            tray.classList.remove('shaking-tray');
+          }
+          pinchStartDist = Math.hypot(
+            e.touches[0].clientX - e.touches[1].clientX,
+            e.touches[0].clientY - e.touches[1].clientY
+          );
+          pinchStartZoom = diceSim ? diceSim.userZoom : 1.0;
+        }
+      }, { passive: true });
+
+      tray.addEventListener('touchmove', (e) => {
+        if (isPinching && e.touches.length === 2 && diceSim) {
+          const currentDist = Math.hypot(
+            e.touches[0].clientX - e.touches[1].clientX,
+            e.touches[0].clientY - e.touches[1].clientY
+          );
+          if (pinchStartDist > 0) {
+            const factor = currentDist / pinchStartDist;
+            const newZoom = Math.max(0.65, Math.min(2.4, pinchStartZoom * factor));
+            diceSim.setZoom(newZoom);
+          }
+        }
+      }, { passive: true });
+
+      tray.addEventListener('touchend', (e) => {
+        if (e.touches.length < 2) {
+          isPinching = false;
+        }
+      }, { passive: true });
+
+      tray.addEventListener('touchcancel', () => {
+        isPinching = false;
+      }, { passive: true });
+
+      // Mouse Wheel Zoom
+      tray.addEventListener('wheel', (e) => {
+        if (!diceSim) return;
+        e.preventDefault();
+        const delta = -e.deltaY * 0.0012;
+        diceSim.setZoom(diceSim.userZoom + delta);
+      }, { passive: false });
+
       tray.addEventListener('pointerdown', (e) => {
         if (e.target.closest('button')) return;
+        if (isPinching) return;
         startHold(e.clientX, e.clientY);
       });
 
       window.addEventListener('pointermove', (e) => {
-        if (isTouching) updateHold(e.clientX, e.clientY);
+        if (isTouching && !isPinching) updateHold(e.clientX, e.clientY);
       });
 
       window.addEventListener('pointerup', (e) => {
-        if (isTouching) endHold(e.clientX, e.clientY);
+        if (isTouching && !isPinching) endHold(e.clientX, e.clientY);
       });
 
       window.addEventListener('pointercancel', (e) => {
-        if (isTouching) endHold(e.clientX, e.clientY);
+        if (isTouching && !isPinching) endHold(e.clientX, e.clientY);
       });
     }
 
@@ -2441,6 +2562,53 @@ buildRollPlan(targetValues) {
             btn.click();
           }
         }
+      });
+
+      // Zoom Controls Wiring
+      const btnZoomIn = document.getElementById('btnZoomIn');
+      const btnZoomOut = document.getElementById('btnZoomOut');
+      const btnZoomLabel = document.getElementById('btnZoomLabel');
+      const sliderZoom = document.getElementById('sliderZoom');
+      const presetButtons = document.querySelectorAll('.zoom-preset-btn');
+
+      if (btnZoomIn) {
+        btnZoomIn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (diceSim) diceSim.setZoom(diceSim.userZoom + 0.15);
+        });
+      }
+
+      if (btnZoomOut) {
+        btnZoomOut.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (diceSim) diceSim.setZoom(diceSim.userZoom - 0.15);
+        });
+      }
+
+      const zoomCyclePresets = [1.0, 1.25, 1.55, 0.85];
+      let zoomCycleIdx = 1;
+      if (btnZoomLabel) {
+        btnZoomLabel.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (diceSim) {
+            zoomCycleIdx = (zoomCycleIdx + 1) % zoomCyclePresets.length;
+            diceSim.setZoom(zoomCyclePresets[zoomCycleIdx]);
+          }
+        });
+      }
+
+      if (sliderZoom) {
+        sliderZoom.addEventListener('input', (e) => {
+          const val = parseInt(e.target.value, 10) / 100;
+          if (diceSim) diceSim.setZoom(val);
+        });
+      }
+
+      presetButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const z = parseFloat(btn.getAttribute('data-zoom'));
+          if (diceSim && !isNaN(z)) diceSim.setZoom(z);
+        });
       });
     }
 

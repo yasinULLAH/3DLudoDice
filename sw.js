@@ -78,7 +78,7 @@ if (workbox) {
     },
     {
         "url": "index.html",
-        "revision": "6fb71e91e56f3ed10d54a934b6dff942"
+        "revision": "486d147d4a6a5a0052b1226181c10d04"
     },
     {
         "url": "logo.png",
@@ -86,7 +86,7 @@ if (workbox) {
     },
     {
         "url": "manifest.json",
-        "revision": "49fe311af352aa18bb224094c7a4b44b"
+        "revision": "14147581221191c33a7518e06f0a3cb9"
     },
     {
         "url": "offline.html",
@@ -110,7 +110,7 @@ if (workbox) {
     },
     {
         "url": "sw.js",
-        "revision": "c522aa21d6d3e64ff19c1a211161275f"
+        "revision": "ce5ce700098193b8bca7fa82bcf1c458"
     },
     {
         "url": "android_project/build.gradle",
