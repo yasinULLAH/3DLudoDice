@@ -78,7 +78,7 @@ if (workbox) {
     },
     {
         "url": "index.html",
-        "revision": "a4b949731d8e995c8afa157df66c7bdd"
+        "revision": "64804115cf3a4a1f37908adb9467d428"
     },
     {
         "url": "logo.png",
@@ -110,7 +110,7 @@ if (workbox) {
     },
     {
         "url": "sw.js",
-        "revision": "8512c4ed5f811f16e1ea694492099cfb"
+        "revision": "85d0b0438fda33900a4082296c7f85c3"
     },
     {
         "url": "android_project/build.gradle",
