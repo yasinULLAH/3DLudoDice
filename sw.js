@@ -58,7 +58,7 @@ if (workbox) {
     },
     {
         "url": "3DLudoDice.apk",
-        "revision": "97650e04c5ae222bd469778e7fd5970a"
+        "revision": "126c7143046b37e1cb21119e536583b0"
     },
     {
         "url": "build pwa make html app offline and installable yasin best working re-run this for updates best for html only.pyw",
@@ -114,7 +114,7 @@ if (workbox) {
     },
     {
         "url": "sw.js",
-        "revision": "dff2d7d818e403ee0aa3babe72cd8e1e"
+        "revision": "df29efff483fcdc42870d78b2e5b0bce"
     },
     {
         "url": "android_project/build.gradle",
@@ -202,7 +202,11 @@ if (workbox) {
     },
     {
         "url": "android_project/app/build/intermediates/assets/release/mergeReleaseAssets/www/index.html",
-        "revision": "4b5a61bb3ac2606491f290750823648f"
+        "revision": "ea2dc6bc0923311323fef9a705e7d0d6"
+    },
+    {
+        "url": "android_project/app/build/intermediates/assets/release/mergeReleaseAssets/www/LICENSE",
+        "revision": "8ce71b3cffe98915d8738bc1f67a9f11"
     },
     {
         "url": "android_project/app/build/intermediates/assets/release/mergeReleaseAssets/www/logo.png",
@@ -222,7 +226,7 @@ if (workbox) {
     },
     {
         "url": "android_project/app/build/intermediates/assets/release/mergeReleaseAssets/www/README.md",
-        "revision": "04aa9b69d302f303c218bcdff54f26f9"
+        "revision": "c05f74e6f3c5d41ce39978f370883cea"
     },
     {
         "url": "android_project/app/build/intermediates/assets/release/mergeReleaseAssets/www/shaking-dice-smallAndGood.mp3",
@@ -234,7 +238,7 @@ if (workbox) {
     },
     {
         "url": "android_project/app/build/intermediates/assets/release/mergeReleaseAssets/www/sw.js",
-        "revision": "550bdb1cd3573b96c79d5a598b8c9f5f"
+        "revision": "df29efff483fcdc42870d78b2e5b0bce"
     },
     {
         "url": "android_project/app/build/intermediates/assets/release/mergeReleaseAssets/www/libs/jsQR.min.js",
@@ -322,7 +326,11 @@ if (workbox) {
     },
     {
         "url": "android_project/app/build/intermediates/compressed_assets/release/compressReleaseAssets/out/assets/www/index.html.jar",
-        "revision": "dba11a963a57da890b7252275a526dee"
+        "revision": "bff0a509233c75fd6f8e894b556b4abf"
+    },
+    {
+        "url": "android_project/app/build/intermediates/compressed_assets/release/compressReleaseAssets/out/assets/www/LICENSE.jar",
+        "revision": "3f5241d3f64bcec02028837986a63b4a"
     },
     {
         "url": "android_project/app/build/intermediates/compressed_assets/release/compressReleaseAssets/out/assets/www/logo.png.jar",
@@ -342,7 +350,7 @@ if (workbox) {
     },
     {
         "url": "android_project/app/build/intermediates/compressed_assets/release/compressReleaseAssets/out/assets/www/README.md.jar",
-        "revision": "ec88a755de194840666a091d62d9fb29"
+        "revision": "91f0a23dc59e11b0c1f2427be47789c5"
     },
     {
         "url": "android_project/app/build/intermediates/compressed_assets/release/compressReleaseAssets/out/assets/www/shaking-dice-smallAndGood.mp3.jar",
@@ -354,11 +362,11 @@ if (workbox) {
     },
     {
         "url": "android_project/app/build/intermediates/compressed_assets/release/compressReleaseAssets/out/assets/www/sw.js.jar",
-        "revision": "a97abd507b9671f6dceb7ec14637a6fd"
+        "revision": "92ed7242209ee1c3087fc2f41399d63a"
     },
     {
         "url": "android_project/app/build/intermediates/compressed_assets/release/compressReleaseAssets/out/assets/www/version.json.jar",
-        "revision": "bf1dba0c39d2d414187f0ab203e1bb41"
+        "revision": "a4edd1de8fc66f83d6988969d330f656"
     },
     {
         "url": "android_project/app/build/intermediates/compressed_assets/release/compressReleaseAssets/out/assets/www/libs/jsQR.min.js.jar",
@@ -454,7 +462,7 @@ if (workbox) {
     },
     {
         "url": "android_project/app/build/intermediates/incremental/mergeReleaseAssets/merger.xml",
-        "revision": "36fa148d23296b51b16ea6b40d3d5142"
+        "revision": "c685751ada399760b15ab50dcc42220d"
     },
     {
         "url": "android_project/app/build/intermediates/incremental/mergeReleaseJniLibFolders/merger.xml",
@@ -466,7 +474,7 @@ if (workbox) {
     },
     {
         "url": "android_project/app/build/intermediates/incremental/packageRelease/tmp/release/dex-renamer-state.txt",
-        "revision": "b1414a71711c77c9067fddd68a1dcf6f"
+        "revision": "462b0b9f5c6369571757211b4bfd92fa"
     },
     {
         "url": "android_project/app/build/intermediates/incremental/packageRelease/tmp/release/zip-cache/androidResources",
@@ -2182,7 +2190,7 @@ if (workbox) {
     },
     {
         "url": "android_project/app/build/outputs/apk/release/app-release.apk",
-        "revision": "97650e04c5ae222bd469778e7fd5970a"
+        "revision": "126c7143046b37e1cb21119e536583b0"
     },
     {
         "url": "android_project/app/build/outputs/apk/release/output-metadata.json",
@@ -2274,7 +2282,11 @@ if (workbox) {
     },
     {
         "url": "android_project/app/src/main/assets/www/index.html",
-        "revision": "4b5a61bb3ac2606491f290750823648f"
+        "revision": "ea2dc6bc0923311323fef9a705e7d0d6"
+    },
+    {
+        "url": "android_project/app/src/main/assets/www/LICENSE",
+        "revision": "8ce71b3cffe98915d8738bc1f67a9f11"
     },
     {
         "url": "android_project/app/src/main/assets/www/logo.png",
@@ -2294,7 +2306,7 @@ if (workbox) {
     },
     {
         "url": "android_project/app/src/main/assets/www/README.md",
-        "revision": "04aa9b69d302f303c218bcdff54f26f9"
+        "revision": "c05f74e6f3c5d41ce39978f370883cea"
     },
     {
         "url": "android_project/app/src/main/assets/www/shaking-dice-smallAndGood.mp3",
@@ -2306,7 +2318,7 @@ if (workbox) {
     },
     {
         "url": "android_project/app/src/main/assets/www/sw.js",
-        "revision": "550bdb1cd3573b96c79d5a598b8c9f5f"
+        "revision": "df29efff483fcdc42870d78b2e5b0bce"
     },
     {
         "url": "android_project/app/src/main/assets/www/libs/jsQR.min.js",
@@ -2362,7 +2374,7 @@ if (workbox) {
     },
     {
         "url": "android_project/build/reports/problems/problems-report.html",
-        "revision": "e7ec1cf20b321c5230def8900b2d7c35"
+        "revision": "443f158cc2d2e885e2c9cf0de4e314de"
     },
     {
         "url": "android_project/gradle/wrapper/gradle-wrapper.jar",
