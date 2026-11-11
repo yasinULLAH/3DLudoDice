@@ -78,7 +78,11 @@ if (workbox) {
     },
     {
         "url": "index.html",
-        "revision": "4b5a61bb3ac2606491f290750823648f"
+        "revision": "ea2dc6bc0923311323fef9a705e7d0d6"
+    },
+    {
+        "url": "LICENSE",
+        "revision": "8ce71b3cffe98915d8738bc1f67a9f11"
     },
     {
         "url": "logo.png",
@@ -98,7 +102,7 @@ if (workbox) {
     },
     {
         "url": "README.md",
-        "revision": "04aa9b69d302f303c218bcdff54f26f9"
+        "revision": "c05f74e6f3c5d41ce39978f370883cea"
     },
     {
         "url": "shaking-dice-smallAndGood.mp3",
@@ -110,7 +114,7 @@ if (workbox) {
     },
     {
         "url": "sw.js",
-        "revision": "550bdb1cd3573b96c79d5a598b8c9f5f"
+        "revision": "dff2d7d818e403ee0aa3babe72cd8e1e"
     },
     {
         "url": "android_project/build.gradle",
@@ -2358,7 +2362,7 @@ if (workbox) {
     },
     {
         "url": "android_project/build/reports/problems/problems-report.html",
-        "revision": "f82a1b906e8a37655ea0c8f7dc12c8ec"
+        "revision": "e7ec1cf20b321c5230def8900b2d7c35"
     },
     {
         "url": "android_project/gradle/wrapper/gradle-wrapper.jar",

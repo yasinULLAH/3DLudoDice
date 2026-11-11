@@ -26,3 +26,10 @@ Special thanks to the sound artists on Pixabay whose real-world recordings are i
    - Hold anywhere on screen for ~0.3s+ (hearing the real cup shake) and make a subtle move (10px+) in that corner's direction.
    - Haptic vibration buzz and a micro-pulse on the dot confirm the cheat is locked in.
    - Releasing guarantees all sixes (`[6, 6]` on 2 dice, `[6]` on 1 die) and grants you the legitimate Ludo double-six reroll!
+
+## Copyright & Ownership:
+Copyright © 2026 **Yasin Ullah**. All Rights Reserved.
+
+- **Author**: Yasin Ullah
+- **Terms of Use**: Any copying, reproduction, distribution, modification, reverse engineering, or reuse of this application, game engine, or source code—in whole or in part—is strictly prohibited without prior written permission and mandatory attribution to the original author (**Yasin Ullah**).
+
