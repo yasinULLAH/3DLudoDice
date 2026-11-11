@@ -70,11 +70,24 @@
       user-select: none;
       -webkit-user-select: none;
     }
-    .safe-top {
-      padding-top: env(safe-area-inset-top, 0px);
+    :root {
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --safe-left: env(safe-area-inset-left, 0px);
+      --safe-right: env(safe-area-inset-right, 0px);
+      --notch-offset-top: 0px;
     }
-    .safe-bottom {
-      padding-bottom: env(safe-area-inset-bottom, 0px);
+    .safe-top,
+    #topAppBar {
+      padding-top: max(10px, calc(env(safe-area-inset-top, 0px) + 8px), calc(var(--notch-offset-top, 0px) + 8px)) !important;
+      padding-left: max(12px, calc(env(safe-area-inset-left, 0px) + 12px)) !important;
+      padding-right: max(12px, calc(env(safe-area-inset-right, 0px) + 12px)) !important;
+    }
+    .safe-bottom,
+    #bottomBar {
+      padding-bottom: max(10px, calc(env(safe-area-inset-bottom, 0px) + 10px)) !important;
+      padding-left: max(12px, calc(env(safe-area-inset-left, 0px) + 12px)) !important;
+      padding-right: max(12px, calc(env(safe-area-inset-right, 0px) + 12px)) !important;
     }
     @keyframes bannerDrop {
       0% { transform: translateY(-50px) scale(0.9); opacity: 0; }
@@ -124,10 +137,10 @@
         flex-direction: column;
         justify-content: flex-start;
         gap: 8px;
-        padding-top: max(8px, env(safe-area-inset-top));
-        padding-bottom: max(8px, env(safe-area-inset-bottom));
-        padding-left: max(10px, env(safe-area-inset-left));
-        padding-right: 10px;
+        padding-top: max(8px, calc(env(safe-area-inset-top, 0px) + 8px), calc(var(--notch-offset-top, 0px) + 8px)) !important;
+        padding-bottom: max(8px, calc(env(safe-area-inset-bottom, 0px) + 8px)) !important;
+        padding-left: max(10px, calc(env(safe-area-inset-left, 0px) + 10px)) !important;
+        padding-right: 10px !important;
         border-bottom: 0;
         border-right: 1px solid rgba(30, 41, 59, 0.6);
         overflow-y: auto;
@@ -174,10 +187,10 @@
         flex-direction: column;
         justify-content: center;
         gap: 8px;
-        padding-top: max(8px, env(safe-area-inset-top));
-        padding-bottom: max(8px, env(safe-area-inset-bottom));
-        padding-left: 10px;
-        padding-right: max(10px, env(safe-area-inset-right));
+        padding-top: max(8px, calc(env(safe-area-inset-top, 0px) + 8px)) !important;
+        padding-bottom: max(8px, calc(env(safe-area-inset-bottom, 0px) + 8px)) !important;
+        padding-left: 10px !important;
+        padding-right: max(10px, calc(env(safe-area-inset-right, 0px) + 10px)) !important;
         border-top: 0;
         border-left: 1px solid rgba(30, 41, 59, 0.8);
         overflow-y: auto;
@@ -206,7 +219,7 @@
 <!-- ================= APP WRAPPER ================= -->
 <div class="relative w-full h-full max-w-full md:max-w-4xl lg:max-w-5xl 2xl:max-w-6xl mx-auto flex flex-col justify-between overflow-hidden shadow-2xl bg-gradient-to-b from-slate-900 via-slate-950 to-slate-950 md:border-x border-slate-800/40" id="appContainer">
 <!-- TOP APP BAR -->
-<header class="z-20 safe-top px-3 sm:px-5 pt-2 pb-2.5 bg-slate-900/90 backdrop-blur-md border-b border-slate-800/60 transition-all duration-300" id="topAppBar">
+<header class="z-20 safe-top px-3 sm:px-5 pb-2.5 bg-slate-900/90 backdrop-blur-md border-b border-slate-800/60 transition-all duration-300" id="topAppBar">
 <!-- Top System / Action Bar -->
 <div class="flex items-center justify-between gap-2 mb-2">
 <!-- App Branding & Secret Dot -->
@@ -219,7 +232,7 @@
 <h1 class="text-xs sm:text-sm font-bold tracking-tight text-white select-none whitespace-nowrap">Ludo Dice 3D</h1>
 <span class="text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded-md bg-amber-400/20 text-amber-300 font-semibold border border-amber-400/30" id="badgeDiceCount">2 Dice</span>
 <!-- INNOCENT SECRET CHEAT INDICATOR DOT -->
-<div class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-red-500 shadow-sm cursor-default transition-all duration-300 ml-0.5" id="cheatIndicatorDot" title="System Status: Ready"></div>
+<div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-red-500 ring-1 ring-white/20 shadow-sm cursor-default transition-all duration-300 ml-1 shrink-0" id="cheatIndicatorDot" title="System Status: Ready"></div>
 </div>
 <p class="text-[10px] sm:text-[11px] text-slate-400 hidden xs:block" id="subStatusText">Authentic Studio Sound</p>
 </div>
@@ -465,6 +478,16 @@
 <option value="random">Dynamic Curiosity (1.4s - 2.2s random)</option>
 <option value="fast">Fast (0.9s quick roll)</option>
 <option value="long">Dramatic &amp; Suspenseful (2.5s)</option>
+</select>
+</div>
+<div class="p-3 bg-slate-800/60 rounded-xl border border-slate-700/50">
+<label class="text-xs font-semibold text-slate-200 block mb-1.5">Top Safe Area &amp; Notch Spacing</label>
+<select class="w-full bg-slate-900 border border-slate-700 text-slate-200 rounded-lg p-2 text-xs" id="selNotchSpacing">
+<option value="auto">Auto (Detects Browser vs APK / Notch)</option>
+<option value="notch-standard">Standard Notch (36px Pad)</option>
+<option value="notch-tall">Tall Notch / Camera Cutout (48px Pad)</option>
+<option value="notch-compact">Compact Notch (24px Pad)</option>
+<option value="none">Zero Offset (Regular Browser)</option>
 </select>
 </div>
 <button class="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 font-semibold text-xs border border-amber-500/30 flex items-center justify-center gap-2" id="btnActivateFocus">
@@ -2555,6 +2578,14 @@ buildRollPlan(targetValues) {
         }
       });
       selDur.addEventListener('change', (e) => { GAME_CONFIG.rollDurationMode = e.target.value; });
+      const selNotch = document.getElementById('selNotchSpacing');
+      if (selNotch) {
+        selNotch.value = localStorage.getItem('3dludo_notch_spacing') || 'auto';
+        selNotch.addEventListener('change', () => {
+          localStorage.setItem('3dludo_notch_spacing', selNotch.value);
+          applyNotchSafeArea();
+        });
+      }
 
       setupWakeLock();
       document.addEventListener('visibilitychange', () => {
@@ -2886,7 +2917,48 @@ buildRollPlan(targetValues) {
       }
     }
 
+    function applyNotchSafeArea() {
+      const pref = localStorage.getItem('3dludo_notch_spacing') || 'auto';
+      let offset = 0;
+      if (pref === 'notch-compact') {
+        offset = 24;
+      } else if (pref === 'notch-standard') {
+        offset = 36;
+      } else if (pref === 'notch-tall') {
+        offset = 48;
+      } else if (pref === 'none') {
+        offset = 0;
+      } else {
+        const probe = document.createElement('div');
+        probe.style.cssText = 'position:fixed;top:0;left:0;height:env(safe-area-inset-top,0px);pointer-events:none;opacity:0;z-index:-999;';
+        document.documentElement.appendChild(probe);
+        const measuredTop = probe.offsetHeight || 0;
+        document.documentElement.removeChild(probe);
+        if (measuredTop < 16) {
+          const ua = (navigator.userAgent || '') + ' ' + (navigator.vendor || '');
+          const isAndroid = /Android/i.test(ua);
+          const isWebView = /wv|Version\/[0-9.]+\s+Chrome/i.test(ua);
+          const isStandalone = window.matchMedia('(display-mode: standalone)').matches ||
+                               window.matchMedia('(display-mode: fullscreen)').matches ||
+                               navigator.standalone === true;
+          const isLocalOrigin = window.location.protocol === 'file:' ||
+                                window.location.hostname === 'appassets.androidplatform.net' ||
+                                window.location.hostname === 'localhost' ||
+                                window.location.hostname === '127.0.0.1';
+          if (isAndroid && (isWebView || isStandalone || isLocalOrigin)) {
+            offset = 36;
+          }
+        }
+      }
+      document.documentElement.style.setProperty('--notch-offset-top', offset + 'px');
+    }
+
+    applyNotchSafeArea();
+    window.addEventListener('resize', applyNotchSafeArea);
+    window.addEventListener('orientationchange', applyNotchSafeArea);
+
     window.addEventListener('DOMContentLoaded', () => {
+      applyNotchSafeArea();
       const canvasWrapper = document.getElementById('threeCanvasWrapper');
       diceSim = new ThreeDiceSimulation(canvasWrapper);
       diceSim.init();

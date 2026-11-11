@@ -58,7 +58,7 @@ if (workbox) {
     },
     {
         "url": "3DLudoDice.apk",
-        "revision": "c8bb3ec803ead781e8a36a68a59d5a89"
+        "revision": "97650e04c5ae222bd469778e7fd5970a"
     },
     {
         "url": "build pwa make html app offline and installable yasin best working re-run this for updates best for html only.pyw",
@@ -78,7 +78,7 @@ if (workbox) {
     },
     {
         "url": "index.html",
-        "revision": "64804115cf3a4a1f37908adb9467d428"
+        "revision": "4b5a61bb3ac2606491f290750823648f"
     },
     {
         "url": "logo.png",
@@ -110,7 +110,7 @@ if (workbox) {
     },
     {
         "url": "sw.js",
-        "revision": "85d0b0438fda33900a4082296c7f85c3"
+        "revision": "550bdb1cd3573b96c79d5a598b8c9f5f"
     },
     {
         "url": "android_project/build.gradle",
@@ -151,6 +151,10 @@ if (workbox) {
     {
         "url": "android_project/app/build/intermediates/app_metadata/release/writeReleaseAppMetadata/app-metadata.properties",
         "revision": "36ea187dcdf33815f2830152d6f73fe4"
+    },
+    {
+        "url": "android_project/app/build/intermediates/assets/release/mergeReleaseAssets/www/build_apk.bat",
+        "revision": "63f43499ffc69ea13679cee1b1b9f442"
     },
     {
         "url": "android_project/app/build/intermediates/assets/release/mergeReleaseAssets/www/dice-roll.mp3",
@@ -194,7 +198,7 @@ if (workbox) {
     },
     {
         "url": "android_project/app/build/intermediates/assets/release/mergeReleaseAssets/www/index.html",
-        "revision": "7d7ce60e4fdd6b5042e82a30f68603bc"
+        "revision": "4b5a61bb3ac2606491f290750823648f"
     },
     {
         "url": "android_project/app/build/intermediates/assets/release/mergeReleaseAssets/www/logo.png",
@@ -202,7 +206,7 @@ if (workbox) {
     },
     {
         "url": "android_project/app/build/intermediates/assets/release/mergeReleaseAssets/www/manifest.json",
-        "revision": "49fe311af352aa18bb224094c7a4b44b"
+        "revision": "14147581221191c33a7518e06f0a3cb9"
     },
     {
         "url": "android_project/app/build/intermediates/assets/release/mergeReleaseAssets/www/offline.html",
@@ -226,7 +230,7 @@ if (workbox) {
     },
     {
         "url": "android_project/app/build/intermediates/assets/release/mergeReleaseAssets/www/sw.js",
-        "revision": "e22fb80ab34e8c2d609c343f1d4eecee"
+        "revision": "550bdb1cd3573b96c79d5a598b8c9f5f"
     },
     {
         "url": "android_project/app/build/intermediates/assets/release/mergeReleaseAssets/www/libs/jsQR.min.js",
@@ -250,11 +254,11 @@ if (workbox) {
     },
     {
         "url": "android_project/app/build/intermediates/binary_art_profile/release/compileReleaseArtProfile/baseline.prof",
-        "revision": "a3889d88612294444923864270fba91f"
+        "revision": "08417c17260b6c747296f7bbd851b59e"
     },
     {
         "url": "android_project/app/build/intermediates/binary_art_profile_metadata/release/compileReleaseArtProfile/baseline.profm",
-        "revision": "443353cb222c1ef29a054ba66025ca3f"
+        "revision": "eedd61ccb0f8db2692a92c9b58477d88"
     },
     {
         "url": "android_project/app/build/intermediates/combined_art_profile/release/compileReleaseArtProfile/baseline-prof.txt",
@@ -267,6 +271,10 @@ if (workbox) {
     {
         "url": "android_project/app/build/intermediates/compile_and_runtime_not_namespaced_r_class_jar/release/processReleaseResources/R.jar",
         "revision": "5e9997948e792f19971cdd6c3fdb6f88"
+    },
+    {
+        "url": "android_project/app/build/intermediates/compressed_assets/release/compressReleaseAssets/out/assets/www/build_apk.bat.jar",
+        "revision": "58a92a97137d5e860c3c4033d3566629"
     },
     {
         "url": "android_project/app/build/intermediates/compressed_assets/release/compressReleaseAssets/out/assets/www/dice-roll.mp3.jar",
@@ -310,7 +318,7 @@ if (workbox) {
     },
     {
         "url": "android_project/app/build/intermediates/compressed_assets/release/compressReleaseAssets/out/assets/www/index.html.jar",
-        "revision": "1d195801c908f64d447fe1e3de1752dd"
+        "revision": "dba11a963a57da890b7252275a526dee"
     },
     {
         "url": "android_project/app/build/intermediates/compressed_assets/release/compressReleaseAssets/out/assets/www/logo.png.jar",
@@ -318,7 +326,7 @@ if (workbox) {
     },
     {
         "url": "android_project/app/build/intermediates/compressed_assets/release/compressReleaseAssets/out/assets/www/manifest.json.jar",
-        "revision": "6a360757f7beab8ee6f1758743881ea3"
+        "revision": "16ba6a1abe2372ced06fb4296c4f9269"
     },
     {
         "url": "android_project/app/build/intermediates/compressed_assets/release/compressReleaseAssets/out/assets/www/offline.html.jar",
@@ -342,11 +350,11 @@ if (workbox) {
     },
     {
         "url": "android_project/app/build/intermediates/compressed_assets/release/compressReleaseAssets/out/assets/www/sw.js.jar",
-        "revision": "cde77b1e445f9a547d930dec97752102"
+        "revision": "a97abd507b9671f6dceb7ec14637a6fd"
     },
     {
         "url": "android_project/app/build/intermediates/compressed_assets/release/compressReleaseAssets/out/assets/www/version.json.jar",
-        "revision": "93735e5b2fa47758ec95461103c8bf6d"
+        "revision": "bf1dba0c39d2d414187f0ab203e1bb41"
     },
     {
         "url": "android_project/app/build/intermediates/compressed_assets/release/compressReleaseAssets/out/assets/www/libs/jsQR.min.js.jar",
@@ -382,7 +390,7 @@ if (workbox) {
     },
     {
         "url": "android_project/app/build/intermediates/desugar_graph/release/dexBuilderRelease/out/currentProject/dirs_bucket_0/graph.bin",
-        "revision": "770b5042cfd731df2e76739bf16732c3"
+        "revision": "fa3d66ae22869573f002355dd783f79f"
     },
     {
         "url": "android_project/app/build/intermediates/desugar_graph/release/dexBuilderRelease/out/currentProject/dirs_bucket_1/graph.bin",
@@ -398,7 +406,7 @@ if (workbox) {
     },
     {
         "url": "android_project/app/build/intermediates/dex/release/mergeDexRelease/classes.dex",
-        "revision": "eff1c2f9c693982986a636c6555d31e5"
+        "revision": "af0ba112f1770715716a182e440a1af4"
     },
     {
         "url": "android_project/app/build/intermediates/dex_archive_input_jar_hashes/release/dexBuilderRelease/out",
@@ -410,11 +418,11 @@ if (workbox) {
     },
     {
         "url": "android_project/app/build/intermediates/dex_metadata_directory/release/compileReleaseArtProfile/0/.dm",
-        "revision": "0c53a4a18a1eb1c35b2b1859e646e574"
+        "revision": "d949d9df0553a4f1f995e672817e8387"
     },
     {
         "url": "android_project/app/build/intermediates/dex_metadata_directory/release/compileReleaseArtProfile/1/.dm",
-        "revision": "1522d20eaedb3a314af315f1a96e2e88"
+        "revision": "2fe8f3d0611303a6630c85c5c6272565"
     },
     {
         "url": "android_project/app/build/intermediates/dex_number_of_buckets_file/release/dexBuilderRelease/out",
@@ -430,19 +438,19 @@ if (workbox) {
     },
     {
         "url": "android_project/app/build/intermediates/incremental/lintVitalAnalyzeRelease/release-artifact-dependencies.xml",
-        "revision": "e2fd4da86a59b1a7bbbd74abeda754d3"
+        "revision": "4a22efdaff2c2d813571b49c3e55c8cb"
     },
     {
         "url": "android_project/app/build/intermediates/incremental/lintVitalAnalyzeRelease/release-artifact-libraries.xml",
-        "revision": "80d408b5f794faeffb8c35ed27517397"
+        "revision": "3381bd879c307d832d748d5e18891174"
     },
     {
         "url": "android_project/app/build/intermediates/incremental/lintVitalAnalyzeRelease/release.xml",
-        "revision": "029d6aec6d13221f24899037e08fe1ce"
+        "revision": "ad6041cfb26064501912eddd10881212"
     },
     {
         "url": "android_project/app/build/intermediates/incremental/mergeReleaseAssets/merger.xml",
-        "revision": "0b2075d995dbcc2b547dc13a42377e6c"
+        "revision": "36fa148d23296b51b16ea6b40d3d5142"
     },
     {
         "url": "android_project/app/build/intermediates/incremental/mergeReleaseJniLibFolders/merger.xml",
@@ -454,7 +462,7 @@ if (workbox) {
     },
     {
         "url": "android_project/app/build/intermediates/incremental/packageRelease/tmp/release/dex-renamer-state.txt",
-        "revision": "d0aef23553b7e651568b7afb6c5b24d7"
+        "revision": "b1414a71711c77c9067fddd68a1dcf6f"
     },
     {
         "url": "android_project/app/build/intermediates/incremental/packageRelease/tmp/release/zip-cache/androidResources",
@@ -466,11 +474,11 @@ if (workbox) {
     },
     {
         "url": "android_project/app/build/intermediates/incremental/release/mergeReleaseResources/compile-file-map.properties",
-        "revision": "8261a37616a04d4ab06bf43e962df612"
+        "revision": "f2da7e377a1c7b0adf1b720b190b5c69"
     },
     {
         "url": "android_project/app/build/intermediates/incremental/release/mergeReleaseResources/merger.xml",
-        "revision": "8cb600e5925e2a63f9cec6a79afaa837"
+        "revision": "41493a59107986389f84ee8e816e2f3a"
     },
     {
         "url": "android_project/app/build/intermediates/incremental/release/mergeReleaseResources/merged.dir/values/values.xml",
@@ -902,7 +910,7 @@ if (workbox) {
     },
     {
         "url": "android_project/app/build/intermediates/incremental/release/packageReleaseResources/compile-file-map.properties",
-        "revision": "e4e9574e69137680784f1fe7e175673b"
+        "revision": "267fea867a7e137f88efd65f2bf09c84"
     },
     {
         "url": "android_project/app/build/intermediates/incremental/release/packageReleaseResources/merger.xml",
@@ -914,7 +922,7 @@ if (workbox) {
     },
     {
         "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/merge-state",
-        "revision": "99f2a2a03de35d447cb92c2b8a48d3bb"
+        "revision": "b46db2f2a1d06e0a5ea0561dcbf1a03c"
     },
     {
         "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/+RzbakhFLlNZ4HbgF45+8ZEfCYI=",
@@ -929,56 +937,64 @@ if (workbox) {
         "revision": "381756ff38dc17098f4ac09b6ebb7aae"
     },
     {
-        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/26x6d0urzo8ZSejSKSBMFngYUg4=",
-        "revision": "75f07a79f3806af5e6a20c2dce4b2266"
+        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/1txp5HeY0xd40Lm1qtrRar6LAK8=",
+        "revision": "3eb96e7a144fc9f28fba127bb6471592"
     },
     {
-        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/2LWJyhEUkjCPa2fditRCHGdBgU4=",
-        "revision": "205a99f36ede374239d7f32629a419c8"
+        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/1WyVJZUIo_kBjHvEY_7f1j8MlaM=",
+        "revision": "fca718e99e97cb52f4c8c0ada2c74e72"
     },
     {
-        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/5FOTsovpbEHSmw0I+skHDTFcq30=",
-        "revision": "9e7da29c234333f4d245d8baa48e1746"
+        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/4I7gIJ3eWpNsPIMZ5yGbemK+SQs=",
+        "revision": "46325e36a7aa89dab4bb34e2cefba29a"
     },
     {
-        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/6FyXcQ45R5a1H0ylO5TdT6U3RnQ=",
+        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/50C4yxS6w930+WuyTluLrjKHR4U=",
+        "revision": "4e788f5c66d33a47036ae77a849ffa1b"
+    },
+    {
+        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/9gFqjca0o3K5Ar_QoS6jStRz2ww=",
+        "revision": "a3a712d1d179d231b40a977ed5593202"
+    },
+    {
+        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/9VYlH_4HPFhJGjPg5VruGOMoSIM=",
+        "revision": "ee099e0e1341957df6849ee0e464f650"
+    },
+    {
+        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/AC6ESLdH4Xu+fCrjx0XUBcFJvhc=",
         "revision": "d015da427e9863b0c085a132e776468a"
     },
     {
-        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/6nybxtKtjB8quP6Gt2mUnYzY4gc=",
-        "revision": "0108fc1144874f7f835c54066e5b0629"
+        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/adFkxPJA49mV2ngE7nqSDqDkSH4=",
+        "revision": "75f07a79f3806af5e6a20c2dce4b2266"
     },
     {
-        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/7EYavY06lWOBo0VLY_X1FFJvz0U=",
+        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/AfLgYb9wU+UedV+ap8jgprPXJ88=",
         "revision": "fcc40ced54fd9f501531860648c6d844"
-    },
-    {
-        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/bBVl762bVv9JwvNFKv8tzCid0q4=",
-        "revision": "35076b6f638faca00c217e98a0385344"
     },
     {
         "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/bDB79cBQOaoqxZTdPQNRPGAoG54=",
         "revision": "e7e76b7bd570f92343bb5fa509c0c30a"
     },
     {
-        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/cw7RprCMmsaeAST64tbMRVU5sRQ=",
-        "revision": "b83403f2b639cc6e7a6f9c0681d69367"
-    },
-    {
         "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/dOyGd6Nifgl9zthwp+bcorMNJG4=",
         "revision": "f4fb462172517b46b6cd90003508515a"
     },
     {
-        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/dZ2gQMP20F7PAzMyPF6y0b8Ukvg=",
-        "revision": "46325e36a7aa89dab4bb34e2cefba29a"
+        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/E+T2JOnupliY39ia2vmJlvClFk8=",
+        "revision": "3731baa48dc38455bdbb4997ba63c735"
     },
     {
-        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/gCnnrrwTQnmanwDz55GaJDmQ5v8=",
-        "revision": "fca718e99e97cb52f4c8c0ada2c74e72"
+        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/eE+LjNr1loGlmcAJknZyHO2mJDk=",
+        "revision": "6ac56b7d866c34df7fd04df82242cc94"
     },
     {
-        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/h+5vGTIFnuCKD3RDHU72x+VHLK8=",
-        "revision": "aacb96ddf542fb104c984871400a0f7e"
+        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/fLp0NOzN5qrjOACGKDufkhs8Qoo=",
+        "revision": "9e7da29c234333f4d245d8baa48e1746"
+    },
+    {
+        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/GPmYddvIydBqoRCojLf7pWd_Jy8=",
+        "revision": "cdf738447804817712f273b736bd40b7"
     },
     {
         "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/hZdjHrIpnc_lHEQJYiYZbt1rXnc=",
@@ -989,104 +1005,96 @@ if (workbox) {
         "revision": "2fdca6c8f8c7c7bcf05fb199f7d58631"
     },
     {
-        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/IsWd94acwzUETQ0P+Q96O2dCNBg=",
-        "revision": "a3a712d1d179d231b40a977ed5593202"
-    },
-    {
         "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/IWEvF_NkY8ZWkTgpHw354X_VRps=",
         "revision": "47d9f51b65c364f1df79fbf92582c41f"
     },
     {
-        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/jUZxgAMQdk357MDRcLoPh87zu5Q=",
+        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/jact0Yp8_57vJgQCgkZYgkW3A6c=",
+        "revision": "fa582c784a60ed8774dd4b03a21c4ab6"
+    },
+    {
+        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/JkDGr+mcPJDw6BWgzDPFB7JTlIs=",
         "revision": "1031dbe1edccbf05c616409ef796323c"
+    },
+    {
+        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/k3U0+_JQp7FK3+jg46j+MDiTmIc=",
+        "revision": "1e4d689047e2ee2cc76b7203626e9c33"
     },
     {
         "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/kjrIM5Ss0EAdt+GaggzVVIwWEsk=",
         "revision": "c57c77e351c0c7e5500975646aa60766"
     },
     {
-        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/LTo6sXQ9YTixUPcDArxR753k5AU=",
-        "revision": "04e01b87f484852363952bef8b7f896b"
-    },
-    {
         "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/LvlNW3d9lFQocfpQlX90+v2IzB0=",
         "revision": "c0d54ffa8ca9eeb13d6e81639ff87096"
     },
     {
-        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/LwuIu5CDUPMZu57Dt+o45B7KIwU=",
-        "revision": "0df216848898856e5374e7ad7addedd5"
+        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/ly1LDWwSba8pIX8EAjI69RWU87M=",
+        "revision": "2f696b1a56683b872e265e4dec37012b"
+    },
+    {
+        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/lyRCmATOoyPF+rX1Fo5tHXojSi8=",
+        "revision": "aacb96ddf542fb104c984871400a0f7e"
     },
     {
         "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/M6xNl2i1o1cugcLWQxSe7eldXeU=",
         "revision": "e2fbf05c93d846bbe26655d6d6d2e137"
     },
     {
-        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/Mccyf5IKHcYGxRVOQLNDR9qEWxE=",
+        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/NuXPfijJTSnMI8IC3+QuGJOrW6o=",
         "revision": "d3d338969c3cd4ad53a888753da3b580"
     },
     {
-        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/OaiyClqyL3BfSJnGIXZcDr3gbTU=",
-        "revision": "84e861715fad2c97e9def712839b4aa0"
+        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/o54ns2fYG65yHL1uxNSGFw3MjMc=",
+        "revision": "0df216848898856e5374e7ad7addedd5"
     },
     {
-        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/ojJnNqZCfED+RPpmxKSDxZTqON8=",
-        "revision": "cdf738447804817712f273b736bd40b7"
-    },
-    {
-        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/oKbcbtRX2sDAbQeMaH_jmCJkAgE=",
-        "revision": "3eb96e7a144fc9f28fba127bb6471592"
-    },
-    {
-        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/qidlGYW11J4sp5L0H4odeRj_r+4=",
-        "revision": "ee099e0e1341957df6849ee0e464f650"
+        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/P43AiT9gDGFMEc1xzmMJ6Kby+EE=",
+        "revision": "b94fab7db7e61f1f05488f8ff3c6597f"
     },
     {
         "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/qseM40lUC9CfbPpMDU0Lieo1p0s=",
         "revision": "e427aac656a3159609ea059d38feaf7f"
     },
     {
-        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/uV9f6jrk56J8vT1BGh0THDbPbVk=",
-        "revision": "16c6d6331d0988860ac20e6e84a4b200"
-    },
-    {
-        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/UXK4dTIJXCrWM4zuvgKHVjUuQ7g=",
-        "revision": "b94fab7db7e61f1f05488f8ff3c6597f"
-    },
-    {
-        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/vbgDjUfI0VE3VZI7gVDiYHNQJo8=",
-        "revision": "2f696b1a56683b872e265e4dec37012b"
-    },
-    {
-        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/VdjvK+fhuKaWmqimJ67z8SoPtws=",
-        "revision": "1e4d689047e2ee2cc76b7203626e9c33"
-    },
-    {
-        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/VkiKy0OQJ55IcAaKdrK2fcoUi8c=",
-        "revision": "4e788f5c66d33a47036ae77a849ffa1b"
-    },
-    {
-        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/VPdBBeRVnE6UluFVU+YS6a1gxj8=",
-        "revision": "6ac56b7d866c34df7fd04df82242cc94"
-    },
-    {
-        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/VP_A15ZIR+HEzRHD5W9l0Ks7XSs=",
-        "revision": "3731baa48dc38455bdbb4997ba63c735"
-    },
-    {
-        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/vXt7rrQ0IPe7RgjNtl+BziCCHdQ=",
+        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/Rq4lxjjPmiIfsQHQQYmH755p6nQ=",
         "revision": "ccb6f0c5e0adc11059c3d609a2fd15d6"
+    },
+    {
+        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/T3Qy+_6xMFUMgqmzTvF6kzXMvXs=",
+        "revision": "205a99f36ede374239d7f32629a419c8"
+    },
+    {
+        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/vYR3snRqoHLaVzLr_U2E+LiMbI4=",
+        "revision": "35076b6f638faca00c217e98a0385344"
     },
     {
         "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/xKW4Jp9t3IOELJMt1vyIkU9LJPg=",
         "revision": "d8e16aeb91febb3e23dfab503931bc95"
     },
     {
-        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/Xt7ei5wmvaG4lzqVNF5Ls7KKNyg=",
-        "revision": "fa582c784a60ed8774dd4b03a21c4ab6"
+        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/XT67tJXRG+8WG7qmIGKN3bg3mSE=",
+        "revision": "b83403f2b639cc6e7a6f9c0681d69367"
     },
     {
-        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/ZO0ZWNQiDtTINvEldw56Y2_Gpr0=",
+        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/YAaXxEPXgwpCUeBQDYpZd6S8v48=",
+        "revision": "0108fc1144874f7f835c54066e5b0629"
+    },
+    {
+        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/ZNzT9V5enU0fC2hWux5sBGF5sWk=",
         "revision": "b2c4ca697b192f36b59099cb35cdf196"
+    },
+    {
+        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/_0LC9x25hyJqVyDJL4iww8puf1o=",
+        "revision": "04e01b87f484852363952bef8b7f896b"
+    },
+    {
+        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/_5hoAQPHRXqhEIN3oZ1OY7mzkhw=",
+        "revision": "84e861715fad2c97e9def712839b4aa0"
+    },
+    {
+        "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/_LxGVChflDVhIzBAdILm_h_uzQM=",
+        "revision": "16c6d6331d0988860ac20e6e84a4b200"
     },
     {
         "url": "android_project/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/_m5O6Uy7Ucz0gYi2iXeuaq3C9Cg=",
@@ -1094,11 +1102,11 @@ if (workbox) {
     },
     {
         "url": "android_project/app/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/yasin/ludo3ddice/MainActivity$1.class",
-        "revision": "44b5bc77e7889e0a2110c15d05d84a56"
+        "revision": "680484436bbebc3073270691d1b7a5f1"
     },
     {
         "url": "android_project/app/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/yasin/ludo3ddice/MainActivity.class",
-        "revision": "78f6538b4d6ac8a311625364042cd940"
+        "revision": "52db8f0f85bdd33c284083d853126021"
     },
     {
         "url": "android_project/app/build/intermediates/lint-cache/lintVitalAnalyzeRelease/lint-cache-version.txt",
@@ -1138,15 +1146,15 @@ if (workbox) {
     },
     {
         "url": "android_project/app/build/intermediates/lint_vital_report_lint_model/release/generateReleaseLintVitalReportModel/release-artifact-dependencies.xml",
-        "revision": "e2fd4da86a59b1a7bbbd74abeda754d3"
+        "revision": "4a22efdaff2c2d813571b49c3e55c8cb"
     },
     {
         "url": "android_project/app/build/intermediates/lint_vital_report_lint_model/release/generateReleaseLintVitalReportModel/release-artifact-libraries.xml",
-        "revision": "80d408b5f794faeffb8c35ed27517397"
+        "revision": "3381bd879c307d832d748d5e18891174"
     },
     {
         "url": "android_project/app/build/intermediates/lint_vital_report_lint_model/release/generateReleaseLintVitalReportModel/release.xml",
-        "revision": "496dd57776904addce17253309157be3"
+        "revision": "958d660b05b15bee17fd637d65d9d1b8"
     },
     {
         "url": "android_project/app/build/intermediates/lint_vital_return_value/release/lintVitalReportRelease/return-value-release.txt",
@@ -1158,7 +1166,7 @@ if (workbox) {
     },
     {
         "url": "android_project/app/build/intermediates/manifest_merge_blame_file/release/processReleaseMainManifest/manifest-merger-blame-release-report.txt",
-        "revision": "3334ad4e8c63791205f2bb84b76ef899"
+        "revision": "f80941efca7c5b223a8be9f98543dac5"
     },
     {
         "url": "android_project/app/build/intermediates/merged_art_profile/release/mergeReleaseArtProfile/baseline-prof.txt",
@@ -1630,435 +1638,435 @@ if (workbox) {
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/mergeReleaseResources.json",
-        "revision": "af00794d5b407a1ae1afbcdfc9733e82"
+        "revision": "bdcc0961ac1b6b7bde42b8ea10f727d6"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-af.json",
-        "revision": "e3077d422233324a60a1c8020a206e66"
+        "revision": "5ce741a838364ca43e4d70b45818321c"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-am.json",
-        "revision": "e7eca84e1a4aa2d4b277446cf1877c1b"
+        "revision": "5c4c5f5099e2e2fc2a62a61991d6d295"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-ar.json",
-        "revision": "51e82dd64931d5226fe691dbcb24ed79"
+        "revision": "7769103b3ec18684104348149e80acb3"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-as.json",
-        "revision": "4d685459b82cbc6b8d54b07482313f33"
+        "revision": "e524f864f57cd24cf1df4883d4f0e162"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-az.json",
-        "revision": "7449ec5f68298f3b579ed4acadf290ed"
+        "revision": "83c8e2d467cf67053beedafb35f178cb"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-b+sr+Latn.json",
-        "revision": "fb98e6867327272307334c846323df91"
+        "revision": "55d0de78ad43b114368392d41d5533ba"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-be.json",
-        "revision": "c8153b717f0d058c834890bfdb3a2665"
+        "revision": "b0a42ff1e45887b01fa6c9497b9efe0a"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-bg.json",
-        "revision": "cab0fe9f6ca34787fe474de4ba1ef222"
+        "revision": "001eb0143c6a539727823fcad1a0a1ba"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-bn.json",
-        "revision": "af355531dbd7df711b83ceec62305c8b"
+        "revision": "492d5a08d88149cd7b0d3629eb76dcd0"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-bs.json",
-        "revision": "f9d6ccc1eebeb66c3e5d27530e2df334"
+        "revision": "5616a13b583a8f03c594dbddf4c0dc04"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-ca.json",
-        "revision": "a9ac38ccd7c1f96f9922999e8923917d"
+        "revision": "61593a757916a697e84d232f7a37b485"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-cs.json",
-        "revision": "1e0340a70efff8a2f6139c0061a64722"
+        "revision": "429574543815b3f6c6e9f2f42475d591"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-da.json",
-        "revision": "e2df7a42292432e6e9e11ac6fb2471e7"
+        "revision": "7c111783a65ba31c659aa1a8b0bfe649"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-de.json",
-        "revision": "825b9ef909406a7bf96119f34f897080"
+        "revision": "63392c52c82a313f4f098165859ceeae"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-el.json",
-        "revision": "641fd4780c9b448fe2818a9b6c2beedd"
+        "revision": "5d736460c5d01d815c7ab83762029836"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-en-rAU.json",
-        "revision": "e2ce8ebd58978024e16a08b61c9871c5"
+        "revision": "a7ccafb393883f455d17cfe32ed047e6"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-en-rCA.json",
-        "revision": "9b3dbc5d4fb0a69f92e71d90868c0d30"
+        "revision": "cc8cfc12a2bb37dafdb6f0b5b26cc7d8"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-en-rGB.json",
-        "revision": "88250a2d34c0e5b6aa6de535688660d1"
+        "revision": "94d98d7619571ae7c8fe1e60adbe0bfa"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-en-rIN.json",
-        "revision": "fadba79fd7d0a1be2226f04d93dc71e4"
+        "revision": "912bd894e2f55b8ef4daff7557f44ea5"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-en-rXC.json",
-        "revision": "549b46d0a43994a43e02b0bd648b1b22"
+        "revision": "30319b8b6ec0d6ca449144db038ef60b"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-es-rUS.json",
-        "revision": "6e86f69ff0e2a0e15bdf231cecc6a137"
+        "revision": "e9252321248f43f1462c748db73a1fc0"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-es.json",
-        "revision": "0aa265416d40d17bf5e71294ded65b04"
+        "revision": "32e2c368f8bda81e6726cedf745d4ac7"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-et.json",
-        "revision": "02b27b2567bf9b9d77b46c0640205770"
+        "revision": "bdbedc840e7d3d004dcd44a527f2fda9"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-eu.json",
-        "revision": "dc352a12d3959cef0543cba493e22a41"
+        "revision": "70b7b7bc4e55f7bacf3c6623ae10c46e"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-fa.json",
-        "revision": "3333020579d19fdaa9876c5e61abbb2e"
+        "revision": "b6f15c9d60db2d4cb1414dc7194e033e"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-fi.json",
-        "revision": "de92ec11b3c1c18d40696e7a41e98d13"
+        "revision": "8d7bb7b7e467e6093ead156b7192ca48"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-fr-rCA.json",
-        "revision": "b32bebf8a84c8a476df80ee5d8644b66"
+        "revision": "03de35ea55e73a5f8e1b81e5a0ed108d"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-fr.json",
-        "revision": "61ec9baa06d93a995240092760c042b6"
+        "revision": "a50b3fb3d882a15fce5c4fdf548dcb52"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-gl.json",
-        "revision": "95700954b47da5c4a98d4b4b229b98ca"
+        "revision": "5839d4a5c71550d222b1a87a2e750665"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-gu.json",
-        "revision": "ce803d32751accf60dfb239b6dba006a"
+        "revision": "bc1ad40263f2083061dd1f4905746f60"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-h720dp-v13.json",
-        "revision": "882c0ab80ba57864ddfeca7e9dd7dfcd"
+        "revision": "23663b1f6a639e437aa095aefba25d58"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-hdpi-v4.json",
-        "revision": "ceafdd1d8a5c53379d28acf89a1915e2"
+        "revision": "eea87438cf194dba7692fff7ab42b09b"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-hi.json",
-        "revision": "06e0605034b0253b0ee1ef76ff1fef4a"
+        "revision": "a3e10bb52a2e78c0d6607bf2178a522a"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-hr.json",
-        "revision": "350751d89c8a9ec85d646e5e6b614c9d"
+        "revision": "07488440cea7e87cc848bb09ab04fe44"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-hu.json",
-        "revision": "5498924087efa623ec659dcf7b7ac5ab"
+        "revision": "42d381d50b67d168a4ccb913a30ac98a"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-hy.json",
-        "revision": "d641a3dd7898fe66d2601be725f0bff2"
+        "revision": "df2644c27867812bec289fe6e0139280"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-in.json",
-        "revision": "ee6e386dd09dd8e317947d7612317a6d"
+        "revision": "eb69b05c7d8dd8d573c8ae88ce78671e"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-is.json",
-        "revision": "91f745a5b73e7614d97412627addd234"
+        "revision": "337305ede563a5068ee3f77863d70212"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-it.json",
-        "revision": "214e03e0694ea8b076a86a029a6228c7"
+        "revision": "94d3b0f703c5fe9e2e23808b353a4bdb"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-iw.json",
-        "revision": "9a9db59598eb6400975a9bc36d38705d"
+        "revision": "da94b839ae71a6afc05620164b109a83"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-ja.json",
-        "revision": "27cf839e80138330a32bc7b8d56c712f"
+        "revision": "242aff45824580e3335f1abd8e66ae47"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-ka.json",
-        "revision": "66a51b169d8e688913d36bd55f2232ab"
+        "revision": "b76b64ef201b2a25fca2fc32e531a0a7"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-kk.json",
-        "revision": "0018c02232a711dfacab777def252ddb"
+        "revision": "9579505f7f90fc065aea3f301ca449e3"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-km.json",
-        "revision": "c1562965458494ed7b1bb7b525d48863"
+        "revision": "9d22a39cec6e9c4873768c7f0c79d4c7"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-kn.json",
-        "revision": "9d08423144c2ac6d2efd48d823d6e22e"
+        "revision": "50feb1f10729892c70c2a95414f1e91f"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-ko.json",
-        "revision": "c8d7a788f5b4385c13cc3d18e7efe9bc"
+        "revision": "b659f405b3942d8fe801e2a2c1d6773f"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-ky.json",
-        "revision": "bf030042a7de66db58f0f2e57f375cef"
+        "revision": "5832b652529c68b5b43496139432a4c2"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-land.json",
-        "revision": "4bba71f2006b054db4c080b65494e28e"
+        "revision": "85f82e8e6d10202c5772d740a16b6995"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-large-v4.json",
-        "revision": "bc193209c6007cbf187b59ffc055b021"
+        "revision": "240d4e85823211f0d2608ff01215c463"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-ldltr-v21.json",
-        "revision": "fc523d8c727380e07436d0fb1bbbdaba"
+        "revision": "09d6c018cc4b428430987a8aa8e05a07"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-lo.json",
-        "revision": "7ec563c57db50d14cfb3609c1285608a"
+        "revision": "564473cc626189f94affa583cee8bc18"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-lt.json",
-        "revision": "d7b68752d11c4c218eeec845cbc6e8b8"
+        "revision": "1c8e75dc207631a51172e6efa059e7d1"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-lv.json",
-        "revision": "86050177d662503ecbeae63a6f50840e"
+        "revision": "eb6590d29701e75c732500d6c70ca981"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-mk.json",
-        "revision": "e001ce51bf8cebc71c234eaeb0f215af"
+        "revision": "c8b3db4c2bb55c1908fc298b3c81bfca"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-ml.json",
-        "revision": "46b0b164aad2676d6169ec487db1e212"
+        "revision": "67c54189d79f925f50ffebdabb540d9b"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-mn.json",
-        "revision": "b49b5da931d626c8faffc337fd92821a"
+        "revision": "e8cc05d877b3ce79acce551708170cc6"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-mr.json",
-        "revision": "13ffba7ee97d3e58a435f3cfb1a82828"
+        "revision": "5f31b52b437f3ac220f3a3c8a960f6cc"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-ms.json",
-        "revision": "fcd6948289836c74085b54b6f701435d"
+        "revision": "2b7d04ee803ff3bb8a2ae1928271d930"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-my.json",
-        "revision": "7d2a685a6b2cac52aa644f861f52799b"
+        "revision": "9208de2ca64ecf14c783c153b2a6edb9"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-nb.json",
-        "revision": "2b3fa08b8400f1bd225645d5c28a565c"
+        "revision": "69b74973671cecf97204ca9ae39f26cc"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-ne.json",
-        "revision": "38b88c998db2ba9fedec3ac43ac81774"
+        "revision": "449e865843f98c346379cb6a8c39a612"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-night-v8.json",
-        "revision": "9b15062757a7d90a04d56a58f23cde32"
+        "revision": "1b9fbed45f86dfcc06f9c11b66ae62e0"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-nl.json",
-        "revision": "26ef00f0b8441769f15741e72b40c5c7"
+        "revision": "9ef1c935eac3a7d5b31af12829d0a757"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-or.json",
-        "revision": "885afa214e00d87c9b5ade4f707633c4"
+        "revision": "072accd963790abeb3afbaa699ef47c9"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-pa.json",
-        "revision": "453d064aa23022c97c8a47bb2a1c9fbc"
+        "revision": "fce6a7c888afe36f7c14e1e54b82450b"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-pl.json",
-        "revision": "9f6433ff0870533daeb238ca7abcb15c"
+        "revision": "fb3a1d67f731b54ac2f4a3efd974d965"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-port.json",
-        "revision": "38c6847096ae0d60d7cf118a1a2579c1"
+        "revision": "2dab9ba499bde97d7632a514c68a5f94"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-pt-rBR.json",
-        "revision": "bc9ef749bdc8869c21f7637aeb36124d"
+        "revision": "edcc54f1b80e14b2d601c20f5d53b2a0"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-pt-rPT.json",
-        "revision": "63503a893b36ef54e1c3046827d88b27"
+        "revision": "dd676f7b95986a3b80b48bce325d0df1"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-pt.json",
-        "revision": "1a495a72d8c33f574a87e7d9136f4c08"
+        "revision": "443bb9bd1c5d336d1ae5254edb1681ed"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-ro.json",
-        "revision": "344c708ad2330fbb93c364eed360556b"
+        "revision": "9dc9dd1365da23ea541c49ab1216aeb3"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-ru.json",
-        "revision": "83618edb686d843976e3aa5433abb386"
+        "revision": "bfb29cbba0517ebc46a42a30c9315787"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-si.json",
-        "revision": "93c871e3d5228bd5c5e4962f4f9c9093"
+        "revision": "be274e9c8e541324a92002fbbb2641f8"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-sk.json",
-        "revision": "c53f8881c76c11d18ff4a895c74a48f7"
+        "revision": "1fc5c12d4d0fe2b53e14f623ff3d6a4d"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-sl.json",
-        "revision": "f433f892cac63896ce2b8bf2ad60826b"
+        "revision": "f492494605ace97343773ab87673b7a3"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-sq.json",
-        "revision": "7c924d2f471ecb9e2292a135602cfff1"
+        "revision": "a108bf440b596c1aafcde4e7a6163340"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-sr.json",
-        "revision": "922fde347d8ccd3823e0e9fea23cd1a6"
+        "revision": "26dcc5fdcdaca4cb1f323c4828a854c2"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-sv.json",
-        "revision": "ea8dda2a9315b7ee0e07aaffcce05766"
+        "revision": "0d8f332dfb7fa76f5302b7d63767b362"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-sw.json",
-        "revision": "43c8d17f96d3352380caa6f046f984d7"
+        "revision": "fb500e2ec734d5a91d80499053c35aad"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-sw600dp-v13.json",
-        "revision": "fb67d13e0cb960c3bebf174ea2832f84"
+        "revision": "2d6fbdc22fd80ca1e026c7ca11525fcd"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-ta.json",
-        "revision": "513d0533f96ea87e1221334c860ba842"
+        "revision": "d24133781eff7fdbbfeb14953cce0130"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-te.json",
-        "revision": "e29056e24c4fd4b92c90a8a739c143cc"
+        "revision": "ce615694ff9aaca29cbfb5040c0c3b4b"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-th.json",
-        "revision": "438594487ca04289c6863597bd63e54b"
+        "revision": "950201f7bc72512b79b12bf1b7073257"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-tl.json",
-        "revision": "bbd5937f7058bd738476db656917fb02"
+        "revision": "344a1bf09a61ee70280535567c3cd13e"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-tr.json",
-        "revision": "ec40659ec4f35c2848714afe3094e9ff"
+        "revision": "f66f63a9faf4c72fca35c577b1894edc"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-uk.json",
-        "revision": "16a16e46359d28167394bd5dd64b8a57"
+        "revision": "5998a1a65678d4f7a351c80969323252"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-ur.json",
-        "revision": "ba5a18a2ccc6bcb08441bde66f22f21a"
+        "revision": "aa3616d1cd8106a7cb1289251c4476ca"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-uz.json",
-        "revision": "431af8abd3194d17f51699a97525f5e5"
+        "revision": "5a3879b1f6d24d72f4bb8b8e32f9ae82"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-v16.json",
-        "revision": "2493dc17e0d719239badf8e6d1b6eca5"
+        "revision": "2a294c53149765a4d3d00372dd48edda"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-v17.json",
-        "revision": "e44aa5e40b8b7988a3dc9cbf997d68a2"
+        "revision": "f1e1c9570b9b25c97aa683c68d99a47b"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-v18.json",
-        "revision": "bc42e5c8257c8c254967ddf8df3d0c0e"
+        "revision": "327c2da4ecbd0c7e2101b2ac8612f37a"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-v21.json",
-        "revision": "3327958bd746bfdfcf64f808b62d516f"
+        "revision": "201b42bd8a5d93e1f9d1e136f5b81db9"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-v22.json",
-        "revision": "a359ff1f2a2c1b54564bd497c6ca5551"
+        "revision": "172fe70f65457a08f0c17b9d1e57c8e7"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-v23.json",
-        "revision": "0b61e7a5311fb0b1ef9c16d6a07cf3a3"
+        "revision": "40f67b8b34ae462dbe4d7b5a7cf579e7"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-v24.json",
-        "revision": "e79b9c44728b11132a7596f30fd1d30d"
+        "revision": "401350c2f9bba36ea98ad0d2ed40f3d5"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-v25.json",
-        "revision": "287ad2338dee2d633d3dc7059bdfe678"
+        "revision": "008b4163d050710b20de3e6938cd9c18"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-v26.json",
-        "revision": "b0ba3988a6d715eedb8c5998093dee27"
+        "revision": "e7dc384f7d345433ff86eb82dc103ad0"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-v28.json",
-        "revision": "81fd2b650fae61364620d97717b5840c"
+        "revision": "818263c65f05c962026bd92c2218648e"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-vi.json",
-        "revision": "3ec584528c333c4d193974ded39afd96"
+        "revision": "a642f34064124b8db44f606db2beb805"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-watch-v20.json",
-        "revision": "153b04baaa242e8300f7da0fb1300f20"
+        "revision": "55dbe7b9b7acf414916727eeb1afd341"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-watch-v21.json",
-        "revision": "c19fbab2bda637fe053fd3d3df523c3f"
+        "revision": "4eed1934006ab3bd543fa3304ed94d44"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-xlarge-v4.json",
-        "revision": "7e2733a7fc98019cc00dbd5c85573834"
+        "revision": "24735759df1cbb8dd72759be1f71f8e0"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-zh-rCN.json",
-        "revision": "bda6706947a055ba14f98e08a21d4273"
+        "revision": "36865ce9a679604b7950c0e346eb3fea"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-zh-rHK.json",
-        "revision": "4aac2df02088ea0fd6db14c46a7e5393"
+        "revision": "f067edcce41359a072855896dced26ae"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-zh-rTW.json",
-        "revision": "abcd9964d3cb0cca50b0bc0f8c814e4f"
+        "revision": "5eb0ee3f20a8be59bf96f6aad0f66127"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values-zu.json",
-        "revision": "dd0bf544a947ca59457363819cfa041c"
+        "revision": "7158fc6dc7b507b90dd3b066831e7f95"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/values.json",
-        "revision": "91a23dc94cc3b279ad0d066cd54214ef"
+        "revision": "467cf502c102ac61c4c1a4144c61cf50"
     },
     {
         "url": "android_project/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/single/mergeReleaseResources.json",
@@ -2066,7 +2074,7 @@ if (workbox) {
     },
     {
         "url": "android_project/app/build/intermediates/metadata_library_dependencies_report/release/collectReleaseDependencies/dependencies.pb",
-        "revision": "423882a333800c9217e272ca651c653e"
+        "revision": "610dd1d8a4e5321c436cbc79f8f4d513"
     },
     {
         "url": "android_project/app/build/intermediates/navigation_json/release/extractDeepLinksRelease/navigation.json",
@@ -2134,11 +2142,11 @@ if (workbox) {
     },
     {
         "url": "android_project/app/build/intermediates/project_dex_archive/release/dexBuilderRelease/out/com/yasin/ludo3ddice/MainActivity$1.dex",
-        "revision": "4e0a3a5bd8e562afb6ffd230238d1dce"
+        "revision": "c4ea2c66baa44a3317fa5bd9eecd0d47"
     },
     {
         "url": "android_project/app/build/intermediates/project_dex_archive/release/dexBuilderRelease/out/com/yasin/ludo3ddice/MainActivity.dex",
-        "revision": "283c858def613a519fc0165c8e27620d"
+        "revision": "047855d1c43a89ad839ce131ae99cf83"
     },
     {
         "url": "android_project/app/build/intermediates/runtime_symbol_list/release/processReleaseResources/R.txt",
@@ -2146,7 +2154,7 @@ if (workbox) {
     },
     {
         "url": "android_project/app/build/intermediates/sdk_dependency_data/release/sdkReleaseDependencyData/sdkDependencyData.pb",
-        "revision": "c85e9ec839ea6805a9fde4130aa7f43d"
+        "revision": "5b83a06dc1ed8ecbcaa969a7c890d6fd"
     },
     {
         "url": "android_project/app/build/intermediates/signing_config_versions/release/writeReleaseSigningConfigVersions/signing-config-versions.json",
@@ -2154,7 +2162,7 @@ if (workbox) {
     },
     {
         "url": "android_project/app/build/intermediates/source_set_path_map/release/mapReleaseSourceSetPaths/file-map.txt",
-        "revision": "611c4fac683c34433c08e2b2a30498cc"
+        "revision": "65407a5bfc5d6a0977260e0ec56717f3"
     },
     {
         "url": "android_project/app/build/intermediates/stable_resource_ids_file/release/processReleaseResources/stableIds.txt",
@@ -2170,7 +2178,7 @@ if (workbox) {
     },
     {
         "url": "android_project/app/build/outputs/apk/release/app-release.apk",
-        "revision": "c8bb3ec803ead781e8a36a68a59d5a89"
+        "revision": "97650e04c5ae222bd469778e7fd5970a"
     },
     {
         "url": "android_project/app/build/outputs/apk/release/output-metadata.json",
@@ -2178,23 +2186,31 @@ if (workbox) {
     },
     {
         "url": "android_project/app/build/outputs/apk/release/baselineProfiles/0/app-release.dm",
-        "revision": "0c53a4a18a1eb1c35b2b1859e646e574"
+        "revision": "d949d9df0553a4f1f995e672817e8387"
     },
     {
         "url": "android_project/app/build/outputs/apk/release/baselineProfiles/1/app-release.dm",
-        "revision": "1522d20eaedb3a314af315f1a96e2e88"
+        "revision": "2fe8f3d0611303a6630c85c5c6272565"
     },
     {
         "url": "android_project/app/build/outputs/logs/manifest-merger-release-report.txt",
-        "revision": "87cede73c8644ee98afde6c0cfee63f9"
+        "revision": "3dcc6691febcc967ae26f3eea5623c5a"
     },
     {
         "url": "android_project/app/build/outputs/sdk-dependencies/release/sdkDependencies.txt",
-        "revision": "bac40184a910f0b9d7d4195aafcb77bd"
+        "revision": "85a3fdd43b186a3e9b9bcd628fc6ddee"
     },
     {
         "url": "android_project/app/build/tmp/compileReleaseJavaWithJavac/previous-compilation-data.bin",
-        "revision": "a6b4926346b5f7747ddd34f292a20bf8"
+        "revision": "be00b6c0bff56798536ec84457d78c96"
+    },
+    {
+        "url": "android_project/app/build/tmp/compileReleaseJavaWithJavac/compileTransaction/stash-dir/MainActivity$1.class.uniqueId0",
+        "revision": "44b5bc77e7889e0a2110c15d05d84a56"
+    },
+    {
+        "url": "android_project/app/build/tmp/compileReleaseJavaWithJavac/compileTransaction/stash-dir/MainActivity.class.uniqueId1",
+        "revision": "78f6538b4d6ac8a311625364042cd940"
     },
     {
         "url": "android_project/app/src/main/AndroidManifest.xml",
@@ -2254,7 +2270,7 @@ if (workbox) {
     },
     {
         "url": "android_project/app/src/main/assets/www/index.html",
-        "revision": "e267cc9b51edb971d3c027550f90aee0"
+        "revision": "4b5a61bb3ac2606491f290750823648f"
     },
     {
         "url": "android_project/app/src/main/assets/www/logo.png",
@@ -2262,7 +2278,7 @@ if (workbox) {
     },
     {
         "url": "android_project/app/src/main/assets/www/manifest.json",
-        "revision": "49fe311af352aa18bb224094c7a4b44b"
+        "revision": "14147581221191c33a7518e06f0a3cb9"
     },
     {
         "url": "android_project/app/src/main/assets/www/offline.html",
@@ -2286,7 +2302,7 @@ if (workbox) {
     },
     {
         "url": "android_project/app/src/main/assets/www/sw.js",
-        "revision": "c522aa21d6d3e64ff19c1a211161275f"
+        "revision": "550bdb1cd3573b96c79d5a598b8c9f5f"
     },
     {
         "url": "android_project/app/src/main/assets/www/libs/jsQR.min.js",
@@ -2310,7 +2326,7 @@ if (workbox) {
     },
     {
         "url": "android_project/app/src/main/java/com/yasin/ludo3ddice/MainActivity.java",
-        "revision": "26c742cef6bbcb3d5bdd3da9b930e22d"
+        "revision": "9288041b92895c33c304adbcfd00b1cc"
     },
     {
         "url": "android_project/app/src/main/res/mipmap-hdpi/ic_launcher.png",
@@ -2342,7 +2358,7 @@ if (workbox) {
     },
     {
         "url": "android_project/build/reports/problems/problems-report.html",
-        "revision": "e0b1b5d343d8de6d36502cb39c6d9c10"
+        "revision": "f82a1b906e8a37655ea0c8f7dc12c8ec"
     },
     {
         "url": "android_project/gradle/wrapper/gradle-wrapper.jar",
